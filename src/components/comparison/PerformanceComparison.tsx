@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CaseType } from '../../types/simulation';
-import { BarChart3, Award, Clock, ArrowRight } from 'lucide-react';
+import { BarChart3, Award } from 'lucide-react';
 
 interface PerformanceComparisonProps {
   currentCase: CaseType;
@@ -24,23 +24,23 @@ export const PerformanceComparison: React.FC<PerformanceComparisonProps> = ({ cu
       manual: '63.0%',
       conventional: '74.0%',
       ai: '91.2%',
-      improvement: '+28.2% fleet utilization boost'
+      improvement: '+28.2% fleet boost'
     },
     {
       name: 'Peak Hour Congestion Delay Factor',
-      unit: 'Calculated platform overcrowding penalty',
+      unit: 'Platform overcrowding penalty index',
       manual: '48.0% (HIGH)',
       conventional: '22.0% (MED)',
       ai: '3.4% (LOW)',
-      improvement: '92.9% congestion mitigation'
+      improvement: '92.9% mitigation'
     },
     {
       name: 'Induction & Siding Turnout Response Time',
-      unit: 'Time required to inject hot-standby trainset',
+      unit: 'Time to deploy hot-standby trainset',
       manual: '12.0 min',
       conventional: '7.0 min',
-      ai: '< 1 min (42ms solve)',
-      improvement: '12× faster dispatch response'
+      ai: '< 1 min (42ms)',
+      improvement: '12× faster response'
     },
     {
       name: 'Headway Consistency Index',
@@ -48,15 +48,15 @@ export const PerformanceComparison: React.FC<PerformanceComparisonProps> = ({ cu
       manual: '58.0%',
       conventional: '76.0%',
       ai: '94.5%',
-      improvement: '+18.5% headway precision'
+      improvement: '+18.5% precision'
     },
     {
       name: 'Traction Energy Cost per Pax-KM',
-      unit: 'Normalized kWh consumed per passenger transported',
+      unit: 'Normalized kWh per passenger transported',
       manual: '100% (Baseline)',
       conventional: '88.5%',
       ai: '71.2%',
-      improvement: '28.8% traction energy reduction'
+      improvement: '28.8% energy savings'
     }
   ];
 
@@ -85,26 +85,26 @@ export const PerformanceComparison: React.FC<PerformanceComparisonProps> = ({ cu
   ];
 
   return (
-    <div className="gov-panel rounded-2xl p-5 md:p-6 border border-white/10 shadow-xl space-y-6">
+    <div className="donezo-card p-6 space-y-6">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-white/10">
+      <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[#F0F2F5]">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-lg bg-[#0E1626] border border-white/10 text-[#38BDF8]">
+          <div className="p-2.5 rounded-xl bg-[#E8F7EE] text-[#144230]">
             <BarChart3 className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="font-display font-bold text-base md:text-lg text-white uppercase tracking-wide">
-              EMPIRICAL BENCHMARK & MULTI-PARADIGM COMPARISON
+            <h2 className="font-display font-bold text-base md:text-lg text-[#111827]">
+              Multi-Paradigm Performance Benchmark
             </h2>
-            <p className="text-xs text-white/50 font-mono-tech">
-              Quantitative comparison across 3 operational architectures under KMRL operational constraints
+            <p className="text-xs text-[#6B7280]">
+              Quantitative comparison across 3 operational architectures under KMRL constraints
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 text-xs font-mono-tech">
-          <span className="px-3 py-1 rounded bg-[#22C55E]/15 text-[#22C55E] border border-[#22C55E]/30 font-bold flex items-center gap-1.5">
-            <Award className="w-3.5 h-3.5" /> 54% EFFICIENCY ADVANTAGE
+          <span className="px-3 py-1 rounded-full bg-[#E8F7EE] text-[#144230] font-bold flex items-center gap-1.5 border border-[#B7E4C7]">
+            <Award className="w-3.5 h-3.5 text-[#22C55E]" /> 54% EFFICIENCY ADVANTAGE
           </span>
         </div>
       </div>
@@ -113,31 +113,31 @@ export const PerformanceComparison: React.FC<PerformanceComparisonProps> = ({ cu
       <div className="overflow-x-auto">
         <table className="w-full text-left font-mono-tech text-xs border-collapse">
           <thead>
-            <tr className="border-b border-white/15 text-white/40 text-[10px] uppercase">
+            <tr className="border-b border-[#E5E7EB] text-[#6B7280] text-[10px] uppercase">
               <th className="py-3 px-4 font-bold">OPERATIONAL METRIC</th>
-              <th className="py-3 px-4 font-bold bg-[#080C14]/60">01. MANUAL DISPATCH</th>
-              <th className="py-3 px-4 font-bold bg-[#0E1626]/40">02. CONVENTIONAL CBTC</th>
-              <th className="py-3 px-4 font-bold bg-[#0284C7]/15 text-[#38BDF8]">03. AI-POWERED INDUCTION</th>
-              <th className="py-3 px-4 font-bold text-[#22C55E]">AI IMPROVEMENT DELTA</th>
+              <th className="py-3 px-4 font-bold bg-[#F9FAFB]">01. MANUAL DISPATCH</th>
+              <th className="py-3 px-4 font-bold bg-[#F4F5F7]">02. CONVENTIONAL CBTC</th>
+              <th className="py-3 px-4 font-bold bg-[#E8F7EE] text-[#144230]">03. AI TRAIN INDUCTION</th>
+              <th className="py-3 px-4 font-bold text-[#144230]">AI IMPROVEMENT</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/10">
+          <tbody className="divide-y divide-[#F0F2F5]">
             {comparisonMetrics.map((metric) => (
-              <tr key={metric.name} className="hover:bg-white/[0.02] transition-colors">
-                <td className="py-3.5 px-4 text-white font-medium">
+              <tr key={metric.name} className="hover:bg-[#F9FAFB] transition-colors">
+                <td className="py-3.5 px-4 text-[#111827] font-medium">
                   <div>{metric.name}</div>
-                  <div className="text-[10px] text-white/40">{metric.unit}</div>
+                  <div className="text-[10px] text-[#9CA3AF]">{metric.unit}</div>
                 </td>
-                <td className="py-3.5 px-4 bg-[#080C14]/40 text-[#F59E0B] font-bold">
+                <td className="py-3.5 px-4 bg-[#F9FAFB] text-[#D97706] font-bold">
                   {metric.manual}
                 </td>
-                <td className="py-3.5 px-4 bg-[#0E1626]/20 text-[#38BDF8] font-bold">
+                <td className="py-3.5 px-4 bg-[#F4F5F7] text-[#4B5563] font-bold">
                   {metric.conventional}
                 </td>
-                <td className="py-3.5 px-4 bg-[#0284C7]/10 text-white font-black text-sm">
+                <td className="py-3.5 px-4 bg-[#E8F7EE]/60 text-[#144230] font-black text-sm">
                   {metric.ai}
                 </td>
-                <td className="py-3.5 px-4 text-[#22C55E] font-bold">
+                <td className="py-3.5 px-4 text-[#144230] font-bold">
                   {metric.improvement}
                 </td>
               </tr>
@@ -147,9 +147,9 @@ export const PerformanceComparison: React.FC<PerformanceComparisonProps> = ({ cu
       </div>
 
       {/* Stress-Test Scenario Benchmark Tabs */}
-      <div className="pt-4 border-t border-white/10 space-y-4">
+      <div className="pt-4 border-t border-[#F0F2F5] space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <span className="text-[10px] font-mono-tech uppercase tracking-widest text-[#38BDF8] font-bold">
+          <span className="text-[10px] font-mono-tech uppercase tracking-widest text-[#144230] font-bold">
             SCENARIO-SPECIFIC BENCHMARK PROFILES
           </span>
           <div className="flex flex-wrap gap-2">
@@ -157,10 +157,10 @@ export const PerformanceComparison: React.FC<PerformanceComparisonProps> = ({ cu
               <button
                 key={idx}
                 onClick={() => setSelectedScenarioIndex(idx)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-mono-tech transition-colors cursor-pointer ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-mono-tech transition-colors cursor-pointer ${
                   selectedScenarioIndex === idx
-                    ? 'bg-[#0284C7] text-white font-bold'
-                    : 'bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10'
+                    ? 'bg-[#144230] text-white font-bold'
+                    : 'bg-[#F4F5F7] text-[#4B5563] hover:text-[#111827] hover:bg-[#E5E7EB] border border-[#E5E7EB]'
                 }`}
               >
                 {sb.name.split(' ')[0]} {sb.name.split(' ')[1]}
@@ -173,44 +173,44 @@ export const PerformanceComparison: React.FC<PerformanceComparisonProps> = ({ cu
         {(() => {
           const currentBench = scenarioBenchmarks[selectedScenarioIndex];
           return (
-            <div className="p-4 rounded-xl bg-[#080C14] border border-white/10 space-y-4">
+            <div className="p-4 rounded-2xl bg-[#F9FAFB] border border-[#ECEEF2] space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <span className="font-display font-bold text-white text-sm uppercase">
+                <span className="font-display font-bold text-[#111827] text-sm">
                   {currentBench.name}
                 </span>
-                <span className="text-xs font-mono-tech text-[#22C55E] font-bold">
+                <span className="text-xs font-mono-tech text-[#144230] font-bold bg-[#E8F7EE] px-2.5 py-1 rounded-full">
                   {currentBench.gain}
                 </span>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs font-mono-tech">
-                <div className="p-3 rounded-lg bg-[#0E1626] border border-white/5">
-                  <span className="text-[9px] text-white/40 block mb-1">01. MANUAL TIMETABLE</span>
-                  <div className="space-y-0.5 text-white/80">
-                    <div>Wait: <span className="text-[#F59E0B] font-bold">{currentBench.manual.wait}</span></div>
+                <div className="p-3.5 rounded-xl bg-white border border-[#E5E7EB]">
+                  <span className="text-[9px] text-[#9CA3AF] block mb-1">01. MANUAL TIMETABLE</span>
+                  <div className="space-y-0.5 text-[#4B5563]">
+                    <div>Wait: <span className="text-[#D97706] font-bold">{currentBench.manual.wait}</span></div>
                     <div>Headway: <span>{currentBench.manual.headway}</span></div>
                     <div>Throughput: <span>{currentBench.manual.paxPerHour} pax/h</span></div>
                     <div>Response: <span>{currentBench.manual.response}</span></div>
                   </div>
                 </div>
 
-                <div className="p-3 rounded-lg bg-[#0E1626] border border-white/5">
-                  <span className="text-[9px] text-white/40 block mb-1">02. CONVENTIONAL CBTC</span>
-                  <div className="space-y-0.5 text-white/80">
-                    <div>Wait: <span className="text-[#38BDF8] font-bold">{currentBench.conventional.wait}</span></div>
+                <div className="p-3.5 rounded-xl bg-white border border-[#E5E7EB]">
+                  <span className="text-[9px] text-[#9CA3AF] block mb-1">02. CONVENTIONAL CBTC</span>
+                  <div className="space-y-0.5 text-[#4B5563]">
+                    <div>Wait: <span className="text-[#111827] font-bold">{currentBench.conventional.wait}</span></div>
                     <div>Headway: <span>{currentBench.conventional.headway}</span></div>
                     <div>Throughput: <span>{currentBench.conventional.paxPerHour} pax/h</span></div>
                     <div>Response: <span>{currentBench.conventional.response}</span></div>
                   </div>
                 </div>
 
-                <div className="p-3 rounded-lg bg-[#131E33] border border-[#38BDF8]/40">
-                  <span className="text-[9px] text-[#38BDF8] font-bold block mb-1">03. AI DYNAMIC INDUCTION</span>
-                  <div className="space-y-0.5 text-white">
-                    <div>Wait: <span className="text-[#22C55E] font-bold">{currentBench.ai.wait}</span></div>
-                    <div>Headway: <span className="text-[#38BDF8] font-bold">{currentBench.ai.headway}</span></div>
-                    <div>Throughput: <span className="text-white font-bold">{currentBench.ai.paxPerHour} pax/h</span></div>
-                    <div>Response: <span className="text-[#22C55E] font-bold">{currentBench.ai.response}</span></div>
+                <div className="p-3.5 rounded-xl bg-[#E8F7EE]/60 border border-[#144230]/30">
+                  <span className="text-[9px] text-[#144230] font-bold block mb-1">03. AI DYNAMIC INDUCTION</span>
+                  <div className="space-y-0.5 text-[#111827]">
+                    <div>Wait: <span className="text-[#144230] font-bold">{currentBench.ai.wait}</span></div>
+                    <div>Headway: <span className="text-[#144230] font-bold">{currentBench.ai.headway}</span></div>
+                    <div>Throughput: <span className="font-bold">{currentBench.ai.paxPerHour} pax/h</span></div>
+                    <div>Response: <span className="text-[#144230] font-bold">{currentBench.ai.response}</span></div>
                   </div>
                 </div>
               </div>

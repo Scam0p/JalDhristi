@@ -28,54 +28,54 @@ export const CaseSwitcher: React.FC<CaseSwitcherProps> = ({
     {
       id: 'manual',
       index: '01',
-      title: 'MANUAL DISPATCH',
-      subtitle: 'STATIC TIMETABLE & OPERATOR LOGS',
+      title: 'Manual Dispatch',
+      subtitle: 'Static Timetable & Phone Logs',
       description: 'Train induction decisions rely on static pre-scheduled timetables. Reactive manual phone dispatch creates delayed response to unexpected commuter surges.',
       icon: UserCheck,
-      wait: '11.4 MIN',
+      wait: '11.4 min',
       util: '63%',
       congestion: 'HIGH',
-      response: '12 MIN'
+      response: '12 min'
     },
     {
       id: 'conventional',
       index: '02',
-      title: 'CONVENTIONAL CONTROL',
-      subtitle: 'RULE-BASED FIXED INTERVAL CBTC',
+      title: 'Conventional Control',
+      subtitle: 'Rule-Based Fixed Interval CBTC',
       description: 'Automated headway control operates on rigid fixed intervals. Maintains consistency under normal conditions but lacks adaptive flexibility during disruptions.',
       icon: ShieldCheck,
-      wait: '8.1 MIN',
+      wait: '8.1 min',
       util: '74%',
       congestion: 'MEDIUM',
-      response: '7 MIN'
+      response: '7 min'
     },
     {
       id: 'ai',
       index: '03',
-      title: 'AI-POWERED INDUCTION',
-      subtitle: 'DYNAMIC MULTI-OBJECTIVE PARETO SCHEDULING',
+      title: 'AI Train Induction',
+      subtitle: 'Dynamic Pareto-Optimal Engine',
       description: 'Continuously fuses real-time platform CCTV density, fleet health, depot turnout capacity, and energy profiles to automatically induct and reallocate trainsets.',
       icon: Cpu,
-      wait: '5.2 MIN',
+      wait: '5.2 min',
       util: '91%',
       congestion: 'LOW',
-      response: '< 1 MIN'
+      response: '< 1 min'
     }
   ];
 
   return (
-    <div className="w-full gov-panel rounded-2xl p-5 md:p-6 border border-white/10 shadow-xl">
+    <div className="donezo-card p-6">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-5 pb-3 border-b border-white/10">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-5 pb-3 border-b border-[#F0F2F5]">
         <div>
-          <span className="text-[10px] font-mono-tech uppercase tracking-widest text-[#38BDF8] font-bold block">
+          <span className="text-[10px] font-mono-tech uppercase tracking-widest text-[#144230] font-bold block">
             OPERATIONAL ARCHITECTURES
           </span>
-          <h2 className="font-display font-bold text-lg md:text-xl text-white tracking-wide uppercase">
-            SELECT TRAIN INDUCTION PARADIGM
+          <h2 className="font-display font-bold text-lg text-[#111827]">
+            Select Train Induction Paradigm
           </h2>
         </div>
-        <div className="text-xs font-mono-tech text-white/50 bg-[#080C14] px-3 py-1 rounded border border-white/10">
+        <div className="text-xs font-mono-tech text-[#6B7280] bg-[#F4F5F7] px-3 py-1 rounded-full border border-[#E5E7EB]">
           CHOOSE AN ARCHITECTURE TO RECONFIGURE LIVE SIMULATION
         </div>
       </div>
@@ -90,16 +90,16 @@ export const CaseSwitcher: React.FC<CaseSwitcherProps> = ({
             <button
               key={c.id}
               onClick={() => onSelectCase(c.id)}
-              className={`text-left p-5 rounded-xl transition-all duration-200 relative cursor-pointer flex flex-col justify-between ${
+              className={`text-left p-5 rounded-2xl transition-all duration-200 relative cursor-pointer flex flex-col justify-between ${
                 isSelected
-                  ? 'bg-[#131E33] border-2 border-[#38BDF8] shadow-lg scale-[1.01]'
-                  : 'bg-[#0B111E] hover:bg-[#0E1626] border border-white/10 hover:border-white/20'
+                  ? 'bg-[#E8F7EE]/70 border-2 border-[#144230] shadow-sm'
+                  : 'bg-white hover:bg-[#F9FAFB] border border-[#ECEEF2] hover:border-[#D1D5DB]'
               }`}
             >
               {/* Selected Badge */}
               {isSelected && (
-                <div className="absolute -top-3 right-4 bg-[#38BDF8] text-black font-mono-tech font-bold text-[9px] uppercase tracking-wider px-2.5 py-0.5 rounded shadow flex items-center gap-1">
-                  <CheckCircle2 className="w-3 h-3" /> ACTIVE SYSTEM
+                <div className="absolute -top-3 right-4 bg-[#144230] text-white font-mono-tech font-bold text-[9px] uppercase tracking-wider px-2.5 py-0.5 rounded-full shadow flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3 text-[#22C55E]" /> ACTIVE SYSTEM
                 </div>
               )}
 
@@ -107,55 +107,55 @@ export const CaseSwitcher: React.FC<CaseSwitcherProps> = ({
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <span className="font-impact text-xl text-white/40">
+                    <span className="font-mono-tech font-bold text-lg text-[#9CA3AF]">
                       {c.index}
                     </span>
-                    <h3 className="font-display font-bold text-base md:text-lg text-white uppercase">
+                    <h3 className="font-display font-bold text-base text-[#111827]">
                       {c.title}
                     </h3>
                   </div>
-                  <div className={`p-2 rounded-lg ${isSelected ? 'bg-[#38BDF8]/20 text-[#38BDF8]' : 'bg-white/5 text-white/40'}`}>
+                  <div className={`p-2 rounded-xl ${isSelected ? 'bg-[#144230] text-white' : 'bg-[#F4F5F7] text-[#6B7280]'}`}>
                     <Icon className="w-4 h-4" />
                   </div>
                 </div>
 
-                <p className="text-[10px] font-mono-tech text-[#38BDF8] font-semibold tracking-wider uppercase mb-2">
+                <p className="text-[10px] font-mono-tech text-[#144230] font-semibold tracking-wide uppercase mb-2">
                   {c.subtitle}
                 </p>
 
-                <p className="text-xs text-white/70 font-normal leading-relaxed mb-4">
+                <p className="text-xs text-[#6B7280] font-normal leading-relaxed mb-4 line-clamp-3">
                   {c.description}
                 </p>
               </div>
 
               {/* KPI Metrics Box */}
-              <div className="pt-3 border-t border-white/10 grid grid-cols-2 gap-2 text-xs font-mono-tech">
-                <div className="bg-[#080C14] p-2 rounded border border-white/5">
-                  <span className="text-[9px] text-white/40 block">AVG WAIT TIME</span>
-                  <span className={`font-bold ${c.id === 'ai' ? 'text-[#22C55E]' : c.id === 'conventional' ? 'text-[#38BDF8]' : 'text-[#F59E0B]'}`}>
+              <div className="pt-3 border-t border-[#ECEEF2] grid grid-cols-2 gap-2 text-xs font-mono-tech">
+                <div className="bg-[#F4F5F7] p-2 rounded-xl border border-[#E5E7EB]">
+                  <span className="text-[9px] text-[#6B7280] block">AVG WAIT TIME</span>
+                  <span className={`font-bold ${c.id === 'ai' ? 'text-[#144230]' : 'text-[#111827]'}`}>
                     {c.wait}
                   </span>
                 </div>
-                <div className="bg-[#080C14] p-2 rounded border border-white/5">
-                  <span className="text-[9px] text-white/40 block">UTILIZATION</span>
-                  <span className="font-bold text-white">{c.util}</span>
+                <div className="bg-[#F4F5F7] p-2 rounded-xl border border-[#E5E7EB]">
+                  <span className="text-[9px] text-[#6B7280] block">UTILIZATION</span>
+                  <span className="font-bold text-[#111827]">{c.util}</span>
                 </div>
-                <div className="bg-[#080C14] p-2 rounded border border-white/5">
-                  <span className="text-[9px] text-white/40 block">CONGESTION</span>
+                <div className="bg-[#F4F5F7] p-2 rounded-xl border border-[#E5E7EB]">
+                  <span className="text-[9px] text-[#6B7280] block">CONGESTION</span>
                   <span className={`font-bold ${c.congestion === 'LOW' ? 'text-[#22C55E]' : c.congestion === 'MEDIUM' ? 'text-[#F59E0B]' : 'text-[#EF4444]'}`}>
                     {c.congestion}
                   </span>
                 </div>
-                <div className="bg-[#080C14] p-2 rounded border border-white/5">
-                  <span className="text-[9px] text-white/40 block">RESPONSE</span>
-                  <span className="font-bold text-white">{c.response}</span>
+                <div className="bg-[#F4F5F7] p-2 rounded-xl border border-[#E5E7EB]">
+                  <span className="text-[9px] text-[#6B7280] block">RESPONSE</span>
+                  <span className="font-bold text-[#111827]">{c.response}</span>
                 </div>
               </div>
 
               {/* Action indicator */}
-              <div className="mt-3 flex items-center justify-end text-[10px] font-mono-tech text-white/40 gap-1">
+              <div className="mt-3 flex items-center justify-end text-[10px] font-mono-tech text-[#6B7280] gap-1">
                 <span>{isSelected ? 'CURRENTLY ACTIVE' : 'SWITCH TO PARADIGM'}</span>
-                <ArrowRight className="w-3 h-3" />
+                <ArrowRight className="w-3 h-3 text-[#144230]" />
               </div>
             </button>
           );
