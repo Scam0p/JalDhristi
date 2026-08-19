@@ -38,12 +38,13 @@ export const App: React.FC = () => {
   } = useSimulation();
 
   const [activeTab, setActiveTab] = useState<string>('dashboard');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
   const activeTrainsCount = trains.filter(t => t.status === 'IN_SERVICE' || t.status === 'INDUCTING').length;
 
   return (
     <div className="min-h-screen bg-[#F4F5F7] text-[#111827] flex">
-      {/* 1. Vertical Sidebar (Donezo Design) */}
+      {/* 1. Vertical Sidebar (Desktop persistent, Mobile hidden until tapped) */}
       <Sidebar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -53,11 +54,13 @@ export const App: React.FC = () => {
         onReset={resetSimulation}
         isOptimizing={isOptimizing}
         currentCase={currentCase}
+        isMobileOpen={isMobileMenuOpen}
+        onCloseMobile={() => setIsMobileMenuOpen(false)}
       />
 
       {/* 2. Main Viewport Area */}
       <div className="flex-1 flex flex-col min-w-0 min-h-screen overflow-y-auto">
-        {/* Top Header Bar */}
+        {/* Top Header Bar with Mobile Menu Hamburger Trigger */}
         <TopBar
           simTime={simTime}
           currentCase={currentCase}
@@ -66,10 +69,11 @@ export const App: React.FC = () => {
           onReset={resetSimulation}
           onRunOptimization={runAIOptimization}
           isOptimizing={isOptimizing}
+          onToggleMobileMenu={() => setIsMobileMenuOpen(prev => !prev)}
         />
 
         {/* Main Content Area */}
-        <main className="flex-1 p-6 lg:p-8">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8">
           <ControlCentre
             currentCase={currentCase}
             onSelectCase={handleCaseChange}

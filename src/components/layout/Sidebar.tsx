@@ -9,8 +9,7 @@ import {
   Settings, 
   HelpCircle, 
   RotateCcw,
-  Sparkles,
-  ArrowRight
+  X
 } from 'lucide-react';
 import { CaseType } from '../../types/simulation';
 
@@ -23,6 +22,8 @@ interface SidebarProps {
   onReset: () => void;
   isOptimizing: boolean;
   currentCase: CaseType;
+  isMobileOpen?: boolean;
+  onCloseMobile?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -30,10 +31,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
   setActiveTab,
   activeTrainsCount,
   totalTrainsCount,
-  onRunOptimization,
   onReset,
-  isOptimizing,
-  currentCase
+  isMobileOpen = false,
+  onCloseMobile
 }) => {
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -53,41 +53,55 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const handleNavClick = (id: string, action?: () => void) => {
     if (action) {
       action();
+      onCloseMobile?.();
       return;
     }
     setActiveTab(id);
+    onCloseMobile?.();
     const element = document.getElementById(`${id}-section`);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
-  return (
-    <aside className="w-64 bg-white border-r border-[#ECEEF2] flex flex-col justify-between py-6 px-4 h-screen sticky top-0 select-none z-30 flex-shrink-0 shadow-sm">
-      {/* Brand & Logo */}
+  const sidebarContent = (
+    <div className="flex flex-col justify-between h-full py-6 px-4 select-none">
       <div>
-        <div className="flex items-center gap-3 px-3 mb-8">
-          <div className="w-10 h-10 rounded-2xl bg-[#144230] flex items-center justify-center text-white shadow-md">
-            {/* Stylized Metro / Induction Logo Mark */}
-            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <circle cx="12" cy="12" r="9" stroke="currentColor" strokeOpacity="0.4" />
-              <path d="M12 3a9 9 0 0 1 9 9" stroke="#22C55E" strokeLinecap="round" />
-              <circle cx="12" cy="12" r="4" fill="#22C55E" stroke="none" />
-            </svg>
-          </div>
-          <div>
-            <div className="flex items-center gap-1.5">
-              <span className="font-display font-black text-lg text-[#111827] tracking-tight">
-                KMRL
-              </span>
-              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#E8F7EE] text-[#144230]">
-                SIH 2026
-              </span>
+        {/* Brand & Logo + Mobile Close Button */}
+        <div className="flex items-center justify-between px-3 mb-8">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-[#144230] flex items-center justify-center text-white shadow-md">
+              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <circle cx="12" cy="12" r="9" stroke="currentColor" strokeOpacity="0.4" />
+                <path d="M12 3a9 9 0 0 1 9 9" stroke="#22C55E" strokeLinecap="round" />
+                <circle cx="12" cy="12" r="4" fill="#22C55E" stroke="none" />
+              </svg>
             </div>
-            <p className="text-[11px] text-[#6B7280] font-medium leading-none mt-0.5">
-              Train Induction AI
-            </p>
+            <div>
+              <div className="flex items-center gap-1.5">
+                <span className="font-display font-black text-lg text-[#111827] tracking-tight">
+                  KMRL
+                </span>
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#E8F7EE] text-[#144230]">
+                  SIH 2026
+                </span>
+              </div>
+              <p className="text-[11px] text-[#6B7280] font-medium leading-none mt-0.5">
+                Train Induction AI
+              </p>
+            </div>
           </div>
+
+          {/* Close button for mobile */}
+          {onCloseMobile && (
+            <button
+              onClick={onCloseMobile}
+              className="lg:hidden p-2 rounded-full hover:bg-[#F4F5F7] text-[#6B7280] hover:text-[#111827] cursor-pointer"
+              aria-label="Close menu"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          )}
         </div>
 
         {/* Main Menu Section */}
@@ -157,6 +171,31 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         </div>
       </div>
-    </aside>
+    </div>
+  );
+
+  return (
+    <>
+      {/* 1. Desktop Persistent Sidebar (Unchanged w-64, hidden on small screens) */}
+      <aside className="hidden lg:flex w-64 bg-white border-r border-[#ECEEF2] flex-col justify-between h-screen sticky top-0 z-30 flex-shrink-0 shadow-sm">
+        {sidebarContent}
+      </aside>
+
+      {/* 2. Mobile Slide-out Drawer (Visible ONLY when isMobileOpen is true) */}
+      {isMobileOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden flex">
+          {/* Backdrop */}
+          <div
+            onClick={onCloseMobile}
+            className="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
+          />
+
+          {/* Drawer content */}
+          <div className="relative w-72 max-w-[80vw] bg-white h-full shadow-2xl z-10 flex flex-col animate-in slide-in-from-left duration-200">
+            {sidebarContent}
+          </div>
+        </div>
+      )}
+    </>
   );
 };
