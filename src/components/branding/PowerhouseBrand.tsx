@@ -14,7 +14,7 @@ export const PowerhouseBrand: React.FC<PowerhouseBrandProps> = ({ currentCase })
       <div className="flex flex-col items-center gap-2">
         <div className="w-11 h-11 rounded-lg overflow-hidden border border-white/20 bg-black shadow-md">
           <img
-            src="/powerhouse_logo.jpeg"
+            src="/logo.png"
             alt="Powerhouse Logo"
             className="w-full h-full object-cover"
           />

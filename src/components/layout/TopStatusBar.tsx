@@ -28,7 +28,7 @@ export const TopStatusBar: React.FC<TopStatusBarProps> = ({
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg overflow-hidden border border-white/20 bg-black flex-shrink-0">
             <img
-              src="/powerhouse_logo.jpeg"
+              src="/logo.png"
               alt="Powerhouse"
               className="w-full h-full object-cover"
             />
