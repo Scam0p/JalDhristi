@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-main: #080C14;
+    --bg-deep: #05080E;
+    --bg-panel: #0E1626;
+    --bg-panel-elevated: #131E33;
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-accent: rgba(255, 255, 255, 0.16);
+    --color-ph-red: #E30613;
+    --color-ph-dark: #8B0000;
+    --color-kmrl-teal: #0284C7;
+    --color-status-green: #22C55E;
+    --color-status-amber: #F59E0B;
+    --color-status-red: #EF4444;
+  }
+
+  body {
+    background-color: #080C14;
+    color: #F8FAFC;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  .font-mono-tech {
+    font-family: 'JetBrains Mono', 'Geist Mono', monospace;
+  }
+
+  .font-display {
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+  }
+
+  .font-impact {
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif !important;
+    letter-spacing: 0.06em;
+  }
+}
+
+/* Professional Government / Authority Operations UI Styling */
+.gov-panel {
+  background: #0E1626;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.gov-panel-elevated {
+  background: #131E33;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+}
+
+.gov-card {
+  background: #0B111E;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.gov-card:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Subtle Grid Background without cartoonish neon */
+.grid-bg-clean {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #080C14;
+}
+::-webkit-scrollbar-thumb {
+  background: #1E293B;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #E30613;
+}
