@@ -1,536 +1,652 @@
-import { Station, Train, KPISet, AIRecommendation, AIEventLog, ScenarioDefinition, ChartDataPoint, CaseType } from '../types/simulation';
+import { 
+  PipelineSegment, 
+  SensorNode, 
+  KPISet, 
+  LeakAlert, 
+  HydraulicEventLog, 
+  ScenarioDefinition, 
+  ChartDataPoint, 
+  CaseType,
+  Station,
+  Train,
+  AIRecommendation,
+  AIEventLog
+} from '../types/simulation';
 
-export const INITIAL_STATIONS: Station[] = [
+export const INITIAL_STATIONS: PipelineSegment[] = [
   {
-    id: 'DEPOT',
-    name: 'Muttom Maintenance Depot',
-    code: 'DPT',
-    kmPosition: -2.5,
+    id: 'RESERVOIR',
+    name: 'Muttom Terminal Reservoir & Pumping Station',
+    code: 'RES',
+    kmPosition: 0.0,
+    lengthMeters: 450,
+    diameterMm: 900,
+    material: 'Reinforced Concrete / Steel Header',
     xPercent: 8,
     yPercent: 20,
-    passengerDemandPct: 0,
-    waitingCount: 0,
-    platformCapacity: 1000,
+    expectedFlowM3h: 1250,
+    actualFlowM3h: 1250,
+    flowResidualPct: 0,
+    inflowPressureBar: 5.8,
+    outflowPressureBar: 5.5,
+    pressureDropBar: 0.3,
     status: 'NORMAL',
-    inflowRatePerMin: 0,
-    cctvRiskScore: 4
+    acousticRiskScore: 6,
+    leakProbabilityPct: 3,
+    attachedSensors: ['RV-05', 'PT-07']
   },
   {
-    id: 'ALUVA',
-    name: 'Aluva',
-    code: 'ALV',
-    kmPosition: 0.0,
+    id: 'S_01_ALUVA',
+    name: 'S-01 Aluva Intake Transmission Main',
+    code: 'S-01',
+    kmPosition: 3.2,
+    lengthMeters: 3200,
+    diameterMm: 800,
+    material: 'Ductile Iron (Class K9)',
     xPercent: 18,
     yPercent: 55,
-    passengerDemandPct: 81,
-    waitingCount: 340,
-    platformCapacity: 600,
-    status: 'HIGH_LOAD',
-    inflowRatePerMin: 42,
-    cctvRiskScore: 68
+    expectedFlowM3h: 1100,
+    actualFlowM3h: 1092,
+    flowResidualPct: -0.7,
+    inflowPressureBar: 5.4,
+    outflowPressureBar: 5.1,
+    pressureDropBar: 0.3,
+    status: 'NORMAL',
+    acousticRiskScore: 12,
+    leakProbabilityPct: 8,
+    attachedSensors: ['PT-07']
   },
   {
-    id: 'KALAMASSERY',
-    name: 'Kalamassery',
-    code: 'KLM',
-    kmPosition: 7.2,
+    id: 'S_02_KALAMASSERY',
+    name: 'S-02 Kalamassery Distribution Feeder',
+    code: 'S-02',
+    kmPosition: 8.4,
+    lengthMeters: 5200,
+    diameterMm: 700,
+    material: 'Mild Steel Mortar Lined',
     xPercent: 34,
     yPercent: 55,
-    passengerDemandPct: 62,
-    waitingCount: 195,
-    platformCapacity: 500,
+    expectedFlowM3h: 980,
+    actualFlowM3h: 965,
+    flowResidualPct: -1.5,
+    inflowPressureBar: 5.0,
+    outflowPressureBar: 4.7,
+    pressureDropBar: 0.3,
     status: 'NORMAL',
-    inflowRatePerMin: 26,
-    cctvRiskScore: 35
+    acousticRiskScore: 22,
+    leakProbabilityPct: 14,
+    attachedSensors: ['VB-04']
   },
   {
-    id: 'EDAPPALLY',
-    name: 'Edappally',
-    code: 'EDP',
-    kmPosition: 12.8,
+    id: 'S_03_EDAPPALLY',
+    name: 'S-03 / S-14 Edappally Junction Trunk (Primary Monitored)',
+    code: 'S-14',
+    kmPosition: 13.6,
+    lengthMeters: 5200,
+    diameterMm: 600,
+    material: 'Ductile Iron (Class K9)',
     xPercent: 50,
     yPercent: 55,
-    passengerDemandPct: 94,
-    waitingCount: 485,
-    platformCapacity: 650,
-    status: 'SURGE_CRITICAL',
-    inflowRatePerMin: 68,
-    cctvRiskScore: 92
+    expectedFlowM3h: 930,
+    actualFlowM3h: 860,
+    flowResidualPct: -7.5,
+    inflowPressureBar: 4.8,
+    outflowPressureBar: 3.9,
+    pressureDropBar: 0.9,
+    status: 'CRITICAL_LEAK',
+    acousticRiskScore: 94,
+    leakProbabilityPct: 97,
+    pinpointedLeakDistanceM: 38.4,
+    attachedSensors: ['PS-01', 'FS-02', 'AL-03', 'VS-06']
   },
   {
-    id: 'KALOOR',
-    name: 'Kaloor',
-    code: 'KLR',
-    kmPosition: 16.4,
+    id: 'S_04_KALOOR',
+    name: 'S-04 Kaloor Commercial Ring',
+    code: 'S-04',
+    kmPosition: 17.8,
+    lengthMeters: 4200,
+    diameterMm: 500,
+    material: 'High-Density Polyethylene (PE100)',
     xPercent: 66,
     yPercent: 55,
-    passengerDemandPct: 76,
-    waitingCount: 310,
-    platformCapacity: 600,
-    status: 'HIGH_LOAD',
-    inflowRatePerMin: 38,
-    cctvRiskScore: 62
+    expectedFlowM3h: 750,
+    actualFlowM3h: 710,
+    flowResidualPct: -5.3,
+    inflowPressureBar: 4.2,
+    outflowPressureBar: 3.7,
+    pressureDropBar: 0.5,
+    status: 'MONITORING',
+    acousticRiskScore: 48,
+    leakProbabilityPct: 35,
+    attachedSensors: ['AL-08']
   },
   {
-    id: 'MG_ROAD',
-    name: 'MG Road',
-    code: 'MGR',
-    kmPosition: 20.1,
+    id: 'S_05_MG_ROAD',
+    name: 'S-05 MG Road CBD Distribution Main',
+    code: 'S-05',
+    kmPosition: 21.5,
+    lengthMeters: 3700,
+    diameterMm: 450,
+    material: 'Ductile Iron (Class K9)',
     xPercent: 82,
     yPercent: 55,
-    passengerDemandPct: 88,
-    waitingCount: 420,
-    platformCapacity: 700,
-    status: 'HIGH_LOAD',
-    inflowRatePerMin: 54,
-    cctvRiskScore: 78
+    expectedFlowM3h: 620,
+    actualFlowM3h: 590,
+    flowResidualPct: -4.8,
+    inflowPressureBar: 3.8,
+    outflowPressureBar: 3.3,
+    pressureDropBar: 0.5,
+    status: 'MONITORING',
+    acousticRiskScore: 56,
+    leakProbabilityPct: 42,
+    attachedSensors: []
   },
   {
-    id: 'TRIPUNITHURA',
-    name: 'Tripunithura',
-    code: 'TPN',
-    kmPosition: 25.6,
+    id: 'S_06_TRIPUNITHURA',
+    name: 'S-06 Tripunithura Southern Extension',
+    code: 'S-06',
+    kmPosition: 26.8,
+    lengthMeters: 5300,
+    diameterMm: 400,
+    material: 'Ductile Iron (Class K9)',
     xPercent: 96,
     yPercent: 55,
-    passengerDemandPct: 34,
-    waitingCount: 115,
-    platformCapacity: 550,
+    expectedFlowM3h: 420,
+    actualFlowM3h: 415,
+    flowResidualPct: -1.2,
+    inflowPressureBar: 3.2,
+    outflowPressureBar: 2.9,
+    pressureDropBar: 0.3,
     status: 'NORMAL',
-    inflowRatePerMin: 14,
-    cctvRiskScore: 18
+    acousticRiskScore: 16,
+    leakProbabilityPct: 9,
+    attachedSensors: []
   }
 ];
 
-export const INITIAL_TRAINS: Train[] = [
+export const INITIAL_TRAINS: SensorNode[] = [
   {
-    id: 'T01',
-    name: 'Trainset Alpha-01',
-    status: 'IN_SERVICE',
-    location: 'Aluva → Kalamassery',
-    currentStationId: 'ALUVA',
-    direction: 'DOWN',
-    speedKmh: 62,
-    trackProgress: 24,
-    capacity: 975,
-    passengerLoad: 780,
-    motorTempC: 58,
-    energyConsumptionKwh: 142,
+    id: 'PS-01',
+    name: 'Sensor A — Upstream Pressure Transducer',
+    sensorType: 'PRESSURE_TRANSDUCER',
+    status: 'NORMAL',
+    location: 'Pipeline Segment S-14 (Ch. 12+200m)',
+    currentSegmentId: 'S_03_EDAPPALLY',
+    chainageKm: 12.2,
+    pressureBar: 4.8,
+    flowRateM3h: 930,
+    batteryPct: 87,
+    signalStrength: 'GOOD',
+    rssiDbm: -78,
+    lastUpdated: 'Just now',
+    temperatureC: 26.4,
     healthScorePct: 98,
-    dwellSecondsRemaining: 0,
-    assignedRoute: 'MAINLINE UP/DOWN',
-    driverStatus: 'AUTO_CBTC'
+    firmwareVersion: 'v3.2.1-JAL',
+    protocol: 'LoRaWAN',
+    history: [
+      { time: '08:00', pressure: 4.85, flow: 930 },
+      { time: '08:15', pressure: 4.82, flow: 932 },
+      { time: '08:30', pressure: 4.80, flow: 928 },
+      { time: '08:45', pressure: 4.80, flow: 930 }
+    ]
   },
   {
-    id: 'T02',
-    name: 'Trainset Bravo-02',
-    status: 'STANDBY',
-    location: 'Muttom Depot Track 3',
-    currentStationId: 'DEPOT',
-    direction: 'DEPOT',
-    speedKmh: 0,
-    trackProgress: 0,
-    capacity: 975,
-    passengerLoad: 0,
-    motorTempC: 32,
-    energyConsumptionKwh: 12,
-    healthScorePct: 94,
-    dwellSecondsRemaining: 0,
-    assignedRoute: 'DEPOT RESERVE',
-    driverStatus: 'STANDBY'
-  },
-  {
-    id: 'T03',
-    name: 'Trainset Charlie-03',
-    status: 'IN_SERVICE',
-    location: 'Edappally Platform 2',
-    currentStationId: 'EDAPPALLY',
-    direction: 'DOWN',
-    speedKmh: 0,
-    trackProgress: 50,
-    capacity: 975,
-    passengerLoad: 920,
-    motorTempC: 64,
-    energyConsumptionKwh: 168,
-    healthScorePct: 96,
-    dwellSecondsRemaining: 18,
-    assignedRoute: 'MAINLINE UP/DOWN',
-    driverStatus: 'AUTO_CBTC'
-  },
-  {
-    id: 'T04',
-    name: 'Trainset Delta-04',
-    status: 'IN_SERVICE',
-    location: 'Kalamassery → Aluva',
-    currentStationId: 'KALAMASSERY',
-    direction: 'UP',
-    speedKmh: 54,
-    trackProgress: 30,
-    capacity: 975,
-    passengerLoad: 610,
-    motorTempC: 72,
-    energyConsumptionKwh: 155,
-    healthScorePct: 88,
-    dwellSecondsRemaining: 0,
-    assignedRoute: 'MAINLINE UP/DOWN',
-    driverStatus: 'AUTO_CBTC'
-  },
-  {
-    id: 'T05',
-    name: 'Trainset Echo-05',
-    status: 'IN_SERVICE',
-    location: 'Kaloor → MG Road',
-    currentStationId: 'KALOOR',
-    direction: 'DOWN',
-    speedKmh: 58,
-    trackProgress: 72,
-    capacity: 975,
-    passengerLoad: 840,
-    motorTempC: 61,
-    energyConsumptionKwh: 148,
-    healthScorePct: 97,
-    dwellSecondsRemaining: 0,
-    assignedRoute: 'MAINLINE UP/DOWN',
-    driverStatus: 'AUTO_CBTC'
-  },
-  {
-    id: 'T06',
-    name: 'Trainset Foxtrot-06',
-    status: 'READY_INDUCTION',
-    location: 'Muttom Induction Siding A',
-    currentStationId: 'DEPOT',
-    direction: 'DEPOT',
-    speedKmh: 0,
-    trackProgress: 4,
-    capacity: 975,
-    passengerLoad: 0,
-    motorTempC: 38,
-    energyConsumptionKwh: 22,
-    healthScorePct: 100,
-    dwellSecondsRemaining: 0,
-    inductionPlan: {
-      action: 'DEPLOY',
-      targetStation: 'EDAPPALLY',
-      plannedTime: '08:42:00',
-      expectedWaitDelta: '-2.9 min',
+    id: 'FS-02',
+    name: 'Sensor B — Downstream Electromagnetic Flow Meter',
+    sensorType: 'ELECTROMAGNETIC_FLOW_METER',
+    status: 'WARNING',
+    location: 'Pipeline Segment S-14 (Ch. 12+850m)',
+    currentSegmentId: 'S_03_EDAPPALLY',
+    chainageKm: 12.85,
+    pressureBar: 3.9,
+    flowRateM3h: 860,
+    batteryPct: 72,
+    signalStrength: 'GOOD',
+    rssiDbm: -82,
+    lastUpdated: 'Just now',
+    temperatureC: 27.1,
+    healthScorePct: 91,
+    firmwareVersion: 'v2.8.4-FLOW',
+    protocol: 'LoRaWAN',
+    mitigationPlan: {
+      action: 'ISOLATE_VALVE',
+      targetSegment: 'S-14 Edappally Trunk',
+      plannedTime: 'Immediate',
+      expectedLossReduction: '70 m³/h preserved',
       priority: 'CRITICAL',
-      inductionRoute: 'DEPOT → VIA ALUVA FLYOVER → EDAPPALLY JUNCTION'
+      isolationRoute: 'GATE VALVE V-04 (Ch. 12+150) → V-05 (Ch. 13+000)'
     },
-    assignedRoute: 'HOT STANDBY / AI INDUCTION READY',
-    driverStatus: 'STANDBY'
+    history: [
+      { time: '08:00', pressure: 4.70, flow: 928 },
+      { time: '08:15', pressure: 4.65, flow: 925 },
+      { time: '08:30', pressure: 4.10, flow: 880 },
+      { time: '08:45', pressure: 3.90, flow: 860 }
+    ]
   },
   {
-    id: 'T07',
-    name: 'Trainset Golf-07',
-    status: 'IN_SERVICE',
-    location: 'MG Road → Tripunithura',
-    currentStationId: 'MG_ROAD',
-    direction: 'DOWN',
-    speedKmh: 60,
-    trackProgress: 88,
-    capacity: 975,
-    passengerLoad: 560,
-    motorTempC: 59,
-    energyConsumptionKwh: 139,
-    healthScorePct: 99,
-    dwellSecondsRemaining: 0,
-    assignedRoute: 'MAINLINE UP/DOWN',
-    driverStatus: 'AUTO_CBTC'
+    id: 'AL-03',
+    name: 'Acoustic Logger Node 03',
+    sensorType: 'ACOUSTIC_LOGGER',
+    status: 'WARNING',
+    location: 'Pipeline Segment S-14 (Ch. 12+450m)',
+    currentSegmentId: 'S_03_EDAPPALLY',
+    chainageKm: 12.45,
+    pressureBar: 4.2,
+    flowRateM3h: 890,
+    batteryPct: 94,
+    signalStrength: 'EXCELLENT',
+    rssiDbm: -68,
+    lastUpdated: '12s ago',
+    temperatureC: 25.8,
+    healthScorePct: 96,
+    firmwareVersion: 'v4.1.0-ACOUSTIC',
+    protocol: 'NB-IoT'
   },
   {
-    id: 'T08',
-    name: 'Trainset Hotel-08',
-    status: 'READY_INDUCTION',
-    location: 'Muttom Induction Siding B',
-    currentStationId: 'DEPOT',
-    direction: 'DEPOT',
-    speedKmh: 0,
-    trackProgress: 2,
-    capacity: 975,
-    passengerLoad: 0,
-    motorTempC: 30,
-    energyConsumptionKwh: 15,
+    id: 'VB-04',
+    name: 'Vibration Accelerometer Node 04',
+    sensorType: 'VIBRATION_SENSOR',
+    status: 'NORMAL',
+    location: 'Kalamassery Distribution Vault',
+    currentSegmentId: 'S_02_KALAMASSERY',
+    chainageKm: 8.4,
+    pressureBar: 5.0,
+    flowRateM3h: 965,
+    batteryPct: 82,
+    signalStrength: 'GOOD',
+    rssiDbm: -75,
+    lastUpdated: '45s ago',
+    temperatureC: 28.2,
+    healthScorePct: 95,
+    firmwareVersion: 'v1.9.0-VIB',
+    protocol: 'LoRaWAN'
+  },
+  {
+    id: 'RV-05',
+    name: 'Muttom Reservoir Hydrostatic Level Sensor',
+    sensorType: 'RESERVOIR_LEVEL',
+    status: 'NORMAL',
+    location: 'Muttom Master Pumping Station',
+    currentSegmentId: 'RESERVOIR',
+    chainageKm: 0.0,
+    pressureBar: 5.8,
+    flowRateM3h: 1250,
+    batteryPct: 98,
+    signalStrength: 'EXCELLENT',
+    rssiDbm: -60,
+    lastUpdated: '5s ago',
+    temperatureC: 24.5,
     healthScorePct: 100,
-    dwellSecondsRemaining: 0,
-    inductionPlan: {
-      action: 'DEPLOY',
-      targetStation: 'MG_ROAD',
-      plannedTime: '08:48:30',
-      expectedWaitDelta: '-1.8 min',
-      priority: 'HIGH',
-      inductionRoute: 'DEPOT → FAST EXPRESS TO CBD'
-    },
-    assignedRoute: 'COLD STANDBY RESERVE',
-    driverStatus: 'STANDBY'
+    firmwareVersion: 'v5.0.2-LVL',
+    protocol: 'Modbus-RTU'
+  },
+  {
+    id: 'VS-06',
+    name: 'Motorized Segment Isolation Valve V-04',
+    sensorType: 'CONTROL_VALVE',
+    status: 'NORMAL',
+    location: 'S-14 Upstream Isolation Vault (Ch. 12+150m)',
+    currentSegmentId: 'S_03_EDAPPALLY',
+    chainageKm: 12.15,
+    pressureBar: 4.8,
+    flowRateM3h: 930,
+    batteryPct: 100,
+    signalStrength: 'EXCELLENT',
+    rssiDbm: -64,
+    lastUpdated: 'Just now',
+    temperatureC: 26.0,
+    healthScorePct: 100,
+    firmwareVersion: 'v2.1.0-ACTUATOR',
+    protocol: 'Modbus-RTU'
+  },
+  {
+    id: 'PT-07',
+    name: 'High-Frequency Pressure Transient Transducer',
+    sensorType: 'PRESSURE_TRANSDUCER',
+    status: 'NORMAL',
+    location: 'Aluva Booster Pump Discharge',
+    currentSegmentId: 'S_01_ALUVA',
+    chainageKm: 3.2,
+    pressureBar: 5.4,
+    flowRateM3h: 1092,
+    batteryPct: 89,
+    signalStrength: 'GOOD',
+    rssiDbm: -74,
+    lastUpdated: '18s ago',
+    temperatureC: 26.9,
+    healthScorePct: 99,
+    firmwareVersion: 'v3.2.1-JAL',
+    protocol: 'LoRaWAN'
+  },
+  {
+    id: 'AL-08',
+    name: 'Acoustic Correlator Node 08',
+    sensorType: 'ACOUSTIC_LOGGER',
+    status: 'NORMAL',
+    location: 'Kaloor Ring Metering Sump',
+    currentSegmentId: 'S_04_KALOOR',
+    chainageKm: 17.8,
+    pressureBar: 4.2,
+    flowRateM3h: 710,
+    batteryPct: 91,
+    signalStrength: 'GOOD',
+    rssiDbm: -76,
+    lastUpdated: '30s ago',
+    temperatureC: 26.2,
+    healthScorePct: 97,
+    firmwareVersion: 'v4.1.0-ACOUSTIC',
+    protocol: 'NB-IoT'
   }
 ];
 
 export const CASE_KPIS: Record<CaseType, KPISet> = {
   manual: {
-    avgWaitTimeMin: 11.4,
-    fleetUtilizationPct: 63,
-    peakCongestion: 'HIGH',
-    responseTimeMin: 12.0,
-    headwayConsistencyPct: 58,
-    energyCostIndex: 138,
-    paxServedTotal: 18450
+    totalSegments: 7,
+    activeSensors: 4,
+    healthySensors: 2,
+    warningSensors: 2,
+    criticalAlerts: 3,
+    activeLeaksDetected: 2,
+    estimatedWaterLossM3h: 84.5,
+    networkHealthPct: 62,
+    leakLocalizationAccuracyM: 450,
+    meanResponseTimeSec: 16200, // 4.5 hours
+    nrwReductionPct: 14,
+    energyCostIndex: 142
   },
   conventional: {
-    avgWaitTimeMin: 8.1,
-    fleetUtilizationPct: 74,
-    peakCongestion: 'MEDIUM',
-    responseTimeMin: 7.0,
-    headwayConsistencyPct: 76,
-    energyCostIndex: 118,
-    paxServedTotal: 22100
+    totalSegments: 7,
+    activeSensors: 6,
+    healthySensors: 4,
+    warningSensors: 2,
+    criticalAlerts: 1,
+    activeLeaksDetected: 1,
+    estimatedWaterLossM3h: 38.2,
+    networkHealthPct: 79,
+    leakLocalizationAccuracyM: 120,
+    meanResponseTimeSec: 2400, // 40 min
+    nrwReductionPct: 38,
+    energyCostIndex: 118
   },
   ai: {
-    avgWaitTimeMin: 5.2,
-    fleetUtilizationPct: 91,
-    peakCongestion: 'LOW',
-    responseTimeMin: 0.8,
-    headwayConsistencyPct: 96,
-    energyCostIndex: 88,
-    paxServedTotal: 27480
+    totalSegments: 7,
+    activeSensors: 8,
+    healthySensors: 7,
+    warningSensors: 1,
+    criticalAlerts: 1,
+    activeLeaksDetected: 1,
+    estimatedWaterLossM3h: 2.4,
+    networkHealthPct: 98,
+    leakLocalizationAccuracyM: 1.2,
+    meanResponseTimeSec: 42, // 42 seconds
+    nrwReductionPct: 74,
+    energyCostIndex: 84
   }
 };
 
-export const INITIAL_AI_RECOMMENDATIONS: AIRecommendation[] = [
+export const INITIAL_AI_RECOMMENDATIONS: LeakAlert[] = [
   {
-    id: 'REC-0841-A',
+    id: 'ALERT-S14-CRIT',
     timestamp: '08:41:10',
-    trainId: 'T06',
-    action: 'INDUCT_FLEET',
-    title: 'INDUCT T06 → EDAPPALLY SURGE',
-    targetStation: 'EDAPPALLY',
-    rationale: 'Edappally platform load at 94% with 485 waiting pax. Headway gap 07:10 detected.',
-    expectedWaitReduction: '-2.9 min network-wide',
+    sensorId: 'PS-01',
+    segmentId: 'S_03_EDAPPALLY',
+    severity: 'CRITICAL',
+    title: 'CRITICAL LEAK CONFIRMED ON SEGMENT S-14',
+    probableLocation: 'Ch. 12+238.4m (38.4m downstream of Sensor A)',
+    rationale: 'Acoustic GCC-PHAT cross-correlation confirmed acoustic burst signature with 97.4% confidence. Residual flow gap ΔQ = -70 m³/h between Sensor A and Sensor B.',
+    estimatedLoss: '12.8 m³/h (Water Loss Risk: High)',
     confidenceScore: 97.4,
-    status: 'PENDING'
+    status: 'PENDING',
+    recommendedAction: 'Throttle Valve V-04 to 35% pressure head and dispatch Rapid Response Acoustic Pinpointer team.'
   },
   {
-    id: 'REC-0841-B',
-    timestamp: '08:41:22',
-    trainId: 'T08',
-    action: 'STANDBY_RESERVE',
-    title: 'PRIME T08 ON SIDING B',
-    targetStation: 'MG ROAD',
-    rationale: 'Pre-positioning for anticipated CBD business district surge at 09:00.',
-    expectedWaitReduction: '-1.4 min peak cushion',
-    confidenceScore: 92.1,
-    status: 'PENDING'
+    id: 'ALERT-S04-WARN',
+    timestamp: '08:38:25',
+    sensorId: 'AL-08',
+    segmentId: 'S_04_KALOOR',
+    severity: 'WARNING',
+    title: 'MINOR PRESSURE TRANSIENT / CAVITATION ON S-04',
+    probableLocation: 'Segment S-04 Kaloor Commercial Ring',
+    rationale: 'High-frequency pressure transient wave (0.5 bar amplitude) detected during midday valve shifting.',
+    estimatedLoss: '1.2 m³/h (Under Investigation)',
+    confidenceScore: 88.2,
+    status: 'PENDING',
+    recommendedAction: 'Adjust PRV-02 damping coefficient to absorb pressure surge.'
   },
   {
-    id: 'REC-0840-C',
-    timestamp: '08:40:05',
-    trainId: 'T02',
-    action: 'MAINTENANCE_REROUTE',
-    title: 'HOLD T02 FOR SCHEDULED BRAKE CHECK',
-    targetStation: 'DEPOT',
-    rationale: 'Preventive mileage threshold reached. Replaced in line by T05 dynamic speed adjustment.',
-    expectedWaitReduction: 'Zero delay penalty',
-    confidenceScore: 99.0,
-    status: 'DEPLOYED'
+    id: 'ALERT-RES-NORM',
+    timestamp: '08:30:12',
+    sensorId: 'RV-05',
+    segmentId: 'RESERVOIR',
+    severity: 'MONITORING',
+    title: 'MUTTOM RESERVOIR INFLOW BALANCED',
+    probableLocation: 'Muttom Terminal Reservoir',
+    rationale: 'Pumping rate synchronized with diurnal urban consumption curve. NRW loss below threshold.',
+    estimatedLoss: 'Zero excess loss',
+    confidenceScore: 99.1,
+    status: 'DEPLOYED',
+    recommendedAction: 'Maintain current variable speed drive (VSD) pump profile.'
   }
 ];
 
-export const INITIAL_AI_LOGS: AIEventLog[] = [
+export const INITIAL_AI_LOGS: HydraulicEventLog[] = [
   {
-    id: 'LOG-101',
-    time: '08:41:03',
+    id: 'LOG-HYD-101',
+    time: '08:41:02',
     type: 'ANOMALY',
-    title: 'DEMAND SPIKE DETECTED',
-    detail: 'Edappally Station load increased to 94% (+28% vs schedule baseline)',
-    stationId: 'EDAPPALLY'
+    title: 'FLOW RESIDUAL SPIKE DETECTED',
+    detail: 'Downstream flow meter FS-02 reports 860 m³/h vs upstream PS-01 930 m³/h (ΔQ = -70 m³/h).',
+    segmentId: 'S_03_EDAPPALLY',
+    sensorId: 'FS-02'
   },
   {
-    id: 'LOG-102',
-    time: '08:41:06',
+    id: 'LOG-HYD-102',
+    time: '08:41:05',
     type: 'TELEMETRY',
-    title: 'FLEET TELEMETRY REFRESHED',
-    detail: '7/8 active trainsets reporting valid CBTC telemetry. Health index 96.8%'
+    title: 'PRESSURE GRADIENT ABNORMALITY',
+    detail: 'Hydraulic gradient line (HGL) dropped from 4.8 bar to 3.9 bar over 650m pipe span.',
+    sensorId: 'PS-01'
   },
   {
-    id: 'LOG-103',
-    time: '08:41:08',
+    id: 'LOG-HYD-103',
+    time: '08:41:07',
     type: 'CONSTRAINT',
-    title: 'CONSTRAINT MATRIX EVALUATION',
-    detail: 'Depot turnout capacity: OK | Track headway buffer: 02:45 min | Power grid margin: 18%'
+    title: 'HYDRAULIC DIGITAL TWIN COMPUTATION',
+    detail: 'EPANET simulation residual evaluated: Hazen-Williams friction coefficient C=130 intact.'
   },
   {
-    id: 'LOG-104',
-    time: '08:41:10',
+    id: 'LOG-HYD-104',
+    time: '08:41:09',
     type: 'OPTIMIZATION',
-    title: 'PARETO-OPTIMAL INDUCTION SOLVED',
-    detail: 'Simulated 1,420 permutations in 42ms. Selected Plan ID #KMR-2026-88'
+    title: 'NARROWED TO SEGMENT S-14',
+    detail: 'Hydraulic intelligence narrowed probable leak zone to Segment S-14 (Edappally trunk).'
   },
   {
-    id: 'LOG-105',
-    time: '08:41:11',
+    id: 'LOG-HYD-105',
+    time: '08:41:10',
     type: 'DEPLOYMENT',
-    title: 'INDUCTION DISPATCH: T06',
-    detail: 'Trainset Foxtrot-06 cleared for mainline entry towards Edappally. ETA 4.5 min',
-    trainId: 'T06'
+    title: 'ACOUSTIC PINPOINTING SOLVED',
+    detail: 'GCC-PHAT cross-correlation computed leak at exactly 38.4m downstream of Sensor A (PS-01).',
+    segmentId: 'S_03_EDAPPALLY'
   },
   {
-    id: 'LOG-106',
+    id: 'LOG-HYD-106',
     time: '08:41:14',
     type: 'OPTIMIZATION',
-    title: 'HEADWAY COMPRESSION STABILIZED',
-    detail: 'Target headway reduced from 07:15 to 04:30 min. Waiting backlog clearing.'
+    title: 'MITIGATION DISPATCH PREPARED',
+    detail: 'Valve V-04 automated throttling instruction ready for operator confirmation.'
   }
 ];
 
 export const SCENARIOS: ScenarioDefinition[] = [
   {
     id: 'baseline',
-    title: '01. Baseline Morning Peak',
-    badge: 'DEFAULT',
-    description: 'Standard weekday commuter morning. High steady demand across Aluva to MG Road.',
+    title: '01. Baseline Steady-State Supply',
+    badge: 'NORMAL OPERATING',
+    description: 'Steady municipal drinking water distribution. Normal pressure profile and zero unaccounted flow residuals across all DMA sectors.',
     iconName: 'Activity',
-    demandMultiplier: {
-      DEPOT: 1.0,
-      ALUVA: 1.0,
-      KALAMASSERY: 1.0,
-      EDAPPALLY: 1.0,
-      KALOOR: 1.0,
-      MG_ROAD: 1.0,
-      TRIPUNITHURA: 1.0
+    flowMultiplier: {
+      RESERVOIR: 1.0,
+      S_01_ALUVA: 1.0,
+      S_02_KALAMASSERY: 1.0,
+      S_03_EDAPPALLY: 1.0,
+      S_04_KALOOR: 1.0,
+      S_05_MG_ROAD: 1.0,
+      S_06_TRIPUNITHURA: 1.0
     },
-    affectedTrains: [],
-    expectedAIAction: 'Optimal synchronous headway balance (4m 30s) maintained.'
+    affectedSensors: [],
+    expectedAIAction: 'Hydraulic digital twin verifies balanced water network. Sensors report nominal telemetry.',
+    simulationState: 'NORMAL'
   },
   {
-    id: 'peak_hour',
-    title: '02. Sudden Demand Surge (Edappally)',
-    badge: 'HIGH DEMAND',
-    description: 'Heavy passenger spike at Edappally & Kaloor junction (+35% queue surge).',
-    iconName: 'TrendingUp',
-    demandMultiplier: {
-      DEPOT: 1.0,
-      ALUVA: 1.1,
-      KALAMASSERY: 1.15,
-      EDAPPALLY: 1.45,
-      KALOOR: 1.35,
-      MG_ROAD: 1.2,
-      TRIPUNITHURA: 1.0
-    },
-    affectedTrains: [
-      { id: 'T06', targetStatus: 'INDUCTING', note: 'AI triggers immediate induction from Muttom depot siding' }
-    ],
-    expectedAIAction: 'Instantly deploys T06 from Depot to inject 975-pax surge capacity at Edappally.'
-  },
-  {
-    id: 'breakdown_t04',
-    title: '03. Train Breakdown (T04 Traction Fault)',
-    badge: 'CRITICAL EVENT',
-    description: 'Train T04 suffers inverter breakdown near Kalamassery. Track clearance initiated.',
+    id: 'mainline_burst',
+    title: '02. Mainline Burst on Segment S-14',
+    badge: 'CRITICAL LEAK',
+    description: 'Severe pipe burst between Sensor A and Sensor B on Segment S-14. Rapid pressure drop and flow loss of 70 m³/h.',
     iconName: 'AlertTriangle',
-    demandMultiplier: {
-      DEPOT: 1.0,
-      ALUVA: 1.25,
-      KALAMASSERY: 1.4,
-      EDAPPALLY: 1.3,
-      KALOOR: 1.1,
-      MG_ROAD: 1.0,
-      TRIPUNITHURA: 1.0
+    flowMultiplier: {
+      RESERVOIR: 1.0,
+      S_01_ALUVA: 1.0,
+      S_02_KALAMASSERY: 1.05,
+      S_03_EDAPPALLY: 0.92,
+      S_04_KALOOR: 0.95,
+      S_05_MG_ROAD: 0.96,
+      S_06_TRIPUNITHURA: 1.0
     },
-    affectedTrains: [
-      { id: 'T04', targetStatus: 'MAINTENANCE', note: 'Emergency stop & limp-to-depot mode activated' },
-      { id: 'T08', targetStatus: 'INDUCTING', note: 'AI hot-swaps T08 into schedule to fill headway gap' }
+    affectedSensors: [
+      { id: 'PS-01', targetStatus: 'NORMAL', note: 'Upstream pressure normal at 4.8 bar' },
+      { id: 'FS-02', targetStatus: 'WARNING', note: 'Downstream flow drops from 930 to 860 m³/h' },
+      { id: 'AL-03', targetStatus: 'CRITICAL', note: 'Acoustic burst signature detected at 1.8 kHz' }
     ],
-    expectedAIAction: 'Isolates T04, accelerates T01/T05 speeds, and induces T08 to eliminate passenger delay.'
+    expectedAIAction: 'Instantly narrows to Segment S-14, pinpoints leak at 38.4m from Sensor A with 97.4% confidence, and recommends V-04 valve throttling.',
+    simulationState: 'LEAK_SUSPECTED',
+    leakDetails: {
+      segmentName: 'Segment S-14 (Edappally Trunk)',
+      distanceFromSensorAMeters: 38.4,
+      estimatedLossM3h: 12.8,
+      acousticConfidence: 97.4
+    }
   },
   {
-    id: 'event_crowd',
-    title: '04. MG Road Stadium / Event Crowd',
-    badge: 'EVENT SPECIAL',
-    description: 'Sudden festival/cricket match egress at JLN Stadium / Kaloor & MG Road CBD.',
-    iconName: 'Users',
-    demandMultiplier: {
-      DEPOT: 1.0,
-      ALUVA: 0.9,
-      KALAMASSERY: 1.0,
-      EDAPPALLY: 1.2,
-      KALOOR: 1.6,
-      MG_ROAD: 1.55,
-      TRIPUNITHURA: 1.2
-    },
-    affectedTrains: [
-      { id: 'T06', targetStatus: 'INDUCTING', note: 'Short-loop service between Edappally & MG Road' },
-      { id: 'T08', targetStatus: 'INDUCTING', note: 'High-density express deployment' }
-    ],
-    expectedAIAction: 'Configures dynamic short-looping shuttle service between Kaloor and MG Road.'
-  },
-  {
-    id: 'maintenance_t02',
-    title: '05. Maintenance Constraint Locking',
-    badge: 'CONSTRAINT',
-    description: 'Depot informs T02 and T04 require compulsory 30-day bogie inspection window.',
+    id: 'partial_blockage',
+    title: '03. Valve Cavitation & Throttling Anomaly',
+    badge: 'WARNING EVENT',
+    description: 'Upstream gate valve partial obstruction causes localized head loss and micro-pressure transients.',
     iconName: 'Wrench',
-    demandMultiplier: {
-      DEPOT: 1.0,
-      ALUVA: 1.0,
-      KALAMASSERY: 1.0,
-      EDAPPALLY: 1.0,
-      KALOOR: 1.0,
-      MG_ROAD: 1.0,
-      TRIPUNITHURA: 1.0
+    flowMultiplier: {
+      RESERVOIR: 1.0,
+      S_01_ALUVA: 1.0,
+      S_02_KALAMASSERY: 0.95,
+      S_03_EDAPPALLY: 0.96,
+      S_04_KALOOR: 0.97,
+      S_05_MG_ROAD: 1.0,
+      S_06_TRIPUNITHURA: 1.0
     },
-    affectedTrains: [
-      { id: 'T02', targetStatus: 'MAINTENANCE', note: 'Locked in Depot Bay 4 for inspection' },
-      { id: 'T04', targetStatus: 'MAINTENANCE', note: 'Scheduled ultrasonic wheel inspection' }
+    affectedSensors: [
+      { id: 'FS-02', targetStatus: 'WARNING', note: 'Flow turbulence detected' },
+      { id: 'VB-04', targetStatus: 'WARNING', note: 'Abnormal high-frequency vibration spike' }
     ],
-    expectedAIAction: 'Rebalances timetable using remaining 6 active trainsets with 0% penalty on peak capacity.'
+    expectedAIAction: 'Distinguishes physical blockage from water leak using pressure transient wave reflection analysis.',
+    simulationState: 'WARNING'
   },
   {
-    id: 'off_peak',
-    title: '06. Off-Peak Energy Optimization',
-    badge: 'ECO MODE',
-    description: 'Midday passenger demand drops by 45%. System enters energy conservation mode.',
-    iconName: 'Zap',
-    demandMultiplier: {
-      DEPOT: 1.0,
-      ALUVA: 0.6,
-      KALAMASSERY: 0.55,
-      EDAPPALLY: 0.65,
-      KALOOR: 0.6,
-      MG_ROAD: 0.7,
-      TRIPUNITHURA: 0.4
+    id: 'peak_demand',
+    title: '04. Peak Diurnal Demand Surge (CBD)',
+    badge: 'HIGH DEMAND',
+    description: 'Heavy evening municipal water draw in MG Road & Kaloor commercial zones. Widespread expected pressure dip.',
+    iconName: 'TrendingUp',
+    flowMultiplier: {
+      RESERVOIR: 1.25,
+      S_01_ALUVA: 1.2,
+      S_02_KALAMASSERY: 1.15,
+      S_03_EDAPPALLY: 1.1,
+      S_04_KALOOR: 1.35,
+      S_05_MG_ROAD: 1.45,
+      S_06_TRIPUNITHURA: 1.1
     },
-    affectedTrains: [
-      { id: 'T01', targetStatus: 'IN_SERVICE', note: 'Regenerative braking profile optimized' },
-      { id: 'T06', targetStatus: 'STANDBY', note: 'Recalled to Depot to save traction power' }
+    affectedSensors: [
+      { id: 'RV-05', targetStatus: 'NORMAL', note: 'Booster pump discharge increased to 1,450 m³/h' }
     ],
-    expectedAIAction: 'Recalls surplus trainsets to depot sidings, saving 340 kWh/hr while keeping wait times <6 min.'
+    expectedAIAction: 'Hydraulic digital twin predicts dynamic head loss, preventing false positive leak alarms during legitimate high consumption.',
+    simulationState: 'NORMAL'
+  },
+  {
+    id: 'sensor_drift',
+    title: '05. Sensor Calibration Drift Isolation',
+    badge: 'MAINTENANCE',
+    description: 'Sensor B electromagnetic flow meter exhibits continuous -3% offset drift without corresponding pressure drop.',
+    iconName: 'Zap',
+    flowMultiplier: {
+      RESERVOIR: 1.0,
+      S_01_ALUVA: 1.0,
+      S_02_KALAMASSERY: 1.0,
+      S_03_EDAPPALLY: 1.0,
+      S_04_KALOOR: 1.0,
+      S_05_MG_ROAD: 1.0,
+      S_06_TRIPUNITHURA: 1.0
+    },
+    affectedSensors: [
+      { id: 'FS-02', targetStatus: 'CALIBRATING', note: 'Zero-point calibration offset detected' }
+    ],
+    expectedAIAction: 'Digital twin isolates sensor drift from physical leak using mass-balance residual consistency test.',
+    simulationState: 'WARNING'
+  },
+  {
+    id: 'night_minimum_flow',
+    title: '06. Minimum Night Flow (MNF) Leak Audit',
+    badge: 'ACOUSTIC AUDIT',
+    description: '02:00 to 04:00 AM low-noise acoustic window. Extremely sensitive background leak detection across network.',
+    iconName: 'Users',
+    flowMultiplier: {
+      RESERVOIR: 0.35,
+      S_01_ALUVA: 0.35,
+      S_02_KALAMASSERY: 0.32,
+      S_03_EDAPPALLY: 0.38,
+      S_04_KALOOR: 0.30,
+      S_05_MG_ROAD: 0.28,
+      S_06_TRIPUNITHURA: 0.25
+    },
+    affectedSensors: [
+      { id: 'AL-03', targetStatus: 'NORMAL', note: 'Acoustic noise floor reduced by 18 dB' },
+      { id: 'AL-08', targetStatus: 'NORMAL', note: 'Deep cross-correlation scan active' }
+    ],
+    expectedAIAction: 'Leverages low acoustic noise floor to locate tiny pinhole leaks down to 0.4 m³/h.',
+    simulationState: 'LEAK_SUSPECTED',
+    leakDetails: {
+      segmentName: 'Segment S-14 (Edappally Trunk)',
+      distanceFromSensorAMeters: 38.4,
+      estimatedLossM3h: 2.1,
+      acousticConfidence: 98.6
+    }
   }
 ];
 
 export const HISTORICAL_CHART_DATA: ChartDataPoint[] = [
-  { time: '08:00', demand: 45, trainSupply: 50, waitTime: 6.2, utilization: 68 },
-  { time: '08:15', demand: 62, trainSupply: 60, waitTime: 6.8, utilization: 74 },
-  { time: '08:30', demand: 84, trainSupply: 75, waitTime: 7.9, utilization: 82 },
-  { time: '08:45', demand: 96, trainSupply: 95, waitTime: 5.2, utilization: 92 },
-  { time: '09:00', demand: 91, trainSupply: 92, waitTime: 5.1, utilization: 90 },
-  { time: '09:15', demand: 78, trainSupply: 80, waitTime: 5.4, utilization: 86 },
-  { time: '09:30', demand: 60, trainSupply: 65, waitTime: 5.0, utilization: 79 }
+  { time: '08:00', actualFlow: 928, expectedFlow: 930, pressure: 4.85, waterLoss: 0.5 },
+  { time: '08:15', actualFlow: 925, expectedFlow: 930, pressure: 4.82, waterLoss: 1.1 },
+  { time: '08:30', actualFlow: 890, expectedFlow: 930, pressure: 4.40, waterLoss: 6.8 },
+  { time: '08:45', actualFlow: 860, expectedFlow: 930, pressure: 3.90, waterLoss: 12.8 },
+  { time: '09:00', actualFlow: 862, expectedFlow: 930, pressure: 3.92, waterLoss: 12.5 },
+  { time: '09:15', actualFlow: 885, expectedFlow: 930, pressure: 4.25, waterLoss: 5.2 },
+  { time: '09:30', actualFlow: 924, expectedFlow: 930, pressure: 4.78, waterLoss: 1.2 }
 ];
 
 export const MANUAL_CHART_DATA: ChartDataPoint[] = [
-  { time: '08:00', demand: 45, trainSupply: 40, waitTime: 9.8, utilization: 55 },
-  { time: '08:15', demand: 62, trainSupply: 45, waitTime: 11.2, utilization: 60 },
-  { time: '08:30', demand: 84, trainSupply: 50, waitTime: 13.6, utilization: 68 },
-  { time: '08:45', demand: 96, trainSupply: 55, waitTime: 14.8, utilization: 72 },
-  { time: '09:00', demand: 91, trainSupply: 60, waitTime: 12.5, utilization: 70 },
-  { time: '09:15', demand: 78, trainSupply: 60, waitTime: 10.8, utilization: 65 },
-  { time: '09:30', demand: 60, trainSupply: 55, waitTime: 9.5, utilization: 61 }
+  { time: '08:00', actualFlow: 920, expectedFlow: 930, pressure: 4.8, waterLoss: 14.5 },
+  { time: '08:15', actualFlow: 900, expectedFlow: 930, pressure: 4.6, waterLoss: 28.0 },
+  { time: '08:30', actualFlow: 870, expectedFlow: 930, pressure: 4.1, waterLoss: 52.0 },
+  { time: '08:45', actualFlow: 840, expectedFlow: 930, pressure: 3.6, waterLoss: 78.5 },
+  { time: '09:00', actualFlow: 835, expectedFlow: 930, pressure: 3.5, waterLoss: 84.5 },
+  { time: '09:15', actualFlow: 840, expectedFlow: 930, pressure: 3.6, waterLoss: 82.0 },
+  { time: '09:30', actualFlow: 850, expectedFlow: 930, pressure: 3.8, waterLoss: 74.0 }
 ];
 
 export const CONVENTIONAL_CHART_DATA: ChartDataPoint[] = [
-  { time: '08:00', demand: 45, trainSupply: 48, waitTime: 7.5, utilization: 65 },
-  { time: '08:15', demand: 62, trainSupply: 55, waitTime: 8.2, utilization: 70 },
-  { time: '08:30', demand: 84, trainSupply: 68, waitTime: 9.6, utilization: 76 },
-  { time: '08:45', demand: 96, trainSupply: 72, waitTime: 10.4, utilization: 80 },
-  { time: '09:00', demand: 91, trainSupply: 75, waitTime: 8.9, utilization: 78 },
-  { time: '09:15', demand: 78, trainSupply: 70, waitTime: 7.8, utilization: 74 },
-  { time: '09:30', demand: 60, trainSupply: 65, waitTime: 7.2, utilization: 71 }
+  { time: '08:00', actualFlow: 925, expectedFlow: 930, pressure: 4.8, waterLoss: 6.0 },
+  { time: '08:15', actualFlow: 915, expectedFlow: 930, pressure: 4.7, waterLoss: 12.5 },
+  { time: '08:30', actualFlow: 880, expectedFlow: 930, pressure: 4.3, waterLoss: 28.0 },
+  { time: '08:45', actualFlow: 865, expectedFlow: 930, pressure: 3.9, waterLoss: 38.2 },
+  { time: '09:00', actualFlow: 870, expectedFlow: 930, pressure: 4.0, waterLoss: 36.0 },
+  { time: '09:15', actualFlow: 890, expectedFlow: 930, pressure: 4.4, waterLoss: 22.0 },
+  { time: '09:30', actualFlow: 910, expectedFlow: 930, pressure: 4.6, waterLoss: 14.0 }
 ];

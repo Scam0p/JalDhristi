@@ -2,11 +2,11 @@ import React from 'react';
 import { 
   CaseType, 
   ScenarioType, 
-  Train, 
-  Station, 
+  SensorNode, 
+  PipelineSegment, 
   KPISet, 
-  AIRecommendation, 
-  AIEventLog 
+  LeakAlert, 
+  HydraulicEventLog 
 } from '../../types/simulation';
 import { KPIRibbon } from './KPIRibbon';
 import { ProjectAnalyticsChart } from './ProjectAnalyticsChart';
@@ -20,33 +20,39 @@ import { DecisionFeed } from './DecisionFeed';
 import { FleetOverview } from '../fleet/FleetOverview';
 import { ScenarioControlCenter } from '../scenarios/ScenarioControlCenter';
 import { PerformanceComparison } from '../comparison/PerformanceComparison';
-import { Plus, RotateCcw, Sparkles } from 'lucide-react';
+import { Plus, RotateCcw, Droplets } from 'lucide-react';
 
 interface ControlCentreProps {
   currentCase: CaseType;
   onSelectCase: (c: CaseType) => void;
   activeScenario: ScenarioType;
   onSelectScenario: (s: ScenarioType) => void;
-  trains: Train[];
-  stations: Station[];
+  trains: SensorNode[];
+  stations: PipelineSegment[];
   kpis: KPISet;
-  recommendations: AIRecommendation[];
-  eventLogs: AIEventLog[];
+  recommendations: LeakAlert[];
+  eventLogs: HydraulicEventLog[];
   simTime: string;
   simSeconds: number;
   isPlaying: boolean;
   onTogglePlay: () => void;
   simSpeed: number;
   onSetSpeed: (speed: number) => void;
-  onSelectTrain: (train: Train) => void;
-  onSelectStation: (station: Station) => void;
-  selectedTrain: Train | null;
-  selectedStation: Station | null;
+  onSelectTrain: (sensor: SensorNode) => void;
+  onSelectStation: (segment: PipelineSegment) => void;
+  selectedTrain: SensorNode | null;
+  selectedStation: PipelineSegment | null;
   onRunOptimization: () => void;
   isOptimizing: boolean;
   onDeployRecommendation: (id: string) => void;
   onReset: () => void;
   isCaseTransitioning: boolean;
+  // JalDrishti interactive extension props
+  simulationState?: 'NORMAL' | 'WARNING' | 'LEAK_SUSPECTED';
+  onSetSimulationState?: (state: 'NORMAL' | 'WARNING' | 'LEAK_SUSPECTED') => void;
+  isFetchingSensor?: boolean;
+  fetchingSensorId?: string | null;
+  onSelectSensorAsync?: (sensor: SensorNode) => void;
 }
 
 export const ControlCentre: React.FC<ControlCentreProps> = ({
@@ -73,18 +79,28 @@ export const ControlCentre: React.FC<ControlCentreProps> = ({
   isOptimizing,
   onDeployRecommendation,
   onReset,
-  isCaseTransitioning
+  isCaseTransitioning,
+  simulationState,
+  onSetSimulationState,
+  isFetchingSensor,
+  fetchingSensorId,
+  onSelectSensorAsync
 }) => {
   return (
-    <div id="control-deck" className="space-y-8 max-w-7xl mx-auto">
-      {/* 1. Dashboard Page Header (Matching Reference exact layout) */}
+    <div id="control-deck" className="space-y-8 max-w-7xl mx-auto select-none">
+      {/* 1. Dashboard Page Header (Donezo layout) */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="font-display font-extrabold text-3xl text-[#111827] tracking-tight">
-            Dashboard
-          </h1>
+          <div className="flex items-center gap-2">
+            <h1 className="font-display font-extrabold text-3xl text-[#111827] tracking-tight">
+              JalDrishti Operations Deck
+            </h1>
+            <span className="text-[10px] font-mono-tech font-bold px-2 py-0.5 rounded-full bg-[#E8F7EE] text-[#144230] border border-[#B7E4C7]">
+              SMART WATER INTELLIGENCE
+            </span>
+          </div>
           <p className="text-sm text-[#6B7280] font-normal mt-0.5">
-            Plan, prioritize, and optimize Kochi Metro train induction with AI precision.
+            Sparse sensor monitoring, hydraulic digital twin intelligence, and targeted acoustic leak pinpointing.
           </p>
         </div>
 
@@ -95,8 +111,8 @@ export const ControlCentre: React.FC<ControlCentreProps> = ({
             disabled={isOptimizing}
             className="px-5 py-2.5 rounded-full bg-[#144230] hover:bg-[#1A543E] text-white font-display font-bold text-xs tracking-wide transition-all shadow-sm cursor-pointer flex items-center gap-2 active:scale-95 disabled:opacity-50"
           >
-            <Plus className="w-4 h-4" />
-            <span>{isOptimizing ? 'Optimizing...' : 'Run AI Optimization'}</span>
+            <Droplets className="w-4 h-4 text-[#22C55E]" />
+            <span>{isOptimizing ? 'Pinpointing Leak...' : 'Run Hydraulic Solver'}</span>
           </button>
 
           <button
@@ -153,7 +169,7 @@ export const ControlCentre: React.FC<ControlCentreProps> = ({
         </div>
       </section>
 
-      {/* 4. Lower Operations Deck: Progress Gauge & AI Decision Stream */}
+      {/* 4. Lower Operations Deck: Progress Gauge & Hydraulic Event Stream */}
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
         {/* Progress Gauge (4 Cols) */}
         <div className="lg:col-span-4">
@@ -169,8 +185,8 @@ export const ControlCentre: React.FC<ControlCentreProps> = ({
         </div>
       </section>
 
-      {/* 5. Master Expansive Line 1 Railway Corridor Map */}
-      <section id="network-section">
+      {/* 5. Master Interactive Pipeline Simulation (formerly Train Simulation) */}
+      <section id="pipeline-section">
         <RailwayNetwork
           trains={trains}
           stations={stations}
@@ -188,10 +204,15 @@ export const ControlCentre: React.FC<ControlCentreProps> = ({
           onSetSpeed={onSetSpeed}
           onReset={onReset}
           onRunOptimization={onRunOptimization}
+          simulationState={simulationState}
+          onSetSimulationState={onSetSimulationState}
+          isFetchingSensor={isFetchingSensor}
+          fetchingSensorId={fetchingSensorId}
+          onSelectSensorAsync={onSelectSensorAsync}
         />
       </section>
 
-      {/* 6. AI Decision Engine Details */}
+      {/* 6. Hydraulic Digital Twin Engine */}
       <section id="ai-engine-section">
         <AIEnginePanel
           recommendations={recommendations}
@@ -202,7 +223,7 @@ export const ControlCentre: React.FC<ControlCentreProps> = ({
         />
       </section>
 
-      {/* 7. Fleet Operational Roster */}
+      {/* 7. Sensor Fleet Operational Inventory */}
       <section id="fleet-section">
         <FleetOverview
           trains={trains}
@@ -212,7 +233,7 @@ export const ControlCentre: React.FC<ControlCentreProps> = ({
       </section>
 
       {/* 8. Operational Paradigm Case Switcher */}
-      <section>
+      <section id="cases-section">
         <CaseSwitcher
           currentCase={currentCase}
           onSelectCase={onSelectCase}

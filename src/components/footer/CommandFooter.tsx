@@ -1,11 +1,11 @@
 import React from 'react';
-import { ShieldCheck, Users, GraduationCap, Award } from 'lucide-react';
+import { ShieldCheck, Users, GraduationCap, Award, Droplets } from 'lucide-react';
 
 export const CommandFooter: React.FC = () => {
   const teamMembers = [
     { name: 'Arjun V', usn: '1EP24IC007', role: 'Team Member' },
     { name: 'Harsh Jangir', usn: '1EP24IC012', role: 'Team Member' },
-    { name: 'HImanshu Kumar', usn: '1EP24IC014', role: 'Team Member' },
+    { name: 'Himanshu Kumar', usn: '1EP24IC014', role: 'Team Member' },
     { name: 'Jeevan Jaikumar', usn: '1EP24IC015', role: 'Team Member' },
     { name: 'Roshni Singh R', usn: '1EP24IC044', role: 'Team Member' },
     { name: 'Shailesh M', usn: '1EP24IC050', role: 'Team Member' }
@@ -17,13 +17,13 @@ export const CommandFooter: React.FC = () => {
         {/* Top Disclaimer & Project Banner */}
         <div className="p-4 rounded-2xl bg-[#F9FAFB] border border-[#E5E7EB] flex flex-wrap items-center justify-between gap-4 text-[#4B5563]">
           <div className="flex items-center gap-2.5 text-[#144230]">
-            <ShieldCheck className="w-5 h-5 text-[#22C55E]" />
+            <Droplets className="w-5 h-5 text-[#22C55E]" />
             <div>
               <span className="font-bold tracking-wider text-xs uppercase block font-display text-[#111827]">
-                Smart India Hackathon 2026 • AI Train Induction Simulation
+                JalDrishti • Smart Water Intelligence System
               </span>
               <span className="text-[10px] text-[#6B7280] font-normal">
-                Engineered for Kochi Metro Rail Limited (KMRL) Operations & Maintenance Fleet Planning
+                Sparse Sensor Monitoring • Hydraulic Digital Twin Simulation • Targeted Acoustic Leak Pinpointing
               </span>
             </div>
           </div>
@@ -91,45 +91,39 @@ export const CommandFooter: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-2">
           <div>
             <span className="text-[10px] text-[#111827] uppercase font-bold block mb-1.5 font-display">
-              Problem Statement
-            </span>
-            <p className="text-[11px] text-[#9CA3AF] leading-relaxed">
-              SIH 2026: AI-Driven Train Induction Planning & Scheduling Simulation Suite for KMRL.
-            </p>
-          </div>
-
-          <div>
-            <span className="text-[10px] text-[#111827] uppercase font-bold block mb-1.5 font-display">
-              Institution & Dept
-            </span>
-            <p className="text-[11px] text-[#9CA3AF] leading-relaxed">
-              Dept. of CSE-IoT & CSBT • Advanced Computing & Distributed Intelligent Transportation Systems.
-            </p>
-          </div>
-
-          <div>
-            <span className="text-[10px] text-[#111827] uppercase font-bold block mb-1.5 font-display">
               System Architecture
             </span>
             <p className="text-[11px] text-[#9CA3AF] leading-relaxed">
-              Multi-Objective Pareto Optimization • Real-time CBTC Telemetry Ingestion • Dynamic Siding Induction.
+              JalDrishti: 4-stage pipeline intelligence workflow (Detect → Narrow → Pinpoint → Respond).
             </p>
           </div>
 
           <div>
             <span className="text-[10px] text-[#111827] uppercase font-bold block mb-1.5 font-display">
-              Simulation Engine
+              Hydraulic Engine
             </span>
             <p className="text-[11px] text-[#9CA3AF] leading-relaxed">
-              Deterministic High-Fidelity Front-End Engine • Solve Latency: ~42ms • SIH 2026 Edition.
+              EPANET-compatible digital twin coupled with generalized cross-correlation phase transform (GCC-PHAT).
             </p>
           </div>
-        </div>
 
-        {/* Bottom Copyright Strip */}
-        <div className="pt-6 border-t border-[#F0F2F5] flex flex-wrap items-center justify-between gap-3 text-[11px] text-[#9CA3AF]">
-          <span>© 2026 KMRL AI Train Induction Operations & Control Centre • Kochi Metro Rail Limited</span>
-          <span className="text-[#144230] font-bold">POWERHOUSE • DEPT. OF CSE-IOT & CSBT</span>
+          <div>
+            <span className="text-[10px] text-[#111827] uppercase font-bold block mb-1.5 font-display">
+              Sensor Hardening
+            </span>
+            <p className="text-[11px] text-[#9CA3AF] leading-relaxed">
+              LoRaWAN & NB-IoT dual-channel telemetry with edge vibration analysis and power optimization.
+            </p>
+          </div>
+
+          <div>
+            <span className="text-[10px] text-[#111827] uppercase font-bold block mb-1.5 font-display">
+              Deployment Target
+            </span>
+            <p className="text-[11px] text-[#9CA3AF] leading-relaxed">
+              Municipal water utilities, transmission mains, and smart urban distribution networks.
+            </p>
+          </div>
         </div>
       </div>
     </footer>

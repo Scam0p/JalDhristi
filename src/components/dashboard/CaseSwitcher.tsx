@@ -1,6 +1,6 @@
 import React from 'react';
 import { CaseType } from '../../types/simulation';
-import { UserCheck, ShieldCheck, Cpu, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { UserCheck, ShieldCheck, Droplets, CheckCircle2, ArrowRight } from 'lucide-react';
 
 interface CaseSwitcherProps {
   currentCase: CaseType;
@@ -19,52 +19,52 @@ export const CaseSwitcher: React.FC<CaseSwitcherProps> = ({
     title: string;
     subtitle: string;
     description: string;
-    icon: typeof Cpu;
-    wait: string;
-    util: string;
-    congestion: string;
+    icon: typeof Droplets;
+    loss: string;
+    accuracy: string;
     response: string;
+    health: string;
   }[] = [
     {
       id: 'manual',
       index: '01',
-      title: 'Manual Dispatch',
-      subtitle: 'Static Timetable & Phone Logs',
-      description: 'Train induction decisions rely on static pre-scheduled timetables. Reactive manual phone dispatch creates delayed response to unexpected commuter surges.',
+      title: 'Manual Inspection',
+      subtitle: 'Walk-the-Line Acoustic Patrols',
+      description: 'Pipeline leak detection relies on periodic ground patrols, acoustic listening sticks, and customer complaints. Reactive response results in massive unmetered water losses and delayed repairs.',
       icon: UserCheck,
-      wait: '11.4 min',
-      util: '63%',
-      congestion: 'HIGH',
-      response: '12 min'
+      loss: '84.5 m³/h',
+      accuracy: '±450m',
+      response: '4.5 hours',
+      health: '62%'
     },
     {
       id: 'conventional',
       index: '02',
-      title: 'Conventional Control',
-      subtitle: 'Rule-Based Fixed Interval CBTC',
-      description: 'Automated headway control operates on rigid fixed intervals. Maintains consistency under normal conditions but lacks adaptive flexibility during disruptions.',
+      title: 'Conventional SCADA',
+      subtitle: 'Static Threshold Flow & Pressure Alarms',
+      description: 'Supervisory control triggers alarms based on rigid high/low flow thresholds. Cannot pinpoint exact leak positions along long spans and produces frequent false alarms during normal peak consumption surges.',
       icon: ShieldCheck,
-      wait: '8.1 min',
-      util: '74%',
-      congestion: 'MEDIUM',
-      response: '7 min'
+      loss: '38.2 m³/h',
+      accuracy: '±120m',
+      response: '40 min',
+      health: '79%'
     },
     {
       id: 'ai',
       index: '03',
-      title: 'AI Train Induction',
-      subtitle: 'Dynamic Pareto-Optimal Engine',
-      description: 'Continuously fuses real-time platform CCTV density, fleet health, depot turnout capacity, and energy profiles to automatically induct and reallocate trainsets.',
-      icon: Cpu,
-      wait: '5.2 min',
-      util: '91%',
-      congestion: 'LOW',
-      response: '< 1 min'
+      title: 'JalDrishti Hydraulic Intelligence',
+      subtitle: 'Digital Twin & Acoustic Pinpointing',
+      description: 'Continuous 4-stage pipeline intelligence (Detect → Narrow → Pinpoint → Respond). Uses sparse sensors to detect flow residuals, hydraulic digital twin to isolate probable segments, and targeted acoustic cross-correlation to pinpoint leaks within ±1.2m.',
+      icon: Droplets,
+      loss: '2.4 m³/h',
+      accuracy: '±1.2m',
+      response: '< 45 sec',
+      health: '98%'
     }
   ];
 
   return (
-    <div className="donezo-card p-6">
+    <div className="donezo-card p-6 select-none">
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-5 pb-3 border-b border-[#F0F2F5]">
         <div>
@@ -72,11 +72,11 @@ export const CaseSwitcher: React.FC<CaseSwitcherProps> = ({
             OPERATIONAL ARCHITECTURES
           </span>
           <h2 className="font-display font-bold text-lg text-[#111827]">
-            Select Train Induction Paradigm
+            Select Water Intelligence Operational Paradigm
           </h2>
         </div>
         <div className="text-xs font-mono-tech text-[#6B7280] bg-[#F4F5F7] px-3 py-1 rounded-full border border-[#E5E7EB]">
-          CHOOSE AN ARCHITECTURE TO RECONFIGURE LIVE SIMULATION
+          SWITCH PARADIGM TO RECONFIGURE LIVE HYDRAULIC NETWORK
         </div>
       </div>
 
@@ -99,63 +99,54 @@ export const CaseSwitcher: React.FC<CaseSwitcherProps> = ({
               {/* Selected Badge */}
               {isSelected && (
                 <div className="absolute -top-3 right-4 bg-[#144230] text-white font-mono-tech font-bold text-[9px] uppercase tracking-wider px-2.5 py-0.5 rounded-full shadow flex items-center gap-1">
-                  <CheckCircle2 className="w-3 h-3 text-[#22C55E]" /> ACTIVE SYSTEM
+                  <CheckCircle2 className="w-3 h-3 text-[#22C55E]" /> ACTIVE PARADIGM
                 </div>
               )}
 
-              {/* Header */}
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono-tech font-bold text-lg text-[#9CA3AF]">
-                      {c.index}
-                    </span>
-                    <h3 className="font-display font-bold text-base text-[#111827]">
-                      {c.title}
-                    </h3>
-                  </div>
+                {/* Card Top: Index & Icon */}
+                <div className="flex items-center justify-between mb-3">
+                  <span className="font-mono-tech font-extrabold text-2xl text-[#144230]/40">
+                    {c.index}
+                  </span>
                   <div className={`p-2 rounded-xl ${isSelected ? 'bg-[#144230] text-white' : 'bg-[#F4F5F7] text-[#6B7280]'}`}>
                     <Icon className="w-4 h-4" />
                   </div>
                 </div>
 
-                <p className="text-[10px] font-mono-tech text-[#144230] font-semibold tracking-wide uppercase mb-2">
+                <h3 className="font-display font-bold text-base text-[#111827] mb-0.5">
+                  {c.title}
+                </h3>
+                <span className="text-[11px] font-mono-tech text-[#144230] font-semibold block mb-2">
                   {c.subtitle}
-                </p>
+                </span>
 
-                <p className="text-xs text-[#6B7280] font-normal leading-relaxed mb-4 line-clamp-3">
+                <p className="text-xs text-[#6B7280] leading-relaxed mb-4 line-clamp-3">
                   {c.description}
                 </p>
               </div>
 
-              {/* KPI Metrics Box */}
+              {/* Bottom Metrics Snapshot */}
               <div className="pt-3 border-t border-[#ECEEF2] grid grid-cols-2 gap-2 text-xs font-mono-tech">
-                <div className="bg-[#F4F5F7] p-2 rounded-xl border border-[#E5E7EB]">
-                  <span className="text-[9px] text-[#6B7280] block">AVG WAIT TIME</span>
-                  <span className={`font-bold ${c.id === 'ai' ? 'text-[#144230]' : 'text-[#111827]'}`}>
-                    {c.wait}
-                  </span>
+                <div className="p-2 rounded-xl bg-[#F4F5F7] border border-[#E5E7EB]">
+                  <span className="text-[9px] text-[#9CA3AF] uppercase block">WATER LOSS</span>
+                  <span className="font-bold text-[#111827] text-xs">{c.loss}</span>
                 </div>
-                <div className="bg-[#F4F5F7] p-2 rounded-xl border border-[#E5E7EB]">
-                  <span className="text-[9px] text-[#6B7280] block">UTILIZATION</span>
-                  <span className="font-bold text-[#111827]">{c.util}</span>
-                </div>
-                <div className="bg-[#F4F5F7] p-2 rounded-xl border border-[#E5E7EB]">
-                  <span className="text-[9px] text-[#6B7280] block">CONGESTION</span>
-                  <span className={`font-bold ${c.congestion === 'LOW' ? 'text-[#22C55E]' : c.congestion === 'MEDIUM' ? 'text-[#F59E0B]' : 'text-[#EF4444]'}`}>
-                    {c.congestion}
-                  </span>
-                </div>
-                <div className="bg-[#F4F5F7] p-2 rounded-xl border border-[#E5E7EB]">
-                  <span className="text-[9px] text-[#6B7280] block">RESPONSE</span>
-                  <span className="font-bold text-[#111827]">{c.response}</span>
-                </div>
-              </div>
 
-              {/* Action indicator */}
-              <div className="mt-3 flex items-center justify-end text-[10px] font-mono-tech text-[#6B7280] gap-1">
-                <span>{isSelected ? 'CURRENTLY ACTIVE' : 'SWITCH TO PARADIGM'}</span>
-                <ArrowRight className="w-3 h-3 text-[#144230]" />
+                <div className="p-2 rounded-xl bg-[#F4F5F7] border border-[#E5E7EB]">
+                  <span className="text-[9px] text-[#9CA3AF] uppercase block">ACCURACY</span>
+                  <span className="font-bold text-[#144230] text-xs">{c.accuracy}</span>
+                </div>
+
+                <div className="p-2 rounded-xl bg-[#F4F5F7] border border-[#E5E7EB]">
+                  <span className="text-[9px] text-[#9CA3AF] uppercase block">RESPONSE</span>
+                  <span className="font-bold text-[#111827] text-xs">{c.response}</span>
+                </div>
+
+                <div className="p-2 rounded-xl bg-[#F4F5F7] border border-[#E5E7EB]">
+                  <span className="text-[9px] text-[#9CA3AF] uppercase block">HEALTH</span>
+                  <span className="font-bold text-[#22C55E] text-xs">{c.health}</span>
+                </div>
               </div>
             </button>
           );

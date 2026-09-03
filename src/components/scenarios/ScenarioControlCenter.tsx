@@ -1,7 +1,7 @@
 import React from 'react';
 import { ScenarioType } from '../../types/simulation';
 import { SCENARIOS } from '../../data/mockData';
-import { Activity, TrendingUp, AlertTriangle, Users, Wrench, Zap, Play, CheckCircle2 } from 'lucide-react';
+import { Activity, TrendingUp, AlertTriangle, Users, Wrench, Zap, Play, CheckCircle2, Droplets } from 'lucide-react';
 
 interface ScenarioControlCenterProps {
   activeScenario: ScenarioType;
@@ -24,19 +24,19 @@ export const ScenarioControlCenter: React.FC<ScenarioControlCenterProps> = ({
   };
 
   return (
-    <div className="donezo-card p-6">
+    <div className="donezo-card p-6 select-none">
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-5 pb-3 border-b border-[#F0F2F5]">
         <div>
           <span className="text-[10px] font-mono-tech uppercase tracking-widest text-[#144230] font-bold block">
-            STRESS-TEST CONTINGENCY MATRIX
+            HYDRAULIC CONTINGENCY MATRIX
           </span>
           <h2 className="font-display font-bold text-lg text-[#111827]">
             Operational Scenarios Simulator
           </h2>
         </div>
         <div className="text-xs font-mono-tech text-[#6B7280] bg-[#F4F5F7] px-3 py-1 rounded-full border border-[#E5E7EB]">
-          INJECT REAL-TIME ANOMALIES TO TEST AI ADAPTIVE SCHEDULING
+          INJECT ANOMALIES TO TEST HYDRAULIC DIGITAL TWIN & PINPOINTING
         </div>
       </div>
 
@@ -69,8 +69,9 @@ export const ScenarioControlCenter: React.FC<ScenarioControlCenterProps> = ({
                     <Icon className="w-4 h-4" />
                   </div>
                   <span className={`text-[8px] font-mono-tech font-bold px-2 py-0.5 rounded-full border uppercase ${
-                    scenario.badge === 'CRITICAL EVENT' ? 'bg-[#FEE2E2] text-[#991B1B] border-[#FECACA]' :
+                    scenario.badge === 'CRITICAL LEAK' ? 'bg-[#FEE2E2] text-[#991B1B] border-[#FECACA]' :
                     scenario.badge === 'HIGH DEMAND' ? 'bg-[#FEF3C7] text-[#92400E] border-[#FDE68A]' :
+                    scenario.badge === 'ACOUSTIC AUDIT' ? 'bg-[#E8F7EE] text-[#144230] border-[#B7E4C7]' :
                     'bg-[#F4F5F7] text-[#4B5563] border-[#E5E7EB]'
                   }`}>
                     {scenario.badge}
@@ -89,7 +90,7 @@ export const ScenarioControlCenter: React.FC<ScenarioControlCenterProps> = ({
               {/* Expected AI Reaction Box */}
               <div className="pt-3 border-t border-[#ECEEF2] text-[10px] font-mono-tech bg-[#F4F5F7] p-3 rounded-xl border border-[#E5E7EB] space-y-1">
                 <span className="text-[#144230] font-bold block">
-                  AI ADAPTIVE REACTION:
+                  JALDRISHTI ADAPTIVE RESPONSE:
                 </span>
                 <span className="text-[#4B5563] font-normal leading-normal block">
                   {scenario.expectedAIAction}
@@ -98,8 +99,9 @@ export const ScenarioControlCenter: React.FC<ScenarioControlCenterProps> = ({
 
               {/* Trigger Button Row */}
               <div className="mt-3 flex items-center justify-end text-[10px] font-mono-tech">
-                <span className={`flex items-center gap-1 font-bold ${isActive ? 'text-[#144230]' : 'text-[#9CA3AF]'}`}>
-                  {isActive ? 'CURRENTLY SIMULATING' : 'TRIGGER SCENARIO'} <Play className="w-3 h-3 text-[#144230]" />
+                <span className={`flex items-center gap-1 font-bold ${isActive ? 'text-[#144230]' : 'text-[#6B7280]'}`}>
+                  <Play className="w-3 h-3 fill-current" />
+                  <span>{isActive ? 'Scenario Loaded' : 'Simulate Scenario'}</span>
                 </span>
               </div>
             </button>

@@ -2,104 +2,134 @@ export type CaseType = 'manual' | 'conventional' | 'ai';
 
 export type ScenarioType = 
   | 'baseline' 
-  | 'peak_hour' 
-  | 'breakdown_t04' 
-  | 'event_crowd' 
-  | 'maintenance_t02' 
-  | 'off_peak';
+  | 'mainline_burst' 
+  | 'partial_blockage' 
+  | 'peak_demand' 
+  | 'sensor_drift' 
+  | 'night_minimum_flow';
 
-export type TrainStatus = 
-  | 'IN_SERVICE' 
-  | 'STANDBY' 
-  | 'MAINTENANCE' 
-  | 'READY_INDUCTION' 
-  | 'INDUCTING' 
-  | 'REVERTING';
+export type SensorStatus = 
+  | 'NORMAL' 
+  | 'WARNING' 
+  | 'CRITICAL' 
+  | 'CALIBRATING' 
+  | 'STANDBY';
 
-export type StationId = 
-  | 'DEPOT' 
-  | 'ALUVA' 
-  | 'KALAMASSERY' 
-  | 'EDAPPALLY' 
-  | 'KALOOR' 
-  | 'MG_ROAD' 
-  | 'TRIPUNITHURA';
+export type SensorType = 
+  | 'PRESSURE_TRANSDUCER' 
+  | 'ELECTROMAGNETIC_FLOW_METER' 
+  | 'ACOUSTIC_LOGGER' 
+  | 'VIBRATION_SENSOR' 
+  | 'RESERVOIR_LEVEL' 
+  | 'CONTROL_VALVE';
 
-export interface TrainInductionPlan {
-  action: 'DEPLOY' | 'HOLD' | 'MAINTAIN' | 'STANDBY';
-  targetStation: string;
+export type SegmentId = 
+  | 'RESERVOIR' 
+  | 'S_01_ALUVA' 
+  | 'S_02_KALAMASSERY' 
+  | 'S_03_EDAPPALLY' 
+  | 'S_04_KALOOR' 
+  | 'S_05_MG_ROAD' 
+  | 'S_06_TRIPUNITHURA';
+
+export interface MitigationPlan {
+  action: 'ISOLATE_VALVE' | 'PRESSURE_REDUCE' | 'ACOUSTIC_VALIDATION' | 'STANDBY_LOGGER';
+  targetSegment: string;
   plannedTime: string;
-  expectedWaitDelta: string;
+  expectedLossReduction: string;
   priority: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
-  inductionRoute: string;
+  isolationRoute: string;
 }
 
-export interface Train {
-  id: string; // e.g. 'T01'
+export interface TelemetryPoint {
+  time: string;
+  pressure: number;
+  flow: number;
+}
+
+export interface SensorNode {
+  id: string; // e.g. 'PS-01', 'FS-02'
   name: string;
-  status: TrainStatus;
+  sensorType: SensorType;
+  status: SensorStatus;
   location: string;
-  currentStationId: StationId;
-  direction: 'UP' | 'DOWN' | 'DEPOT';
-  speedKmh: number;
-  trackProgress: number; // 0 to 100 on main track path
-  capacity: number; // e.g. 975
-  passengerLoad: number;
-  motorTempC: number;
-  energyConsumptionKwh: number;
+  currentSegmentId: SegmentId;
+  chainageKm: number; // position in km
+  pressureBar: number;
+  flowRateM3h: number;
+  batteryPct: number;
+  signalStrength: 'EXCELLENT' | 'GOOD' | 'FAIR' | 'DEGRADED';
+  rssiDbm: number;
+  lastUpdated: string;
+  temperatureC: number;
   healthScorePct: number;
-  dwellSecondsRemaining: number;
-  inductionPlan?: TrainInductionPlan;
-  assignedRoute: string;
-  driverStatus: 'AUTO_CBTC' | 'MANUAL_OVERRIDE' | 'STANDBY';
+  mitigationPlan?: MitigationPlan;
+  history?: TelemetryPoint[];
+  firmwareVersion: string;
+  protocol: 'LoRaWAN' | 'NB-IoT' | 'Modbus-RTU';
 }
 
-export interface Station {
-  id: StationId;
+export interface PipelineSegment {
+  id: SegmentId;
   name: string;
   code: string;
   kmPosition: number;
+  lengthMeters: number;
+  diameterMm: number;
+  material: string;
   xPercent: number; // SVG horizontal position (0-100)
   yPercent: number; // SVG vertical position (0-100)
-  passengerDemandPct: number;
-  waitingCount: number;
-  platformCapacity: number;
-  status: 'NORMAL' | 'HIGH_LOAD' | 'SURGE_CRITICAL' | 'BOTTLENECK';
-  inflowRatePerMin: number;
-  cctvRiskScore: number;
+  expectedFlowM3h: number;
+  actualFlowM3h: number;
+  flowResidualPct: number; // (actual - expected) / expected
+  inflowPressureBar: number;
+  outflowPressureBar: number;
+  pressureDropBar: number;
+  status: 'NORMAL' | 'MONITORING' | 'PRESSURE_DROP' | 'CRITICAL_LEAK';
+  acousticRiskScore: number;
+  leakProbabilityPct: number;
+  pinpointedLeakDistanceM?: number;
+  attachedSensors: string[];
 }
 
 export interface KPISet {
-  avgWaitTimeMin: number;
-  fleetUtilizationPct: number;
-  peakCongestion: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
-  responseTimeMin: number;
-  headwayConsistencyPct: number;
+  totalSegments: number;
+  activeSensors: number;
+  healthySensors: number;
+  warningSensors: number;
+  criticalAlerts: number;
+  activeLeaksDetected: number;
+  estimatedWaterLossM3h: number;
+  networkHealthPct: number;
+  leakLocalizationAccuracyM: number;
+  meanResponseTimeSec: number;
+  nrwReductionPct: number;
   energyCostIndex: number;
-  paxServedTotal: number;
 }
 
-export interface AIRecommendation {
+export interface LeakAlert {
   id: string;
   timestamp: string;
-  trainId: string;
-  action: 'INDUCT_FLEET' | 'REALLOCATE' | 'STANDBY_RESERVE' | 'MAINTENANCE_REROUTE';
+  sensorId: string;
+  segmentId: SegmentId;
+  severity: 'CRITICAL' | 'WARNING' | 'MONITORING';
   title: string;
-  targetStation: string;
+  probableLocation: string;
   rationale: string;
-  expectedWaitReduction: string;
+  estimatedLoss: string;
   confidenceScore: number;
-  status: 'PENDING' | 'EXECUTING' | 'DEPLOYED' | 'DISMISSED';
+  status: 'PENDING' | 'ISOLATING' | 'DEPLOYED' | 'DISMISSED';
+  recommendedAction: string;
 }
 
-export interface AIEventLog {
+export interface HydraulicEventLog {
   id: string;
   time: string;
   type: 'ANOMALY' | 'OPTIMIZATION' | 'DEPLOYMENT' | 'CONSTRAINT' | 'TELEMETRY' | 'WARNING';
   title: string;
   detail: string;
-  stationId?: StationId;
-  trainId?: string;
+  segmentId?: SegmentId;
+  sensorId?: string;
 }
 
 export interface ScenarioDefinition {
@@ -108,15 +138,29 @@ export interface ScenarioDefinition {
   badge: string;
   description: string;
   iconName: string;
-  demandMultiplier: Record<StationId, number>;
-  affectedTrains: { id: string; targetStatus: TrainStatus; note: string }[];
+  flowMultiplier: Record<SegmentId, number>;
+  affectedSensors: { id: string; targetStatus: SensorStatus; note: string }[];
   expectedAIAction: string;
+  simulationState: 'NORMAL' | 'WARNING' | 'LEAK_SUSPECTED';
+  leakDetails?: {
+    segmentName: string;
+    distanceFromSensorAMeters: number;
+    estimatedLossM3h: number;
+    acousticConfidence: number;
+  };
 }
 
 export interface ChartDataPoint {
   time: string;
-  demand: number;
-  trainSupply: number;
-  waitTime: number;
-  utilization: number;
+  actualFlow: number;
+  expectedFlow: number;
+  pressure: number;
+  waterLoss: number;
 }
+
+// Aliases for compatibility during transition
+export type Train = SensorNode;
+export type Station = PipelineSegment;
+export type AIRecommendation = LeakAlert;
+export type AIEventLog = HydraulicEventLog;
+export type StationId = SegmentId;

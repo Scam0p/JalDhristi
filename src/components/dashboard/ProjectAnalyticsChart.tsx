@@ -1,81 +1,79 @@
 import React from 'react';
-import { Station } from '../../types/simulation';
-import { BarChart2, Info } from 'lucide-react';
+import { PipelineSegment } from '../../types/simulation';
+import { BarChart2, Droplets } from 'lucide-react';
 
 interface ProjectAnalyticsChartProps {
-  stations: Station[];
-  onSelectStation: (station: Station) => void;
-  selectedStation: Station | null;
+  stations: PipelineSegment[];
+  onSelectStation: (segment: PipelineSegment) => void;
+  selectedStation: PipelineSegment | null;
 }
 
 export const ProjectAnalyticsChart: React.FC<ProjectAnalyticsChartProps> = ({
-  stations,
+  stations: segments,
   onSelectStation,
   selectedStation
 }) => {
-  // Filter out depot for the 6-7 mainline station bars
-  const lineStations = stations.filter(s => s.id !== 'DEPOT');
+  // Filter out master reservoir for the 6 network pipeline distribution segments
+  const lineSegments = segments.filter(s => s.id !== 'RESERVOIR');
 
-  // Days/Nodes mapping to match the reference visual composition (S M T W T F S style)
-  const stationBars = lineStations.map((station, index) => {
-    const isPeakSurge = station.passengerDemandPct >= 90;
-    const isHighLoad = station.passengerDemandPct >= 70 && station.passengerDemandPct < 90;
-    const isSelected = selectedStation?.id === station.id;
+  const segmentBars = lineSegments.map((segment, index) => {
+    const isCriticalLeak = segment.status === 'CRITICAL_LEAK';
+    const isPressureDrop = segment.status === 'PRESSURE_DROP';
+    const isSelected = selectedStation?.id === segment.id;
 
-    // Determine bar fill type: Solid dark green, solid emerald with tooltip tag, or patterned hatch
+    // Fill class matching Donezo reference
     let fillClass = 'pattern-hatch-green';
-    if (isPeakSurge) {
-      fillClass = 'bg-[#144230]'; // Deep forest green
-    } else if (isHighLoad) {
+    if (isCriticalLeak) {
+      fillClass = 'bg-[#144230]'; // Deep forest green for highlighted focus
+    } else if (isPressureDrop) {
       fillClass = 'bg-[#22C55E]'; // Vibrant emerald green
     }
 
-    // Height proportional to passenger demand (min height 24% so it forms a nice capsule)
-    const heightPct = Math.max(28, station.passengerDemandPct);
-
-    // Letter label (like S M T W T F S in reference, but with station code on hover/subtext)
-    const letter = ['A', 'K', 'E', 'K', 'M', 'T'][index] || station.code.charAt(0);
+    // Height proportional to actual flow percentage vs expected flow (min 28% for pill shape)
+    const ratioPct = Math.round((segment.actualFlowM3h / segment.expectedFlowM3h) * 100);
+    const heightPct = Math.max(28, Math.min(100, ratioPct));
 
     return {
-      station,
+      segment,
       heightPct,
       fillClass,
-      letter,
-      isPeakSurge,
-      isHighLoad,
-      isSelected
+      isCriticalLeak,
+      isPressureDrop,
+      isSelected,
+      ratioPct
     };
   });
 
   return (
-    <div className="donezo-card p-5 flex flex-col justify-between h-full">
+    <div className="donezo-card p-5 flex flex-col justify-between h-full select-none">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="font-display font-bold text-base text-[#111827]">
-            Corridor Demand Analytics
+            DMA Hydraulic Residual Analytics
           </h3>
           <p className="text-[11px] text-[#6B7280]">
-            Live station queue density & headway load
+            Expected vs Actual flow volume & hydraulic head across sectors
           </p>
         </div>
         <div className="flex items-center gap-1 text-[11px] font-mono-tech text-[#144230] bg-[#E8F7EE] px-2.5 py-1 rounded-full font-bold">
-          <span>LIVE SENSORS</span>
+          <Droplets className="w-3 h-3 text-[#22C55E]" />
+          <span>SPARSE SENSORS</span>
         </div>
       </div>
 
-      {/* Pill Bars Chart Area */}
+      {/* Pill Bars Chart Area (Donezo Capsule Aesthetics) */}
       <div className="relative pt-6 pb-2 flex items-end justify-between gap-2.5 sm:gap-4 h-48 px-2">
-        {stationBars.map((bar, idx) => (
+        {segmentBars.map((bar) => (
           <div
-            key={bar.station.id}
-            onClick={() => onSelectStation(bar.station)}
+            key={bar.segment.id}
+            onClick={() => onSelectStation(bar.segment)}
             className="flex-1 flex flex-col items-center justify-end h-full group cursor-pointer relative"
           >
-            {/* Value Tooltip Badge on Highlighted/Surge Bar (Matching reference '76%' badge) */}
-            {(bar.isHighLoad || bar.isPeakSurge || bar.isSelected) && (
+            {/* Value Tooltip Badge on Highlighted/Anomaly Bar (Matching reference '76%' badge) */}
+            {(bar.isCriticalLeak || bar.isPressureDrop || bar.isSelected) && (
               <div className="absolute -top-1 bg-white border border-[#E5E7EB] shadow-sm rounded-full px-1.5 py-0.5 text-[9px] font-mono-tech font-bold text-[#144230] whitespace-nowrap z-10 transition-transform group-hover:scale-110">
-                {bar.station.passengerDemandPct}%
+                {bar.segment.flowResidualPct < 0 ? `${bar.segment.flowResidualPct}%` : `+${bar.segment.flowResidualPct}%`}
               </div>
             )}
 
@@ -92,36 +90,29 @@ export const ProjectAnalyticsChart: React.FC<ProjectAnalyticsChartProps> = ({
               />
             </div>
 
-            {/* Bottom Label (Node letter + code) */}
+            {/* Bottom Label (Segment code) */}
             <div className="mt-3 text-center">
               <span className="text-xs font-bold text-[#6B7280] group-hover:text-[#111827] block font-display">
-                {bar.station.code}
+                {bar.segment.code}
               </span>
               <span className="text-[9px] text-[#9CA3AF] font-mono-tech hidden sm:block">
-                {bar.station.waitingCount}p
+                {bar.segment.actualFlowM3h}m³
               </span>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Bottom Chart Footer Legend */}
-      <div className="pt-3 border-t border-[#F0F2F5] flex items-center justify-between text-[10px] font-mono-tech text-[#6B7280]">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#144230]" />
-            <span>Peak Surge</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#22C55E]" />
-            <span>High Load</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full pattern-hatch-green border border-[#B7E4C7]" />
-            <span>Nominal</span>
-          </div>
+      {/* Bottom Chart Legend */}
+      <div className="pt-3 border-t border-[#F0F2F5] flex items-center justify-between text-[11px] font-mono-tech text-[#6B7280]">
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-[#144230]" />
+          <span>Critical Leak (Residual &gt; 5%)</span>
         </div>
-        <span className="text-[#9CA3AF]">Click bar to inspect</span>
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-[#22C55E]" />
+          <span>Pressure Anomaly</span>
+        </div>
       </div>
     </div>
   );

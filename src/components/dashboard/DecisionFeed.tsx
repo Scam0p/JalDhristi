@@ -1,13 +1,13 @@
 import React from 'react';
-import { AIEventLog } from '../../types/simulation';
-import { Terminal, AlertCircle, CheckCircle, Zap, Cpu, Bell } from 'lucide-react';
+import { HydraulicEventLog } from '../../types/simulation';
+import { Terminal, AlertCircle, CheckCircle, Zap, Cpu, Bell, Droplets } from 'lucide-react';
 
 interface DecisionFeedProps {
-  logs: AIEventLog[];
+  logs: HydraulicEventLog[];
 }
 
 export const DecisionFeed: React.FC<DecisionFeedProps> = ({ logs }) => {
-  const getBadgeStyle = (type: AIEventLog['type']) => {
+  const getBadgeStyle = (type: HydraulicEventLog['type']) => {
     switch (type) {
       case 'ANOMALY':
         return 'bg-[#FEF3C7] text-[#92400E] border-[#FDE68A]';
@@ -24,7 +24,7 @@ export const DecisionFeed: React.FC<DecisionFeedProps> = ({ logs }) => {
     }
   };
 
-  const getIcon = (type: AIEventLog['type']) => {
+  const getIcon = (type: HydraulicEventLog['type']) => {
     switch (type) {
       case 'ANOMALY':
       case 'WARNING':
@@ -32,7 +32,7 @@ export const DecisionFeed: React.FC<DecisionFeedProps> = ({ logs }) => {
       case 'DEPLOYMENT':
         return CheckCircle;
       case 'OPTIMIZATION':
-        return Cpu;
+        return Droplets;
       case 'CONSTRAINT':
         return Zap;
       default:
@@ -41,7 +41,7 @@ export const DecisionFeed: React.FC<DecisionFeedProps> = ({ logs }) => {
   };
 
   return (
-    <div className="donezo-card p-6 flex flex-col h-full">
+    <div className="donezo-card p-6 flex flex-col h-full select-none">
       {/* Header */}
       <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#F0F2F5]">
         <div className="flex items-center gap-2.5">
@@ -50,17 +50,17 @@ export const DecisionFeed: React.FC<DecisionFeedProps> = ({ logs }) => {
           </div>
           <div>
             <h3 className="font-display font-bold text-sm md:text-base text-[#111827]">
-              Event & Telemetry Stream
+              Hydraulic Event & Telemetry Stream
             </h3>
             <span className="text-[9px] font-mono-tech text-[#6B7280]">
-              REAL-TIME AUDIT LOG
+              REAL-TIME NETWORK AUDIT LOG
             </span>
           </div>
         </div>
 
         <div className="flex items-center gap-1.5 text-[9px] font-mono-tech text-[#144230] bg-[#E8F7EE] px-2.5 py-1 rounded-full font-bold">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E]" />
-          <span>LIVE AUDIT</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E] animate-pulse" />
+          <span>LIVE TELEMETRY</span>
         </div>
       </div>
 

@@ -29,6 +29,11 @@ export const App: React.FC = () => {
     setSelectedTrain,
     selectedStation,
     setSelectedStation,
+    isFetchingSensor,
+    fetchingSensorId,
+    handleSelectSensorAsync,
+    simulationState,
+    setSimulationState,
     isOptimizing,
     optimizationStep,
     runAIOptimization,
@@ -40,15 +45,15 @@ export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
-  const activeTrainsCount = trains.filter(t => t.status === 'IN_SERVICE' || t.status === 'INDUCTING').length;
+  const activeSensorsCount = trains.filter(t => t.status === 'NORMAL' || t.status === 'WARNING').length;
 
   return (
-    <div className="min-h-screen bg-[#F4F5F7] text-[#111827] flex">
-      {/* 1. Vertical Sidebar (Desktop persistent, Mobile hidden until tapped) */}
+    <div className="min-h-screen bg-[#F4F5F7] text-[#111827] flex selection:bg-[#144230] selection:text-white">
+      {/* 1. Vertical Sidebar (Desktop persistent, Mobile hidden until triggered) */}
       <Sidebar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        activeTrainsCount={activeTrainsCount}
+        activeTrainsCount={activeSensorsCount}
         totalTrainsCount={trains.length}
         onRunOptimization={runAIOptimization}
         onReset={resetSimulation}
@@ -64,7 +69,7 @@ export const App: React.FC = () => {
         <TopBar
           simTime={simTime}
           currentCase={currentCase}
-          activeTrainsCount={activeTrainsCount}
+          activeTrainsCount={activeSensorsCount}
           totalTrainsCount={trains.length}
           onReset={resetSimulation}
           onRunOptimization={runAIOptimization}
@@ -90,7 +95,7 @@ export const App: React.FC = () => {
             onTogglePlay={() => setIsPlaying(prev => !prev)}
             simSpeed={simSpeed}
             onSetSpeed={setSimSpeed}
-            onSelectTrain={setSelectedTrain}
+            onSelectTrain={handleSelectSensorAsync}
             onSelectStation={setSelectedStation}
             selectedTrain={selectedTrain}
             selectedStation={selectedStation}
@@ -99,6 +104,11 @@ export const App: React.FC = () => {
             onDeployRecommendation={handleDeployRecommendation}
             onReset={resetSimulation}
             isCaseTransitioning={isCaseTransitioning}
+            simulationState={simulationState}
+            onSetSimulationState={setSimulationState}
+            isFetchingSensor={isFetchingSensor}
+            fetchingSensorId={fetchingSensorId}
+            onSelectSensorAsync={handleSelectSensorAsync}
           />
         </main>
 
@@ -118,7 +128,7 @@ export const App: React.FC = () => {
         onClose={() => setSelectedStation(null)}
       />
 
-      {/* AI Optimization Solver Dialog */}
+      {/* Hydraulic Optimization Solver Dialog */}
       <AIOptimizationModal
         isOpen={isOptimizing}
         step={optimizationStep}

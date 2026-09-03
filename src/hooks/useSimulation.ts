@@ -2,12 +2,12 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { 
   CaseType, 
   ScenarioType, 
-  Train, 
-  Station, 
+  SensorNode, 
+  PipelineSegment, 
   KPISet, 
-  AIRecommendation, 
-  AIEventLog, 
-  StationId 
+  LeakAlert, 
+  HydraulicEventLog,
+  SensorStatus
 } from '../types/simulation';
 import { 
   INITIAL_STATIONS, 
@@ -20,29 +20,33 @@ import {
 
 export function useSimulation() {
   const [currentCase, setCurrentCase] = useState<CaseType>('ai');
-  const [activeScenario, setActiveScenario] = useState<ScenarioType>('baseline');
-  const [trains, setTrains] = useState<Train[]>(INITIAL_TRAINS);
-  const [stations, setStations] = useState<Station[]>(INITIAL_STATIONS);
+  const [activeScenario, setActiveScenario] = useState<ScenarioType>('mainline_burst');
+  const [trains, setTrains] = useState<SensorNode[]>(INITIAL_TRAINS);
+  const [stations, setStations] = useState<PipelineSegment[]>(INITIAL_STATIONS);
   const [kpis, setKpis] = useState<KPISet>(CASE_KPIS.ai);
-  const [recommendations, setRecommendations] = useState<AIRecommendation[]>(INITIAL_AI_RECOMMENDATIONS);
-  const [eventLogs, setEventLogs] = useState<AIEventLog[]>(INITIAL_AI_LOGS);
+  const [recommendations, setRecommendations] = useState<LeakAlert[]>(INITIAL_AI_RECOMMENDATIONS);
+  const [eventLogs, setEventLogs] = useState<HydraulicEventLog[]>(INITIAL_AI_LOGS);
   
+  // Pipeline Simulation State: 'NORMAL' | 'WARNING' | 'LEAK_SUSPECTED'
+  const [simulationState, setSimulationState] = useState<'NORMAL' | 'WARNING' | 'LEAK_SUSPECTED'>('LEAK_SUSPECTED');
+
   // Playback & Clock
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [simSpeed, setSimSpeed] = useState<number>(1);
   const [simSeconds, setSimSeconds] = useState<number>(8 * 3600 + 42 * 60 + 15); // 08:42:15
 
   // Modal / Drawer Selection
-  const [selectedTrain, setSelectedTrain] = useState<Train | null>(null);
-  const [selectedStation, setSelectedStation] = useState<Station | null>(null);
+  const [selectedTrain, setSelectedTrain] = useState<SensorNode | null>(null);
+  const [selectedStation, setSelectedStation] = useState<PipelineSegment | null>(null);
 
-  // AI Optimization modal sequence
+  // Asynchronous sensor fetch state (simulating real sensor telemetry polling)
+  const [isFetchingSensor, setIsFetchingSensor] = useState<boolean>(false);
+  const [fetchingSensorId, setFetchingSensorId] = useState<string | null>(null);
+
+  // Hydraulic Solver modal sequence
   const [isOptimizing, setIsOptimizing] = useState<boolean>(false);
   const [optimizationStep, setOptimizationStep] = useState<number>(0);
   const [isCaseTransitioning, setIsCaseTransitioning] = useState<boolean>(false);
-
-  // Reference for animation tick
-  const lastTickRef = useRef<number>(Date.now());
 
   // Formatted simulation time string
   const formatTime = (totalSeconds: number): string => {
@@ -54,421 +58,239 @@ export function useSimulation() {
 
   const simTimeString = formatTime(simSeconds);
 
+  // Asynchronous sensor data fetcher with realistic network latency
+  const handleSelectSensorAsync = useCallback((sensor: SensorNode) => {
+    setIsFetchingSensor(true);
+    setFetchingSensorId(sensor.id);
+
+    // Simulate 350ms async gateway query
+    setTimeout(() => {
+      // Find latest sensor data with slight live jitter
+      setTrains(prev => prev.map(s => {
+        if (s.id === sensor.id) {
+          const jitter = (Math.random() - 0.5) * 0.02;
+          return {
+            ...s,
+            pressureBar: parseFloat((s.pressureBar + jitter).toFixed(2)),
+            lastUpdated: 'Just now'
+          };
+        }
+        return s;
+      }));
+
+      setSelectedTrain(sensor);
+      setIsFetchingSensor(false);
+      setFetchingSensorId(null);
+    }, 320);
+  }, []);
+
   // Recalculate KPIs based on current case & scenario
   const computeKpis = useCallback((caseType: CaseType, scenario: ScenarioType): KPISet => {
     const base = { ...CASE_KPIS[caseType] };
-    if (scenario === 'peak_hour') {
+    if (scenario === 'mainline_burst') {
       if (caseType === 'manual') {
-        base.avgWaitTimeMin = 14.8;
-        base.peakCongestion = 'CRITICAL';
-        base.responseTimeMin = 16.0;
-        base.headwayConsistencyPct = 48;
+        base.estimatedWaterLossM3h = 94.2;
+        base.networkHealthPct = 54;
+        base.leakLocalizationAccuracyM = 600;
+        base.meanResponseTimeSec = 18000;
       } else if (caseType === 'conventional') {
-        base.avgWaitTimeMin = 10.4;
-        base.peakCongestion = 'HIGH';
-        base.responseTimeMin = 8.5;
-        base.headwayConsistencyPct = 70;
+        base.estimatedWaterLossM3h = 42.0;
+        base.networkHealthPct = 72;
+        base.leakLocalizationAccuracyM = 150;
+        base.meanResponseTimeSec = 3600;
       } else {
-        base.avgWaitTimeMin = 5.6;
-        base.peakCongestion = 'LOW';
-        base.responseTimeMin = 0.6;
-        base.fleetUtilizationPct = 96;
-        base.headwayConsistencyPct = 98;
+        base.estimatedWaterLossM3h = 2.4;
+        base.networkHealthPct = 98;
+        base.leakLocalizationAccuracyM = 1.2;
+        base.meanResponseTimeSec = 42;
       }
-    } else if (scenario === 'breakdown_t04') {
-      if (caseType === 'manual') {
-        base.avgWaitTimeMin = 18.2;
-        base.peakCongestion = 'CRITICAL';
-        base.responseTimeMin = 22.0;
-      } else if (caseType === 'conventional') {
-        base.avgWaitTimeMin = 12.0;
-        base.peakCongestion = 'HIGH';
-        base.responseTimeMin = 10.0;
-      } else {
-        base.avgWaitTimeMin = 6.1;
-        base.peakCongestion = 'MEDIUM';
-        base.responseTimeMin = 1.1;
-        base.headwayConsistencyPct = 92;
-      }
-    } else if (scenario === 'off_peak') {
+    } else if (scenario === 'baseline') {
       if (caseType === 'ai') {
-        base.energyCostIndex = 62;
-        base.fleetUtilizationPct = 78;
-        base.avgWaitTimeMin = 4.8;
+        base.estimatedWaterLossM3h = 0.8;
+        base.networkHealthPct = 100;
+        base.activeLeaksDetected = 0;
+        base.criticalAlerts = 0;
       }
     }
     return base;
   }, []);
 
-  // Handle Case Switching
-  const handleCaseChange = (newCase: CaseType) => {
-    if (newCase === currentCase) return;
+  // Handle Scenario Change
+  const handleScenarioChange = useCallback((scenarioId: ScenarioType) => {
+    setActiveScenario(scenarioId);
+    const scenDef = SCENARIOS.find(s => s.id === scenarioId);
+    if (!scenDef) return;
+
+    setSimulationState(scenDef.simulationState);
+
+    // Update segment pressures and flows
+    setStations(prev => prev.map(station => {
+      const mult = scenDef.flowMultiplier[station.id] || 1.0;
+      const newActual = Math.round(station.expectedFlowM3h * mult);
+      const residual = parseFloat((((newActual - station.expectedFlowM3h) / station.expectedFlowM3h) * 100).toFixed(1));
+      
+      let status: PipelineSegment['status'] = 'NORMAL';
+      if (residual < -6 || station.id === 'S_03_EDAPPALLY' && scenDef.simulationState === 'LEAK_SUSPECTED') {
+        status = 'CRITICAL_LEAK';
+      } else if (residual < -2 || scenDef.simulationState === 'WARNING') {
+        status = 'PRESSURE_DROP';
+      }
+
+      return {
+        ...station,
+        actualFlowM3h: newActual,
+        flowResidualPct: residual,
+        status
+      };
+    }));
+
+    // Update sensor statuses
+    setTrains(prev => prev.map(sensor => {
+      const affected = scenDef.affectedSensors.find(a => a.id === sensor.id);
+      if (affected) {
+        return {
+          ...sensor,
+          status: affected.targetStatus,
+          lastUpdated: 'Just now'
+        };
+      }
+      return {
+        ...sensor,
+        status: scenDef.simulationState === 'NORMAL' ? 'NORMAL' : sensor.status
+      };
+    }));
+
+    // Add log entry
+    const newLog: HydraulicEventLog = {
+      id: `LOG-SCEN-${Date.now().toString().slice(-4)}`,
+      time: formatTime(simSeconds),
+      type: 'OPTIMIZATION',
+      title: `SCENARIO LOADED: ${scenDef.title.toUpperCase()}`,
+      detail: scenDef.description
+    };
+    setEventLogs(prev => [newLog, ...prev.slice(0, 24)]);
+
+    setKpis(computeKpis(currentCase, scenarioId));
+  }, [currentCase, computeKpis, simSeconds]);
+
+  // Handle Paradigm / Case Change
+  const handleCaseChange = useCallback((newCase: CaseType) => {
     setIsCaseTransitioning(true);
     setCurrentCase(newCase);
     setKpis(computeKpis(newCase, activeScenario));
 
-    // Log the event
-    const now = formatTime(simSeconds);
-    const newLog: AIEventLog = {
-      id: `LOG-CASE-${Date.now()}`,
-      time: now,
-      type: 'OPTIMIZATION',
-      title: `MODE SWITCHED: ${newCase.toUpperCase()} ARCHITECTURE`,
-      detail: newCase === 'ai' 
-        ? 'AI Dynamic Induction Engine engaged. Auto-balancing active headway.' 
-        : newCase === 'conventional' 
-        ? 'Reverted to fixed timetable intervals (Rule-based CBTC).' 
-        : 'Operator manual override enabled. Static timetable dispatch.'
-    };
-    setEventLogs(prev => [newLog, ...prev.slice(0, 24)]);
-
     setTimeout(() => {
       setIsCaseTransitioning(false);
-    }, 600);
-  };
+    }, 400);
+  }, [activeScenario, computeKpis]);
 
-  // Handle Scenario Selection
-  const handleScenarioChange = (scenarioId: ScenarioType) => {
-    setActiveScenario(scenarioId);
-    const scenarioDef = SCENARIOS.find(s => s.id === scenarioId);
-    if (!scenarioDef) return;
-
-    // 1. Update station loads
-    setStations(prev => prev.map(station => {
-      const baseStation = INITIAL_STATIONS.find(s => s.id === station.id)!;
-      const mult = scenarioDef.demandMultiplier[station.id] || 1.0;
-      const newDemand = Math.min(100, Math.round(baseStation.passengerDemandPct * mult));
-      const newWaiting = Math.round(baseStation.waitingCount * mult);
-      let status: Station['status'] = 'NORMAL';
-      if (newDemand >= 90) status = 'SURGE_CRITICAL';
-      else if (newDemand >= 75) status = 'HIGH_LOAD';
-      else if (station.id === 'EDAPPALLY' && mult > 1.2) status = 'BOTTLENECK';
-
-      return {
-        ...station,
-        passengerDemandPct: newDemand,
-        waitingCount: newWaiting,
-        status,
-        inflowRatePerMin: Math.round(baseStation.inflowRatePerMin * mult)
-      };
-    }));
-
-    // 2. Update affected trains
-    setTrains(prev => prev.map(train => {
-      const affected = scenarioDef.affectedTrains.find(at => at.id === train.id);
-      if (affected) {
-        if (affected.targetStatus === 'INDUCTING' || affected.targetStatus === 'IN_SERVICE') {
-          return {
-            ...train,
-            status: currentCase === 'ai' ? 'INDUCTING' : (currentCase === 'conventional' ? 'STANDBY' : 'STANDBY'),
-            speedKmh: currentCase === 'ai' ? 45 : 0,
-            location: currentCase === 'ai' ? 'Depot → Mainline Interlock' : train.location,
-            direction: 'DOWN'
-          };
-        } else if (affected.targetStatus === 'MAINTENANCE') {
-          return {
-            ...train,
-            status: 'MAINTENANCE',
-            speedKmh: 0,
-            location: 'Kalamassery Siding / Isolated',
-            driverStatus: 'MANUAL_OVERRIDE'
-          };
-        } else if (affected.targetStatus === 'STANDBY') {
-          return {
-            ...train,
-            status: 'STANDBY',
-            speedKmh: 0,
-            location: 'Muttom Depot Track 4',
-            direction: 'DEPOT'
-          };
-        }
-      }
-      return train;
-    }));
-
-    // 3. Update KPIs
-    setKpis(computeKpis(currentCase, scenarioId));
-
-    // 4. Log scenario events
-    const now = formatTime(simSeconds);
-    const newLog: AIEventLog = {
-      id: `LOG-SCENARIO-${Date.now()}`,
-      time: now,
-      type: scenarioId.includes('breakdown') ? 'WARNING' : 'ANOMALY',
-      title: `SCENARIO ACTIVATED: ${scenarioDef.title.toUpperCase()}`,
-      detail: scenarioDef.description
-    };
-    setEventLogs(prev => [newLog, ...prev.slice(0, 24)]);
-
-    // 5. Update recommendations if AI mode
-    if (currentCase === 'ai') {
-      if (scenarioId === 'peak_hour') {
-        const peakRec: AIRecommendation = {
-          id: `REC-PEAK-${Date.now()}`,
-          timestamp: now,
-          trainId: 'T06',
-          action: 'INDUCT_FLEET',
-          title: 'INDUCT T06 FOR EDAPPALLY PEAK SURGE',
-          targetStation: 'EDAPPALLY',
-          rationale: 'Passenger surge (+45%) detected. Deploying T06 reduces peak platform congestion.',
-          expectedWaitReduction: '-3.2 min wait time',
-          confidenceScore: 98.6,
-          status: 'PENDING'
-        };
-        setRecommendations(prev => [peakRec, ...prev]);
-      } else if (scenarioId === 'breakdown_t04') {
-        const breakdownRec: AIRecommendation = {
-          id: `REC-BRK-${Date.now()}`,
-          timestamp: now,
-          trainId: 'T08',
-          action: 'INDUCT_FLEET',
-          title: 'HOT-SWAP INDUCT T08 (REPLACE FAULTED T04)',
-          targetStation: 'KALAMASSERY',
-          rationale: 'T04 traction inverter failure. T08 immediately deployed to preserve 04:30 headway.',
-          expectedWaitReduction: '-4.1 min disruption cushion',
-          confidenceScore: 99.2,
-          status: 'PENDING'
-        };
-        setRecommendations(prev => [breakdownRec, ...prev]);
-      }
-    }
-  };
-
-  // Trigger Induction Recommendation Action
-  const handleDeployRecommendation = (recId: string) => {
-    const rec = recommendations.find(r => r.id === recId);
-    if (!rec) return;
-
-    setRecommendations(prev => prev.map(r => r.id === recId ? { ...r, status: 'DEPLOYED' } : r));
-
-    // Update the corresponding train to INDUCTING / IN_SERVICE
-    setTrains(prev => prev.map(t => {
-      if (t.id === rec.trainId) {
-        return {
-          ...t,
-          status: 'INDUCTING',
-          speedKmh: 52,
-          location: `Inducting → ${rec.targetStation}`,
-          direction: 'DOWN',
-          trackProgress: 12
-        };
-      }
-      return t;
-    }));
-
-    const now = formatTime(simSeconds);
-    const newLog: AIEventLog = {
-      id: `LOG-DEP-${Date.now()}`,
-      time: now,
-      type: 'DEPLOYMENT',
-      title: `OPERATOR EXECUTED INDUCTION: ${rec.trainId}`,
-      detail: `Plan executed: ${rec.title}. Target: ${rec.targetStation}`,
-      trainId: rec.trainId
-    };
-    setEventLogs(prev => [newLog, ...prev.slice(0, 24)]);
-  };
-
-  // Run Cinematic AI Optimization Sequence
-  const runAIOptimization = () => {
+  // Run Hydraulic Optimization Solver (5 Steps)
+  const runAIOptimization = useCallback(() => {
     if (isOptimizing) return;
     setIsOptimizing(true);
     setOptimizationStep(1);
 
-    const steps = [
-      { step: 1, delay: 500, title: 'SCANNING RAILWAY NETWORK & TRACK SENSORS...' },
-      { step: 2, delay: 1100, title: 'ANALYZING PASSENGER DEMAND & QUEUE GROWTH...' },
-      { step: 3, delay: 1800, title: 'CHECKING FLEET READINESS & DEPOT TURNOUT CAPACITY...' },
-      { step: 4, delay: 2500, title: 'EVALUATING MAINTENANCE MATRIX & ENERGY CONSUMPTION...' },
-      { step: 5, delay: 3200, title: 'GENERATING PARETO-OPTIMAL INDUCTION SCHEDULE...' }
-    ];
-
-    steps.forEach(({ step, delay }) => {
-      setTimeout(() => {
-        setOptimizationStep(step);
-      }, delay);
-    });
-
-    setTimeout(() => {
-      setIsOptimizing(false);
-      setOptimizationStep(0);
-
-      // Force case to AI if not already
-      if (currentCase !== 'ai') {
-        setCurrentCase('ai');
-      }
-
-      // Re-apply optimal state
-      setKpis(CASE_KPIS.ai);
-
-      // Induct T06 and T08 if ready
-      setTrains(prev => prev.map(t => {
-        if (t.id === 'T06' && (t.status === 'READY_INDUCTION' || t.status === 'STANDBY')) {
-          return {
-            ...t,
-            status: 'IN_SERVICE',
-            speedKmh: 58,
-            location: 'Mainline → Edappally',
-            trackProgress: 36,
-            direction: 'DOWN'
-          };
+    const stepInterval = setInterval(() => {
+      setOptimizationStep(prev => {
+        if (prev >= 5) {
+          clearInterval(stepInterval);
+          setTimeout(() => {
+            setIsOptimizing(false);
+            setOptimizationStep(0);
+            
+            // Add solver completion log
+            const completionLog: HydraulicEventLog = {
+              id: `LOG-SOLV-${Date.now().toString().slice(-4)}`,
+              time: formatTime(simSeconds),
+              type: 'DEPLOYMENT',
+              title: 'HYDRAULIC SOLVER CONVERGED (42ms)',
+              detail: 'Digital twin converged at 97.4% confidence. Segment S-14 leak pinpointed at Ch. 12+238.4m.'
+            };
+            setEventLogs(l => [completionLog, ...l.slice(0, 24)]);
+          }, 600);
+          return 5;
         }
-        return t;
-      }));
+        return prev + 1;
+      });
+    }, 450);
+  }, [isOptimizing, simSeconds]);
 
-      const now = formatTime(simSeconds);
-      const optLog: AIEventLog = {
-        id: `LOG-OPT-${Date.now()}`,
-        time: now,
-        type: 'OPTIMIZATION',
-        title: 'GLOBAL OPTIMIZATION COMPLETE',
-        detail: 'Dynamic induction plan applied. Fleet utilization increased to 91%. Avg wait reduced to 5.2 min.'
-      };
-      setEventLogs(prev => [optLog, ...prev.slice(0, 24)]);
-    }, 3800);
-  };
+  // Deploy / Execute Mitigation Recommendation (e.g. Valve Throttling)
+  const handleDeployRecommendation = useCallback((recId: string) => {
+    setRecommendations(prev => prev.map(rec => {
+      if (rec.id === recId) {
+        return {
+          ...rec,
+          status: 'DEPLOYED'
+        };
+      }
+      return rec;
+    }));
 
-  // Reset Simulation
-  const resetSimulation = () => {
-    setCurrentCase('ai');
-    setActiveScenario('baseline');
+    // Rebalance sensors
+    setTrains(prev => prev.map(s => {
+      if (s.id === 'FS-02') {
+        return { ...s, status: 'NORMAL', pressureBar: 4.4, flowRateM3h: 910 };
+      }
+      if (s.id === 'VS-06') {
+        return { ...s, status: 'NORMAL', flowRateM3h: 910 };
+      }
+      return s;
+    }));
+
+    // Update segment status
+    setStations(prev => prev.map(st => {
+      if (st.id === 'S_03_EDAPPALLY') {
+        return { ...st, status: 'MONITORING', flowResidualPct: -2.1 };
+      }
+      return st;
+    }));
+
+    setSimulationState('NORMAL');
+
+    const log: HydraulicEventLog = {
+      id: `LOG-MIT-${Date.now().toString().slice(-4)}`,
+      time: formatTime(simSeconds),
+      type: 'DEPLOYMENT',
+      title: 'VALVE V-04 MITIGATION EXECUTED',
+      detail: 'Pressure head throttled to 35%. Downstream surge suppressed, saving 70 m³/h water loss.'
+    };
+    setEventLogs(l => [log, ...l.slice(0, 24)]);
+  }, [simSeconds]);
+
+  // Reset Simulation to default state
+  const resetSimulation = useCallback(() => {
     setTrains(INITIAL_TRAINS);
     setStations(INITIAL_STATIONS);
     setKpis(CASE_KPIS.ai);
+    setCurrentCase('ai');
+    setActiveScenario('mainline_burst');
+    setSimulationState('LEAK_SUSPECTED');
     setRecommendations(INITIAL_AI_RECOMMENDATIONS);
     setEventLogs(INITIAL_AI_LOGS);
     setSimSeconds(8 * 3600 + 42 * 60 + 15);
     setSelectedTrain(null);
     setSelectedStation(null);
-    setIsPlaying(true);
-    setSimSpeed(1);
-  };
+  }, []);
 
-  // Main Simulation Animation Loop (Moves Trains along track)
+  // Clock tick effect
   useEffect(() => {
     if (!isPlaying) return;
-
-    const interval = setInterval(() => {
-      setSimSeconds(prev => prev + simSpeed);
-
-      setTrains(prevTrains => {
-        return prevTrains.map(train => {
-          if (train.status === 'STANDBY' || train.status === 'MAINTENANCE') {
-            return train;
-          }
-
-          // In manual mode, simulate slight speed jitter / uneven headway
-          let speedFactor = 0.25 * simSpeed;
-          if (currentCase === 'manual') {
-            speedFactor *= (0.8 + (parseInt(train.id.slice(1), 10) % 3) * 0.25);
-          } else if (currentCase === 'ai') {
-            speedFactor *= 1.1; // optimized travel
-          }
-
-          let newProgress = train.trackProgress;
-          let newDirection = train.direction;
-          let newLocation = train.location;
-          let newCurrentStation = train.currentStationId;
-          let newSpeed = train.speedKmh;
-
-          if (train.status === 'INDUCTING') {
-            // Train leaving depot and merging onto mainline
-            newProgress += speedFactor * 0.8;
-            if (newProgress >= 20) {
-              return {
-                ...train,
-                status: 'IN_SERVICE',
-                trackProgress: 22,
-                direction: 'DOWN',
-                location: 'Aluva → Kalamassery',
-                speedKmh: 58,
-                currentStationId: 'ALUVA'
-              };
-            }
-            return {
-              ...train,
-              trackProgress: newProgress,
-              speedKmh: 42
-            };
-          }
-
-          if (newDirection === 'DOWN') {
-            newProgress += speedFactor;
-            if (newProgress >= 96) {
-              newProgress = 96;
-              newDirection = 'UP';
-              newCurrentStation = 'TRIPUNITHURA';
-              newLocation = 'Tripunithura (Reversing)';
-            } else if (newProgress > 80) {
-              newCurrentStation = 'MG_ROAD';
-              newLocation = 'MG Road → Tripunithura';
-            } else if (newProgress > 64) {
-              newCurrentStation = 'KALOOR';
-              newLocation = 'Kaloor → MG Road';
-            } else if (newProgress > 48) {
-              newCurrentStation = 'EDAPPALLY';
-              newLocation = 'Edappally → Kaloor';
-            } else if (newProgress > 32) {
-              newCurrentStation = 'KALAMASSERY';
-              newLocation = 'Kalamassery → Edappally';
-            } else {
-              newCurrentStation = 'ALUVA';
-              newLocation = 'Aluva → Kalamassery';
-            }
-          } else if (newDirection === 'UP') {
-            newProgress -= speedFactor;
-            if (newProgress <= 18) {
-              newProgress = 18;
-              newDirection = 'DOWN';
-              newCurrentStation = 'ALUVA';
-              newLocation = 'Aluva (Reversing)';
-            } else if (newProgress < 34) {
-              newCurrentStation = 'KALAMASSERY';
-              newLocation = 'Kalamassery → Aluva';
-            } else if (newProgress < 50) {
-              newCurrentStation = 'EDAPPALLY';
-              newLocation = 'Edappally → Kalamassery';
-            } else if (newProgress < 66) {
-              newCurrentStation = 'KALOOR';
-              newLocation = 'Kaloor → Edappally';
-            } else if (newProgress < 82) {
-              newCurrentStation = 'MG_ROAD';
-              newLocation = 'MG Road → Kaloor';
-            } else {
-              newCurrentStation = 'TRIPUNITHURA';
-              newLocation = 'Tripunithura → MG Road';
-            }
-          }
-
-          return {
-            ...train,
-            trackProgress: newProgress,
-            direction: newDirection,
-            location: newLocation,
-            currentStationId: newCurrentStation,
-            speedKmh: newSpeed > 0 ? (50 + Math.round(Math.sin(newProgress) * 12)) : 0
-          };
-        });
-      });
-    }, 200);
-
-    return () => clearInterval(interval);
-  }, [isPlaying, simSpeed, currentCase]);
-
-  // Keep selected train synced with live train state
-  useEffect(() => {
-    if (selectedTrain) {
-      const fresh = trains.find(t => t.id === selectedTrain.id);
-      if (fresh) setSelectedTrain(fresh);
-    }
-  }, [trains]);
+    const timer = setInterval(() => {
+      setSimSeconds(prev => prev + 1);
+    }, 1000 / simSpeed);
+    return () => clearInterval(timer);
+  }, [isPlaying, simSpeed]);
 
   return {
     currentCase,
     handleCaseChange,
     activeScenario,
     handleScenarioChange,
-    trains,
-    stations,
+    trains, // sensors list
+    stations, // segments list
+    sensors: trains,
+    segments: stations,
     kpis,
     recommendations,
     eventLogs,
@@ -482,6 +304,11 @@ export function useSimulation() {
     setSelectedTrain,
     selectedStation,
     setSelectedStation,
+    isFetchingSensor,
+    fetchingSensorId,
+    handleSelectSensorAsync,
+    simulationState,
+    setSimulationState,
     isOptimizing,
     optimizationStep,
     runAIOptimization,

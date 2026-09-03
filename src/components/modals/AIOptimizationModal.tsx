@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cpu, Sparkles, CheckCircle2, Loader2, Zap } from 'lucide-react';
+import { Cpu, Sparkles, CheckCircle2, Loader2, Zap, Droplets } from 'lucide-react';
 
 interface AIOptimizationModalProps {
   isOpen: boolean;
@@ -10,11 +10,11 @@ export const AIOptimizationModal: React.FC<AIOptimizationModalProps> = ({ isOpen
   if (!isOpen) return null;
 
   const steps = [
-    { num: 1, title: 'SCANNING RAILWAY NETWORK & TRACK SENSORS' },
-    { num: 2, title: 'ANALYZING PASSENGER DEMAND & QUEUE GROWTH' },
-    { num: 3, title: 'CHECKING FLEET READINESS & DEPOT TURNOUT CAPACITY' },
-    { num: 4, title: 'EVALUATING MAINTENANCE MATRIX & TRACTION POWER' },
-    { num: 5, title: 'GENERATING PARETO-OPTIMAL INDUCTION SCHEDULE' }
+    { num: 1, title: 'INGESTING SPARSE SENSOR TELEMETRY & TRANSIENT BUFFERS' },
+    { num: 2, title: 'EXECUTING HYDRAULIC DIGITAL TWIN EQUATIONS (HAZEN-WILLIAMS)' },
+    { num: 3, title: 'COMPUTING FLOW RESIDUALS & PRESSURE GRADIENT RESIDUALS' },
+    { num: 4, title: 'NARROWING PROBABLE PIPELINE SEGMENT VIA NETWORK TOPOLOGY' },
+    { num: 5, title: 'SOLVING ACOUSTIC CROSS-CORRELATION (GCC-PHAT) LEAK PINPOINT' }
   ];
 
   const progressPct = Math.min(100, Math.round((step / 5) * 100));
@@ -26,15 +26,15 @@ export const AIOptimizationModal: React.FC<AIOptimizationModalProps> = ({ isOpen
         <div className="flex items-center justify-between pb-4 border-b border-[#F0F2F5] mb-6">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-2xl bg-[#144230] flex items-center justify-center text-white shadow-md">
-              <Cpu className="w-6 h-6" />
+              <Droplets className="w-6 h-6 text-[#22C55E]" />
             </div>
             <div>
               <h3 className="font-display font-black text-lg md:text-xl text-[#111827]">
-                KMRL AI Induction Engine Engaged
+                JalDrishti Hydraulic Intelligence Solver
               </h3>
               <span className="text-xs text-[#144230] font-semibold flex items-center gap-1">
                 <Sparkles className="w-3.5 h-3.5 text-[#22C55E]" />
-                <span>DYNAMIC PARETO-OPTIMAL MULTI-OBJECTIVE SOLVER</span>
+                <span>SPARSE SENSOR HYDRAULIC DIGITAL TWIN & PINPOINT SOLVER</span>
               </span>
             </div>
           </div>
@@ -95,9 +95,9 @@ export const AIOptimizationModal: React.FC<AIOptimizationModalProps> = ({ isOpen
         {/* Telemetry Footnote */}
         <div className="p-3 bg-[#F4F5F7] rounded-xl border border-[#E5E7EB] text-[10px] text-[#6B7280] flex items-center justify-between">
           <span className="flex items-center gap-1 text-[#144230] font-semibold">
-            <Zap className="w-3.5 h-3.5 fill-current text-[#22C55E]" /> 1,420 PERMUTATIONS TESTED
+            <Zap className="w-3.5 h-3.5 fill-current text-[#22C55E]" /> 26.8 KM PIPELINE NETWORK CONSTRAINTS
           </span>
-          <span className="text-[#144230] font-bold">SOLVE LATENCY: ~42ms</span>
+          <span className="text-[#144230] font-bold">SOLVER LATENCY: ~42ms</span>
         </div>
       </div>
     </div>

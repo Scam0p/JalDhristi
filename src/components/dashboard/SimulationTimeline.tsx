@@ -1,5 +1,5 @@
 import React from 'react';
-import { Play, Pause, RotateCcw, FastForward, Clock, Flag } from 'lucide-react';
+import { Play, Pause, RotateCcw, Clock, Droplets } from 'lucide-react';
 
 interface SimulationTimelineProps {
   simTime: string;
@@ -20,60 +20,52 @@ export const SimulationTimeline: React.FC<SimulationTimelineProps> = ({
   onSetSpeed,
   onReset
 }) => {
-  // 08:00 is 8 * 3600 = 28800
-  // 09:30 is 9.5 * 3600 = 34200
-  // Total span = 5400 seconds (90 min)
   const startSeconds = 8 * 3600;
   const endSeconds = 9.5 * 3600;
   const progressPct = Math.max(0, Math.min(100, ((simSeconds - startSeconds) / (endSeconds - startSeconds)) * 100));
 
   const milestones = [
-    { label: '08:00', title: 'START OF PEAK', pct: 0 },
-    { label: '08:15', title: 'COMMUTER INFLOW', pct: 16.6 },
-    { label: '08:30', title: 'DEMAND SPIKE', pct: 33.3, alert: true },
-    { label: '08:45', title: 'AI INDUCTION DEPLOY', pct: 50.0, highlight: true },
-    { label: '09:00', title: 'HEADWAY STABLE', pct: 66.6 },
-    { label: '09:15', title: 'PEAK RECEDING', pct: 83.3 },
-    { label: '09:30', title: 'NORMAL SERVICE', pct: 100 }
+    { label: '08:00', title: 'START MONITORING', pct: 0 },
+    { label: '08:15', title: 'BASE INFLOW', pct: 16.6 },
+    { label: '08:30', title: 'RESIDUAL SPIKE', pct: 33.3, alert: true },
+    { label: '08:45', title: 'TWIN PINPOINT', pct: 50.0, highlight: true },
+    { label: '09:00', title: 'VALVE THROTTLED', pct: 66.6 },
+    { label: '09:15', title: 'SURGE SETTLING', pct: 83.3 },
+    { label: '09:30', title: 'NOMINAL SERVICE', pct: 100 }
   ];
 
   return (
-    <div className="tech-panel-elevated tech-corner rounded-xl p-4 md:p-5 border border-white/15 shadow-2xl">
+    <div className="donezo-card p-4 md:p-5 select-none">
       <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
-        {/* Left: Live Playback Controls */}
+        {/* Playback Controls */}
         <div className="flex items-center gap-3">
-          {/* Play / Pause Toggle */}
           <button
             onClick={onTogglePlay}
-            className={`p-2.5 rounded-lg font-bold text-xs flex items-center gap-2 cursor-pointer transition-all active:scale-95 shadow-md ${
-              isPlaying
-                ? 'bg-[#E30613] text-white hover:bg-[#FF1A2E] shadow-[0_0_15px_rgba(227,6,19,0.5)]'
-                : 'bg-[#65FF9A] text-black hover:bg-[#59F3FF] shadow-[0_0_15px_rgba(101,255,154,0.5)]'
-            }`}
+            className="px-4 py-2 rounded-full font-bold text-xs flex items-center gap-2 cursor-pointer transition-all bg-[#144230] text-white hover:bg-[#1A543E] active:scale-95 shadow-sm"
           >
             {isPlaying ? (
               <>
-                <Pause className="w-4 h-4" />
+                <Pause className="w-3.5 h-3.5 fill-current" />
                 <span>PAUSE</span>
               </>
             ) : (
               <>
-                <Play className="w-4 h-4" />
-                <span>RESUME SIM</span>
+                <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
+                <span>RESUME</span>
               </>
             )}
           </button>
 
           {/* Speed Multipliers */}
-          <div className="flex items-center bg-black/50 border border-white/10 rounded-lg p-1 text-xs font-mono-tech">
+          <div className="flex items-center bg-[#F4F5F7] border border-[#E5E7EB] rounded-full p-0.5 text-xs font-mono-tech">
             {[0.5, 1, 2, 4].map((spd) => (
               <button
                 key={spd}
                 onClick={() => onSetSpeed(spd)}
-                className={`px-2.5 py-1 rounded transition-colors cursor-pointer ${
+                className={`px-2.5 py-1 rounded-full transition-colors cursor-pointer font-bold ${
                   simSpeed === spd
-                    ? 'bg-[#59F3FF] text-black font-bold shadow'
-                    : 'text-white/60 hover:text-white hover:bg-white/5'
+                    ? 'bg-[#144230] text-white shadow-sm'
+                    : 'text-[#6B7280] hover:text-[#111827]'
                 }`}
               >
                 {spd}×
@@ -81,47 +73,34 @@ export const SimulationTimeline: React.FC<SimulationTimelineProps> = ({
             ))}
           </div>
 
-          {/* Reset button */}
           <button
             onClick={onReset}
-            className="p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white/70 hover:text-white transition-colors cursor-pointer flex items-center gap-1.5 text-xs font-mono-tech"
-            title="Reset to 08:00 start"
+            className="p-2 rounded-full bg-[#F4F5F7] hover:bg-[#E5E7EB] text-[#6B7280] hover:text-[#111827] transition-colors cursor-pointer"
+            title="Reset Simulation"
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            <span>RESET</span>
           </button>
         </div>
 
         {/* Current Time Clock Readout */}
-        <div className="flex items-center gap-3 bg-[#0D1117] border border-[#59F3FF]/40 px-4 py-1.5 rounded-lg shadow-[0_0_15px_rgba(89,243,255,0.15)] font-mono-tech">
-          <Clock className="w-4 h-4 text-[#59F3FF]" />
-          <span className="text-sm md:text-base font-black text-[#59F3FF] tracking-widest">
+        <div className="flex items-center gap-2 bg-[#E8F7EE] border border-[#B7E4C7] px-3.5 py-1.5 rounded-full font-mono-tech text-xs">
+          <Clock className="w-3.5 h-3.5 text-[#144230]" />
+          <span className="font-black text-[#144230] tracking-widest">
             {simTime}
           </span>
-          <span className="text-[10px] text-white/50">IST MORNING PEAK</span>
+          <span className="text-[10px] text-[#144230]/70">IST</span>
         </div>
       </div>
 
       {/* Progress Bar & Timeline Track */}
-      <div className="relative pt-6 pb-2">
-        {/* Track Line */}
-        <div className="w-full h-2 bg-white/10 rounded-full relative overflow-hidden">
+      <div className="relative pt-4 pb-2">
+        <div className="w-full h-2 bg-[#F4F5F7] rounded-full relative overflow-hidden border border-[#E5E7EB]">
           <div
-            className="h-full bg-gradient-to-r from-[#59F3FF] via-[#E30613] to-[#65FF9A] rounded-full transition-all duration-300"
+            className="h-full bg-gradient-to-r from-[#144230] to-[#22C55E] rounded-full transition-all duration-300"
             style={{ width: `${progressPct}%` }}
-          ></div>
+          />
         </div>
 
-        {/* Scrubber Playhead */}
-        <div
-          className="absolute top-4 -translate-x-1/2 flex flex-col items-center pointer-events-none transition-all duration-300 z-20"
-          style={{ left: `${progressPct}%` }}
-        >
-          <div className="w-4 h-4 rounded-full bg-[#E30613] border-2 border-white shadow-[0_0_10px_#E30613] animate-pulse"></div>
-          <div className="w-0.5 h-6 bg-[#E30613]"></div>
-        </div>
-
-        {/* Milestones / Key Events along timeline */}
         <div className="relative w-full flex justify-between mt-3 text-[10px] font-mono-tech select-none">
           {milestones.map((m, i) => (
             <div
@@ -129,9 +108,9 @@ export const SimulationTimeline: React.FC<SimulationTimelineProps> = ({
               className="flex flex-col items-center"
               style={{ width: `${100 / milestones.length}%` }}
             >
-              <div className={`w-1.5 h-1.5 rounded-full mb-1 ${m.highlight ? 'bg-[#59F3FF] shadow-[0_0_6px_#59F3FF]' : m.alert ? 'bg-[#FF1A2E]' : 'bg-white/30'}`}></div>
-              <span className="font-bold text-white/90">{m.label}</span>
-              <span className={`text-[8px] uppercase tracking-tighter truncate max-w-[80px] text-center ${m.highlight ? 'text-[#59F3FF] font-bold' : m.alert ? 'text-[#FF1A2E]' : 'text-white/40'}`}>
+              <div className={`w-1.5 h-1.5 rounded-full mb-1 ${m.highlight ? 'bg-[#22C55E]' : m.alert ? 'bg-[#EF4444]' : 'bg-[#D1D5DB]'}`} />
+              <span className="font-bold text-[#111827]">{m.label}</span>
+              <span className={`text-[8px] uppercase tracking-tighter truncate max-w-[80px] text-center ${m.highlight ? 'text-[#144230] font-bold' : m.alert ? 'text-[#EF4444]' : 'text-[#9CA3AF]'}`}>
                 {m.title}
               </span>
             </div>

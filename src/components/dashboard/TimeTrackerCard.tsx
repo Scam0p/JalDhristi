@@ -1,5 +1,5 @@
 import React from 'react';
-import { Play, Pause, RotateCcw, Clock } from 'lucide-react';
+import { Play, Pause, RotateCcw, Clock, Droplets } from 'lucide-react';
 
 interface TimeTrackerCardProps {
   simTime: string;
@@ -20,13 +20,13 @@ export const TimeTrackerCard: React.FC<TimeTrackerCardProps> = ({
   onSetSpeed,
   onReset
 }) => {
-  // Timeline Progress Calculation (08:00 to 09:30)
+  // Timeline Progress Calculation (08:00 to 09:30 window)
   const startSeconds = 8 * 3600;
   const endSeconds = 9.5 * 3600;
   const progressPct = Math.max(0, Math.min(100, ((simSeconds - startSeconds) / (endSeconds - startSeconds)) * 100));
 
   return (
-    <div className="donezo-card-dark p-5 flex flex-col justify-between relative overflow-hidden bg-mesh-dark-green h-full shadow-lg">
+    <div className="donezo-card-dark p-5 flex flex-col justify-between relative overflow-hidden bg-mesh-dark-green h-full shadow-lg select-none">
       {/* Subtle Contour Wave Lines in Background */}
       <div className="absolute inset-0 pointer-events-none opacity-20 bg-wavy-lines">
         <svg className="w-full h-full" viewBox="0 0 200 200" fill="none">
@@ -40,31 +40,31 @@ export const TimeTrackerCard: React.FC<TimeTrackerCardProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
           <span className="text-xs font-semibold text-white/80 tracking-wide font-display">
-            Simulation Time Engine
+            Hydraulic Telemetry Clock
           </span>
           <div className="flex items-center gap-1.5 text-[10px] font-mono-tech text-[#34D399] bg-white/10 px-2 py-0.5 rounded-full">
             <span className={`w-1.5 h-1.5 rounded-full ${isPlaying ? 'bg-[#22C55E]' : 'bg-[#F59E0B]'}`} />
-            <span>{isPlaying ? 'RUNNING' : 'PAUSED'}</span>
+            <span>{isPlaying ? 'STREAMING' : 'PAUSED'}</span>
           </div>
         </div>
 
-        {/* Large Digital Time (Matching reference '01:24:08') */}
+        {/* Large Digital Time */}
         <div className="text-center my-3">
           <div className="font-mono-tech font-black text-3xl sm:text-4xl text-white tracking-widest">
             {simTime}
           </div>
           <span className="text-[10px] font-mono-tech text-white/50 block mt-0.5">
-            08:00 — 09:30 MORNING PEAK WINDOW
+            08:00 — 09:30 MORNING CONSUMPTION PEAK
           </span>
         </div>
 
-        {/* Playback Controls (Circular Buttons like reference) */}
+        {/* Playback Controls (Circular Buttons) */}
         <div className="flex items-center justify-center gap-3 my-2">
           {/* Play / Pause Toggle Circle Button */}
           <button
             onClick={onTogglePlay}
             className="w-11 h-11 rounded-full bg-white hover:bg-[#F3F4F6] text-[#144230] flex items-center justify-center transition-transform active:scale-95 shadow-md cursor-pointer"
-            title={isPlaying ? 'Pause Simulation' : 'Run Simulation'}
+            title={isPlaying ? 'Pause Telemetry' : 'Resume Telemetry'}
             aria-label={isPlaying ? 'Pause' : 'Play'}
           >
             {isPlaying ? (
@@ -98,28 +98,21 @@ export const TimeTrackerCard: React.FC<TimeTrackerCardProps> = ({
                 className={`px-2 py-0.5 rounded text-[10px] font-bold transition-colors cursor-pointer ${
                   simSpeed === spd
                     ? 'bg-[#22C55E] text-white'
-                    : 'text-white/60 hover:text-white hover:bg-white/10'
+                    : 'text-white/60 hover:text-white'
                 }`}
               >
-                {spd}×
+                {spd}x
               </button>
             ))}
           </div>
         </div>
 
-        {/* Progress Bar */}
-        <div className="space-y-1">
-          <div className="flex justify-between text-[9px] font-mono-tech text-white/50">
-            <span>08:00</span>
-            <span className="text-[#34D399] font-bold">{progressPct.toFixed(0)}% Elapsed</span>
-            <span>09:30</span>
-          </div>
-          <div className="w-full h-1.5 bg-white/15 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-[#22C55E] rounded-full transition-all duration-300"
-              style={{ width: `${progressPct}%` }}
-            />
-          </div>
+        {/* Mini Scrubber Bar */}
+        <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
+          <div
+            className="bg-[#22C55E] h-full rounded-full transition-all duration-300"
+            style={{ width: `${progressPct}%` }}
+          />
         </div>
       </div>
     </div>

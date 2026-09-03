@@ -1,8 +1,8 @@
 import React from 'react';
 import { 
   LayoutDashboard, 
-  TrainTrack, 
-  MapPin, 
+  Droplets, 
+  Activity,
   Sliders, 
   Cpu, 
   BarChart3, 
@@ -37,16 +37,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'fleet', label: 'Fleet Roster', icon: TrainTrack, badge: `${activeTrainsCount}/${totalTrainsCount}` },
-    { id: 'network', label: 'Corridor Map', icon: MapPin },
+    { id: 'pipeline', label: 'Pipeline Sim', icon: Droplets },
+    { id: 'fleet', label: 'Sensor Fleet', icon: Activity, badge: `${activeTrainsCount}/${totalTrainsCount}` },
+    { id: 'ai-engine', label: 'Hydraulic AI', icon: Cpu },
     { id: 'scenarios', label: 'Scenarios', icon: Sliders },
-    { id: 'ai-engine', label: 'AI Decisions', icon: Cpu },
-    { id: 'comparison', label: 'Analytics', icon: BarChart3 }
+    { id: 'comparison', label: 'Benchmarks', icon: BarChart3 }
   ];
 
   const generalItems = [
-    { id: 'settings', label: 'Settings', icon: Settings, action: () => {} },
-    { id: 'help', label: 'Technical Docs', icon: HelpCircle, action: () => window.open('https://kmrl.co.in', '_blank') },
+    { id: 'settings', label: 'System Settings', icon: Settings, action: () => {} },
+    { id: 'help', label: 'Architecture Docs', icon: HelpCircle, action: () => window.open('https://github.com/Scam0p/JalDhristi', '_blank') },
     { id: 'reset', label: 'Reset System', icon: RotateCcw, action: onReset }
   ];
 
@@ -58,7 +58,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     }
     setActiveTab(id);
     onCloseMobile?.();
-    const element = document.getElementById(`${id}-section`);
+    const element = document.getElementById(`${id}-section`) || document.getElementById('control-deck');
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
@@ -71,23 +71,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="flex items-center justify-between px-3 mb-8">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-[#144230] flex items-center justify-center text-white shadow-md">
-              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <circle cx="12" cy="12" r="9" stroke="currentColor" strokeOpacity="0.4" />
-                <path d="M12 3a9 9 0 0 1 9 9" stroke="#22C55E" strokeLinecap="round" />
-                <circle cx="12" cy="12" r="4" fill="#22C55E" stroke="none" />
-              </svg>
+              <Droplets className="w-5 h-5 text-[#22C55E]" />
             </div>
             <div>
               <div className="flex items-center gap-1.5">
                 <span className="font-display font-black text-lg text-[#111827] tracking-tight">
-                  KMRL
+                  JalDrishti
                 </span>
                 <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#E8F7EE] text-[#144230]">
-                  SIH 2026
+                  WATER AI
                 </span>
               </div>
               <p className="text-[11px] text-[#6B7280] font-medium leading-none mt-0.5">
-                Train Induction AI
+                Water Intelligence
               </p>
             </div>
           </div>
@@ -104,13 +100,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
           )}
         </div>
 
-        {/* Main Menu Section */}
+        {/* Navigation Sections */}
         <div className="space-y-6">
           <div>
-            <span className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider px-3 block mb-2 font-mono-tech">
-              MENU
+            <span className="text-[10px] font-mono-tech uppercase tracking-wider text-[#9CA3AF] px-3 font-semibold block mb-2">
+              MONITORING DECK
             </span>
-            <nav className="space-y-1">
+            <div className="space-y-1">
               {menuItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = activeTab === item.id;
@@ -119,79 +115,83 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <button
                     key={item.id}
                     onClick={() => handleNavClick(item.id)}
-                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 cursor-pointer relative ${
+                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-full font-display text-xs font-semibold transition-all cursor-pointer ${
                       isActive
-                        ? 'bg-[#E8F7EE] text-[#144230] font-bold'
+                        ? 'bg-[#144230] text-white shadow-sm'
                         : 'text-[#6B7280] hover:text-[#111827] hover:bg-[#F4F5F7]'
                     }`}
                   >
-                    {/* Active Left Indicator Bar */}
-                    {isActive && (
-                      <span className="absolute left-0 top-1.5 bottom-1.5 w-1 bg-[#144230] rounded-r-full" />
-                    )}
-
                     <div className="flex items-center gap-3">
-                      <Icon className={`w-4 h-4 ${isActive ? 'text-[#144230]' : 'text-[#9CA3AF]'}`} />
+                      <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-[#9CA3AF]'}`} />
                       <span>{item.label}</span>
                     </div>
 
                     {item.badge && (
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full font-mono-tech ${
-                        isActive ? 'bg-[#144230] text-white' : 'bg-[#E5E7EB] text-[#4B5563]'
-                      }`}>
+                      <span
+                        className={`text-[10px] font-mono-tech px-2 py-0.5 rounded-full font-bold ${
+                          isActive
+                            ? 'bg-white/20 text-white'
+                            : 'bg-[#E8F7EE] text-[#144230]'
+                        }`}
+                      >
                         {item.badge}
                       </span>
                     )}
                   </button>
                 );
               })}
-            </nav>
+            </div>
           </div>
 
-          {/* General Section */}
           <div>
-            <span className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider px-3 block mb-2 font-mono-tech">
-              GENERAL
+            <span className="text-[10px] font-mono-tech uppercase tracking-wider text-[#9CA3AF] px-3 font-semibold block mb-2">
+              SYSTEM
             </span>
-            <nav className="space-y-1">
+            <div className="space-y-1">
               {generalItems.map((item) => {
                 const Icon = item.icon;
                 return (
                   <button
                     key={item.id}
                     onClick={() => handleNavClick(item.id, item.action)}
-                    className="w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-medium text-[#6B7280] hover:text-[#111827] hover:bg-[#F4F5F7] transition-colors cursor-pointer"
+                    className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-full font-display text-xs font-semibold text-[#6B7280] hover:text-[#111827] hover:bg-[#F4F5F7] transition-all cursor-pointer"
                   >
                     <Icon className="w-4 h-4 text-[#9CA3AF]" />
                     <span>{item.label}</span>
                   </button>
                 );
               })}
-            </nav>
+            </div>
           </div>
         </div>
+      </div>
+
+      {/* Network Health Metric Pill at Bottom */}
+      <div className="p-3.5 rounded-2xl bg-[#E8F7EE] border border-[#B7E4C7] flex items-center justify-between text-xs font-mono-tech">
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-[#22C55E] animate-pulse" />
+          <span className="text-[#144230] font-bold text-[11px]">HYDRAULIC TWIN</span>
+        </div>
+        <span className="text-[#144230] font-black text-xs">98.2%</span>
       </div>
     </div>
   );
 
   return (
     <>
-      {/* 1. Desktop Persistent Sidebar (Unchanged w-64, hidden on small screens) */}
-      <aside className="hidden lg:flex w-64 bg-white border-r border-[#ECEEF2] flex-col justify-between h-screen sticky top-0 z-30 flex-shrink-0 shadow-sm">
+      {/* Desktop Persistent Sidebar */}
+      <aside className="hidden lg:block w-64 bg-white border-r border-[#ECEEF2] flex-shrink-0 h-screen sticky top-0 overflow-y-auto">
         {sidebarContent}
       </aside>
 
-      {/* 2. Mobile Slide-out Drawer (Visible ONLY when isMobileOpen is true) */}
+      {/* Mobile Slide-out Drawer */}
       {isMobileOpen && (
         <div className="fixed inset-0 z-50 lg:hidden flex">
-          {/* Backdrop */}
           <div
+            className="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity"
             onClick={onCloseMobile}
-            className="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
           />
-
-          {/* Drawer content */}
-          <div className="relative w-72 max-w-[80vw] bg-white h-full shadow-2xl z-10 flex flex-col animate-in slide-in-from-left duration-200">
+          <div className="relative w-72 max-w-[80vw] bg-white h-full shadow-2xl flex-shrink-0 z-10 animate-in slide-in-from-left duration-200">
             {sidebarContent}
           </div>
         </div>
