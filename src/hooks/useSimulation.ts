@@ -130,7 +130,7 @@ export function useSimulation() {
       const residual = parseFloat((((newActual - station.expectedFlowM3h) / station.expectedFlowM3h) * 100).toFixed(1));
       
       let status: PipelineSegment['status'] = 'NORMAL';
-      if (residual < -6 || station.id === 'S_03_EDAPPALLY' && scenDef.simulationState === 'LEAK_SUSPECTED') {
+      if (residual < -6 || station.id === 'S_03_ZONE_Z07' && scenDef.simulationState === 'LEAK_SUSPECTED') {
         status = 'CRITICAL_LEAK';
       } else if (residual < -2 || scenDef.simulationState === 'WARNING') {
         status = 'PRESSURE_DROP';
@@ -240,7 +240,7 @@ export function useSimulation() {
 
     // Update segment status
     setStations(prev => prev.map(st => {
-      if (st.id === 'S_03_EDAPPALLY') {
+      if (st.id === 'S_03_ZONE_Z07') {
         return { ...st, status: 'MONITORING', flowResidualPct: -2.1 };
       }
       return st;

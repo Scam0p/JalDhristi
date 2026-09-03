@@ -50,10 +50,10 @@ export const DecisionFeed: React.FC<DecisionFeedProps> = ({ logs }) => {
           </div>
           <div>
             <h3 className="font-display font-bold text-sm md:text-base text-[#111827]">
-              Hydraulic Event & Telemetry Stream
+              Telemetry Stream & Hydraulic Audit Log
             </h3>
             <span className="text-[9px] font-mono-tech text-[#6B7280]">
-              REAL-TIME NETWORK AUDIT LOG
+              BENGALURU CAUVERY NETWORK SENSOR TELEMETRY
             </span>
           </div>
         </div>

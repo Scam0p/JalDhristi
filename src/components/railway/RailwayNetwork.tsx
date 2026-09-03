@@ -96,7 +96,7 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
                 Pipeline Simulation & Acoustic Localisation
               </h2>
               <span className="text-[10px] font-mono-tech px-2.5 py-0.5 rounded-full bg-[#E8F7EE] text-[#144230] border border-[#B7E4C7] font-bold">
-                SEGMENT S-14 • DN600 DUCTILE IRON • 650M SPAN
+                ZONE Z-07 • SEGMENT S-14 • DN600 DUCTILE IRON • 650M SPAN
               </span>
             </div>
             <p className="text-xs text-[#6B7280] mt-0.5">
@@ -603,7 +603,7 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
       <div className="p-4 rounded-2xl bg-white border border-[#ECEEF2]">
         <div className="flex items-center justify-between mb-3">
           <span className="text-xs font-bold text-[#111827] font-display uppercase tracking-wider">
-            Water Transmission Corridor • 26.8 KM Network Overview
+            Bengaluru Cauvery Transmission Corridor • 26.8 KM Network Overview
           </span>
           <span className="text-[10px] font-mono-tech text-[#6B7280]">
             CLICK SEGMENT NODE TO INSPECT HYDRAULIC GRADE LINE

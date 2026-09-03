@@ -25,12 +25,12 @@ export type SensorType =
 
 export type SegmentId = 
   | 'RESERVOIR' 
-  | 'S_01_ALUVA' 
-  | 'S_02_KALAMASSERY' 
-  | 'S_03_EDAPPALLY' 
-  | 'S_04_KALOOR' 
+  | 'S_01_KENGERI' 
+  | 'S_02_RRNAGAR' 
+  | 'S_03_ZONE_Z07' 
+  | 'S_04_KORAMANGALA' 
   | 'S_05_MG_ROAD' 
-  | 'S_06_TRIPUNITHURA';
+  | 'S_06_WHITEFIELD';
 
 export interface MitigationPlan {
   action: 'ISOLATE_VALVE' | 'PRESSURE_REDUCE' | 'ACOUSTIC_VALIDATION' | 'STANDBY_LOGGER';
@@ -158,7 +158,7 @@ export interface ChartDataPoint {
   waterLoss: number;
 }
 
-// Aliases for compatibility during transition
+// Aliases for compatibility
 export type Train = SensorNode;
 export type Station = PipelineSegment;
 export type AIRecommendation = LeakAlert;

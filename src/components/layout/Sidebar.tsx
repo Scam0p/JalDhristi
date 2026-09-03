@@ -38,8 +38,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'pipeline', label: 'Pipeline Sim', icon: Droplets },
+    { id: 'hydraulic-events', label: 'Hydraulic Events', icon: Cpu },
+    { id: 'telemetry-stream', label: 'Telemetry Stream', icon: Activity },
     { id: 'fleet', label: 'Sensor Fleet', icon: Activity, badge: `${activeTrainsCount}/${totalTrainsCount}` },
-    { id: 'ai-engine', label: 'Hydraulic AI', icon: Cpu },
     { id: 'scenarios', label: 'Scenarios', icon: Sliders },
     { id: 'comparison', label: 'Benchmarks', icon: BarChart3 }
   ];
@@ -83,7 +84,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </span>
               </div>
               <p className="text-[11px] text-[#6B7280] font-medium leading-none mt-0.5">
-                Water Intelligence
+                Cauvery Water Network • Bengaluru
               </p>
             </div>
           </div>

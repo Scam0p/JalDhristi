@@ -23,7 +23,7 @@ export const CommandFooter: React.FC = () => {
                 JalDrishti • Smart Water Intelligence System
               </span>
               <span className="text-[10px] text-[#6B7280] font-normal">
-                Sparse Sensor Monitoring • Hydraulic Digital Twin Simulation • Targeted Acoustic Leak Pinpointing
+                Bengaluru&apos;s Cauvery Water Pipeline Network • Sparse Sensor Monitoring • Acoustic Leak Pinpointing
               </span>
             </div>
           </div>
@@ -94,7 +94,7 @@ export const CommandFooter: React.FC = () => {
               System Architecture
             </span>
             <p className="text-[11px] text-[#9CA3AF] leading-relaxed">
-              JalDrishti: 4-stage pipeline intelligence workflow (Detect → Narrow → Pinpoint → Respond).
+              JalDrishti: 4-stage pipeline intelligence workflow (Detect → Narrow → Pinpoint → Respond) across Bengaluru&apos;s Cauvery transmission network.
             </p>
           </div>
 
@@ -121,7 +121,7 @@ export const CommandFooter: React.FC = () => {
               Deployment Target
             </span>
             <p className="text-[11px] text-[#9CA3AF] leading-relaxed">
-              Municipal water utilities, transmission mains, and smart urban distribution networks.
+              BWSSB municipal water network, Cauvery transmission mains, and smart urban distribution zones across Bengaluru.
             </p>
           </div>
         </div>

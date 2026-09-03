@@ -39,7 +39,7 @@ export const TopBar: React.FC<TopBarProps> = ({
           <Search className="w-4 h-4 text-[#9CA3AF] absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search sensor (e.g. PS-01, FS-02), segment S-14..."
+            placeholder="Search sensor (e.g. PS-01, FS-02), Zone Z-07, segment S-14..."
             className="w-full pl-9 sm:pl-10 pr-4 sm:pr-12 py-2 rounded-full bg-[#F4F5F7] border border-transparent hover:border-[#E5E7EB] focus:border-[#144230] focus:bg-white focus:outline-none text-xs text-[#111827] placeholder-[#9CA3AF] transition-all font-medium"
           />
           <span className="hidden sm:inline-block absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono-tech text-[#9CA3AF] bg-white px-1.5 py-0.5 rounded border border-[#E5E7EB] shadow-2xs font-semibold">
@@ -85,7 +85,7 @@ export const TopBar: React.FC<TopBarProps> = ({
               Chief Hydraulic Engineer
             </div>
             <div className="text-[10px] text-[#6B7280] font-mono-tech leading-none mt-1">
-              control@jaldrishti.gov.in
+              bwssb.operations@jaldrishti.gov.in
             </div>
           </div>
           <ChevronDown className="w-3.5 h-3.5 text-[#9CA3AF] hidden sm:block" />

@@ -20,7 +20,7 @@ import { DecisionFeed } from './DecisionFeed';
 import { FleetOverview } from '../fleet/FleetOverview';
 import { ScenarioControlCenter } from '../scenarios/ScenarioControlCenter';
 import { PerformanceComparison } from '../comparison/PerformanceComparison';
-import { Plus, RotateCcw, Droplets } from 'lucide-react';
+import { RotateCcw, Droplets } from 'lucide-react';
 
 interface ControlCentreProps {
   currentCase: CaseType;
@@ -96,11 +96,11 @@ export const ControlCentre: React.FC<ControlCentreProps> = ({
               JalDrishti Operations Deck
             </h1>
             <span className="text-[10px] font-mono-tech font-bold px-2 py-0.5 rounded-full bg-[#E8F7EE] text-[#144230] border border-[#B7E4C7]">
-              SMART WATER INTELLIGENCE
+              BENGALURU • CAUVERY NETWORK
             </span>
           </div>
           <p className="text-sm text-[#6B7280] font-normal mt-0.5">
-            Sparse sensor monitoring, hydraulic digital twin intelligence, and targeted acoustic leak pinpointing.
+            Bengaluru&apos;s Cauvery Water Pipeline Network — Sparse sensor monitoring, hydraulic digital twin intelligence, and targeted acoustic leak pinpointing.
           </p>
         </div>
 
@@ -169,23 +169,12 @@ export const ControlCentre: React.FC<ControlCentreProps> = ({
         </div>
       </section>
 
-      {/* 4. Lower Operations Deck: Progress Gauge & Hydraulic Event Stream */}
-      <section className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
-        {/* Progress Gauge (4 Cols) */}
-        <div className="lg:col-span-4">
-          <ProgressGaugeCard
-            kpis={kpis}
-            currentCase={currentCase}
-          />
-        </div>
+      {/* ========================================================================= */}
+      {/* REQUIRED REORDERED CORE WORKFLOW SECTIONS                                  */}
+      {/* 1. PIPELINE SIMULATION -> 2. HYDRAULIC EVENTS -> 3. TELEMETRY STREAM     */}
+      {/* ========================================================================= */}
 
-        {/* Live Event Stream (8 Cols) */}
-        <div className="lg:col-span-8">
-          <DecisionFeed logs={eventLogs} />
-        </div>
-      </section>
-
-      {/* 5. Master Interactive Pipeline Simulation (formerly Train Simulation) */}
+      {/* 1. PIPELINE SIMULATION (Interactive pipeline with Sensor A and Sensor B) */}
       <section id="pipeline-section">
         <RailwayNetwork
           trains={trains}
@@ -212,8 +201,8 @@ export const ControlCentre: React.FC<ControlCentreProps> = ({
         />
       </section>
 
-      {/* 6. Hydraulic Digital Twin Engine */}
-      <section id="ai-engine-section">
+      {/* 2. HYDRAULIC EVENTS (Hydraulic Events & Digital Twin Intelligence) */}
+      <section id="hydraulic-events-section">
         <AIEnginePanel
           recommendations={recommendations}
           onDeployRecommendation={onDeployRecommendation}
@@ -223,7 +212,27 @@ export const ControlCentre: React.FC<ControlCentreProps> = ({
         />
       </section>
 
-      {/* 7. Sensor Fleet Operational Inventory */}
+      {/* 3. TELEMETRY STREAM (Real-Time Telemetry Stream & NRW Progress Gauge) */}
+      <section id="telemetry-stream-section" className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+        {/* Water Balance & NRW Progress Gauge (4 Cols) */}
+        <div className="lg:col-span-4">
+          <ProgressGaugeCard
+            kpis={kpis}
+            currentCase={currentCase}
+          />
+        </div>
+
+        {/* Real-time Telemetry Stream & Event Log (8 Cols) */}
+        <div className="lg:col-span-8">
+          <DecisionFeed logs={eventLogs} />
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* OTHER EXISTING DASHBOARD SECTIONS (Preserved)                             */}
+      {/* ========================================================================= */}
+
+      {/* 4. Sensor Fleet Operational Inventory */}
       <section id="fleet-section">
         <FleetOverview
           trains={trains}
@@ -232,7 +241,7 @@ export const ControlCentre: React.FC<ControlCentreProps> = ({
         />
       </section>
 
-      {/* 8. Operational Paradigm Case Switcher */}
+      {/* 5. Operational Paradigm Case Switcher */}
       <section id="cases-section">
         <CaseSwitcher
           currentCase={currentCase}
@@ -241,7 +250,7 @@ export const ControlCentre: React.FC<ControlCentreProps> = ({
         />
       </section>
 
-      {/* 9. Contingency Scenarios Simulator */}
+      {/* 6. Contingency Scenarios Simulator */}
       <section id="scenarios-section">
         <ScenarioControlCenter
           activeScenario={activeScenario}
@@ -249,7 +258,7 @@ export const ControlCentre: React.FC<ControlCentreProps> = ({
         />
       </section>
 
-      {/* 10. Empirical Performance Benchmark & Comparison */}
+      {/* 7. Empirical Performance Benchmark & Comparison */}
       <section id="comparison-section">
         <PerformanceComparison currentCase={currentCase} />
       </section>

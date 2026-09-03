@@ -35,10 +35,10 @@ export const AIEnginePanel: React.FC<AIEnginePanelProps> = ({
             </div>
             <div>
               <h3 className="font-display font-bold text-base text-[#111827]">
-                Hydraulic Intelligence & Digital Twin Engine
+                Hydraulic Events & Digital Twin Intelligence
               </h3>
               <span className="text-[10px] font-mono-tech text-[#6B7280]">
-                JALDRISHTI-NEURAL-PINPOINT-SOLVER v3.1
+                JALDRISHTI-CAUVERY-SOLVER v3.1 • BENGALURU WATER NETWORK
               </span>
             </div>
           </div>

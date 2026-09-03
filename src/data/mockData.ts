@@ -6,22 +6,18 @@ import {
   HydraulicEventLog, 
   ScenarioDefinition, 
   ChartDataPoint, 
-  CaseType,
-  Station,
-  Train,
-  AIRecommendation,
-  AIEventLog
+  CaseType
 } from '../types/simulation';
 
 export const INITIAL_STATIONS: PipelineSegment[] = [
   {
     id: 'RESERVOIR',
-    name: 'Muttom Terminal Reservoir & Pumping Station',
-    code: 'RES',
+    name: 'TK Halli Cauvery Master Pumping Station & Header',
+    code: 'TKH',
     kmPosition: 0.0,
     lengthMeters: 450,
     diameterMm: 900,
-    material: 'Reinforced Concrete / Steel Header',
+    material: 'Prestressed Concrete / Mild Steel Header',
     xPercent: 8,
     yPercent: 20,
     expectedFlowM3h: 1250,
@@ -36,8 +32,8 @@ export const INITIAL_STATIONS: PipelineSegment[] = [
     attachedSensors: ['RV-05', 'PT-07']
   },
   {
-    id: 'S_01_ALUVA',
-    name: 'S-01 Aluva Intake Transmission Main',
+    id: 'S_01_KENGERI',
+    name: 'S-01 Cauvery South Transmission Main (Kengeri Intake)',
     code: 'S-01',
     kmPosition: 3.2,
     lengthMeters: 3200,
@@ -57,8 +53,8 @@ export const INITIAL_STATIONS: PipelineSegment[] = [
     attachedSensors: ['PT-07']
   },
   {
-    id: 'S_02_KALAMASSERY',
-    name: 'S-02 Kalamassery Distribution Feeder',
+    id: 'S_02_RRNAGAR',
+    name: 'S-02 Rajarajeshwari Nagar (RR Nagar) Distribution Main',
     code: 'S-02',
     kmPosition: 8.4,
     lengthMeters: 5200,
@@ -78,8 +74,8 @@ export const INITIAL_STATIONS: PipelineSegment[] = [
     attachedSensors: ['VB-04']
   },
   {
-    id: 'S_03_EDAPPALLY',
-    name: 'S-03 / S-14 Edappally Junction Trunk (Primary Monitored)',
+    id: 'S_03_ZONE_Z07',
+    name: 'S-03 / S-14 Zone Z-07 Distribution Trunk (Primary Monitored)',
     code: 'S-14',
     kmPosition: 13.6,
     lengthMeters: 5200,
@@ -100,8 +96,8 @@ export const INITIAL_STATIONS: PipelineSegment[] = [
     attachedSensors: ['PS-01', 'FS-02', 'AL-03', 'VS-06']
   },
   {
-    id: 'S_04_KALOOR',
-    name: 'S-04 Kaloor Commercial Ring',
+    id: 'S_04_KORAMANGALA',
+    name: 'S-04 Koramangala - HSR Ring Main',
     code: 'S-04',
     kmPosition: 17.8,
     lengthMeters: 4200,
@@ -122,7 +118,7 @@ export const INITIAL_STATIONS: PipelineSegment[] = [
   },
   {
     id: 'S_05_MG_ROAD',
-    name: 'S-05 MG Road CBD Distribution Main',
+    name: 'S-05 MG Road CBD Distribution Feeder (Bengaluru Central)',
     code: 'S-05',
     kmPosition: 21.5,
     lengthMeters: 3700,
@@ -142,8 +138,8 @@ export const INITIAL_STATIONS: PipelineSegment[] = [
     attachedSensors: []
   },
   {
-    id: 'S_06_TRIPUNITHURA',
-    name: 'S-06 Tripunithura Southern Extension',
+    id: 'S_06_WHITEFIELD',
+    name: 'S-06 Whitefield / Mahadevapura Eastern Extension',
     code: 'S-06',
     kmPosition: 26.8,
     lengthMeters: 5300,
@@ -170,8 +166,8 @@ export const INITIAL_TRAINS: SensorNode[] = [
     name: 'Sensor A — Upstream Pressure Transducer',
     sensorType: 'PRESSURE_TRANSDUCER',
     status: 'NORMAL',
-    location: 'Pipeline Segment S-14 (Ch. 12+200m)',
-    currentSegmentId: 'S_03_EDAPPALLY',
+    location: 'Zone Z-07 • Pipeline Segment S-14 (Ch. 12+200m)',
+    currentSegmentId: 'S_03_ZONE_Z07',
     chainageKm: 12.2,
     pressureBar: 4.8,
     flowRateM3h: 930,
@@ -195,8 +191,8 @@ export const INITIAL_TRAINS: SensorNode[] = [
     name: 'Sensor B — Downstream Electromagnetic Flow Meter',
     sensorType: 'ELECTROMAGNETIC_FLOW_METER',
     status: 'WARNING',
-    location: 'Pipeline Segment S-14 (Ch. 12+850m)',
-    currentSegmentId: 'S_03_EDAPPALLY',
+    location: 'Zone Z-07 • Pipeline Segment S-14 (Ch. 12+850m)',
+    currentSegmentId: 'S_03_ZONE_Z07',
     chainageKm: 12.85,
     pressureBar: 3.9,
     flowRateM3h: 860,
@@ -210,11 +206,11 @@ export const INITIAL_TRAINS: SensorNode[] = [
     protocol: 'LoRaWAN',
     mitigationPlan: {
       action: 'ISOLATE_VALVE',
-      targetSegment: 'S-14 Edappally Trunk',
+      targetSegment: 'Segment S-14 (Zone Z-07)',
       plannedTime: 'Immediate',
       expectedLossReduction: '70 m³/h preserved',
       priority: 'CRITICAL',
-      isolationRoute: 'GATE VALVE V-04 (Ch. 12+150) → V-05 (Ch. 13+000)'
+      isolationRoute: 'BWSSB GATE VALVE V-04 (Ch. 12+150) → V-05 (Ch. 13+000)'
     },
     history: [
       { time: '08:00', pressure: 4.70, flow: 928 },
@@ -228,8 +224,8 @@ export const INITIAL_TRAINS: SensorNode[] = [
     name: 'Acoustic Logger Node 03',
     sensorType: 'ACOUSTIC_LOGGER',
     status: 'WARNING',
-    location: 'Pipeline Segment S-14 (Ch. 12+450m)',
-    currentSegmentId: 'S_03_EDAPPALLY',
+    location: 'Zone Z-07 • Pipeline Segment S-14 (Ch. 12+450m)',
+    currentSegmentId: 'S_03_ZONE_Z07',
     chainageKm: 12.45,
     pressureBar: 4.2,
     flowRateM3h: 890,
@@ -247,8 +243,8 @@ export const INITIAL_TRAINS: SensorNode[] = [
     name: 'Vibration Accelerometer Node 04',
     sensorType: 'VIBRATION_SENSOR',
     status: 'NORMAL',
-    location: 'Kalamassery Distribution Vault',
-    currentSegmentId: 'S_02_KALAMASSERY',
+    location: 'RR Nagar Distribution Vault (Bengaluru West)',
+    currentSegmentId: 'S_02_RRNAGAR',
     chainageKm: 8.4,
     pressureBar: 5.0,
     flowRateM3h: 965,
@@ -263,10 +259,10 @@ export const INITIAL_TRAINS: SensorNode[] = [
   },
   {
     id: 'RV-05',
-    name: 'Muttom Reservoir Hydrostatic Level Sensor',
+    name: 'TK Halli Cauvery Reservoir Hydrostatic Level Sensor',
     sensorType: 'RESERVOIR_LEVEL',
     status: 'NORMAL',
-    location: 'Muttom Master Pumping Station',
+    location: 'Cauvery Stage IV Master Pumping Station (TK Halli)',
     currentSegmentId: 'RESERVOIR',
     chainageKm: 0.0,
     pressureBar: 5.8,
@@ -285,8 +281,8 @@ export const INITIAL_TRAINS: SensorNode[] = [
     name: 'Motorized Segment Isolation Valve V-04',
     sensorType: 'CONTROL_VALVE',
     status: 'NORMAL',
-    location: 'S-14 Upstream Isolation Vault (Ch. 12+150m)',
-    currentSegmentId: 'S_03_EDAPPALLY',
+    location: 'Zone Z-07 Upstream Isolation Vault (Ch. 12+150m)',
+    currentSegmentId: 'S_03_ZONE_Z07',
     chainageKm: 12.15,
     pressureBar: 4.8,
     flowRateM3h: 930,
@@ -304,8 +300,8 @@ export const INITIAL_TRAINS: SensorNode[] = [
     name: 'High-Frequency Pressure Transient Transducer',
     sensorType: 'PRESSURE_TRANSDUCER',
     status: 'NORMAL',
-    location: 'Aluva Booster Pump Discharge',
-    currentSegmentId: 'S_01_ALUVA',
+    location: 'Kengeri Booster Pump Discharge (Bengaluru South)',
+    currentSegmentId: 'S_01_KENGERI',
     chainageKm: 3.2,
     pressureBar: 5.4,
     flowRateM3h: 1092,
@@ -323,8 +319,8 @@ export const INITIAL_TRAINS: SensorNode[] = [
     name: 'Acoustic Correlator Node 08',
     sensorType: 'ACOUSTIC_LOGGER',
     status: 'NORMAL',
-    location: 'Kaloor Ring Metering Sump',
-    currentSegmentId: 'S_04_KALOOR',
+    location: 'Koramangala Ring Metering Sump (Bengaluru South-East)',
+    currentSegmentId: 'S_04_KORAMANGALA',
     chainageKm: 17.8,
     pressureBar: 4.2,
     flowRateM3h: 710,
@@ -389,29 +385,29 @@ export const INITIAL_AI_RECOMMENDATIONS: LeakAlert[] = [
     id: 'ALERT-S14-CRIT',
     timestamp: '08:41:10',
     sensorId: 'PS-01',
-    segmentId: 'S_03_EDAPPALLY',
+    segmentId: 'S_03_ZONE_Z07',
     severity: 'CRITICAL',
-    title: 'CRITICAL LEAK CONFIRMED ON SEGMENT S-14',
-    probableLocation: 'Ch. 12+238.4m (38.4m downstream of Sensor A)',
-    rationale: 'Acoustic GCC-PHAT cross-correlation confirmed acoustic burst signature with 97.4% confidence. Residual flow gap ΔQ = -70 m³/h between Sensor A and Sensor B.',
-    estimatedLoss: '12.8 m³/h (Water Loss Risk: High)',
+    title: 'CRITICAL LEAK CONFIRMED ON SEGMENT S-14 (ZONE Z-07)',
+    probableLocation: 'Zone Z-07 • Ch. 12+238.4m (38.4m downstream of Sensor A)',
+    rationale: 'Acoustic GCC-PHAT cross-correlation confirmed acoustic burst signature with 97.4% confidence. Residual flow gap ΔQ = -70 m³/h between Sensor A (1,000 released / 930 at A) and Sensor B (860 received).',
+    estimatedLoss: '70.0 m³/h (Water Loss Risk: High)',
     confidenceScore: 97.4,
     status: 'PENDING',
-    recommendedAction: 'Throttle Valve V-04 to 35% pressure head and dispatch Rapid Response Acoustic Pinpointer team.'
+    recommendedAction: 'Throttle BWSSB Valve V-04 to 35% pressure head and dispatch Bengaluru Rapid Response Acoustic Pinpointer team.'
   },
   {
     id: 'ALERT-S04-WARN',
     timestamp: '08:38:25',
     sensorId: 'AL-08',
-    segmentId: 'S_04_KALOOR',
+    segmentId: 'S_04_KORAMANGALA',
     severity: 'WARNING',
     title: 'MINOR PRESSURE TRANSIENT / CAVITATION ON S-04',
-    probableLocation: 'Segment S-04 Kaloor Commercial Ring',
+    probableLocation: 'Segment S-04 Koramangala - HSR Ring Main',
     rationale: 'High-frequency pressure transient wave (0.5 bar amplitude) detected during midday valve shifting.',
     estimatedLoss: '1.2 m³/h (Under Investigation)',
     confidenceScore: 88.2,
     status: 'PENDING',
-    recommendedAction: 'Adjust PRV-02 damping coefficient to absorb pressure surge.'
+    recommendedAction: 'Adjust BWSSB PRV-02 damping coefficient to absorb pressure surge.'
   },
   {
     id: 'ALERT-RES-NORM',
@@ -419,9 +415,9 @@ export const INITIAL_AI_RECOMMENDATIONS: LeakAlert[] = [
     sensorId: 'RV-05',
     segmentId: 'RESERVOIR',
     severity: 'MONITORING',
-    title: 'MUTTOM RESERVOIR INFLOW BALANCED',
-    probableLocation: 'Muttom Terminal Reservoir',
-    rationale: 'Pumping rate synchronized with diurnal urban consumption curve. NRW loss below threshold.',
+    title: 'TK HALLI CAUVERY RESERVOIR INFLOW BALANCED',
+    probableLocation: 'TK Halli Master Reservoir (Cauvery Water Supply)',
+    rationale: 'Pumping rate synchronized with diurnal urban consumption curve across Bengaluru. NRW loss below threshold.',
     estimatedLoss: 'Zero excess loss',
     confidenceScore: 99.1,
     status: 'DEPLOYED',
@@ -436,7 +432,7 @@ export const INITIAL_AI_LOGS: HydraulicEventLog[] = [
     type: 'ANOMALY',
     title: 'FLOW RESIDUAL SPIKE DETECTED',
     detail: 'Downstream flow meter FS-02 reports 860 m³/h vs upstream PS-01 930 m³/h (ΔQ = -70 m³/h).',
-    segmentId: 'S_03_EDAPPALLY',
+    segmentId: 'S_03_ZONE_Z07',
     sensorId: 'FS-02'
   },
   {
@@ -444,7 +440,7 @@ export const INITIAL_AI_LOGS: HydraulicEventLog[] = [
     time: '08:41:05',
     type: 'TELEMETRY',
     title: 'PRESSURE GRADIENT ABNORMALITY',
-    detail: 'Hydraulic gradient line (HGL) dropped from 4.8 bar to 3.9 bar over 650m pipe span.',
+    detail: 'Hydraulic gradient line (HGL) dropped from 4.8 bar to 3.9 bar over 650m pipe span on S-14.',
     sensorId: 'PS-01'
   },
   {
@@ -452,14 +448,14 @@ export const INITIAL_AI_LOGS: HydraulicEventLog[] = [
     time: '08:41:07',
     type: 'CONSTRAINT',
     title: 'HYDRAULIC DIGITAL TWIN COMPUTATION',
-    detail: 'EPANET simulation residual evaluated: Hazen-Williams friction coefficient C=130 intact.'
+    detail: 'Bengaluru network EPANET residual evaluated: Hazen-Williams friction coefficient C=130 intact.'
   },
   {
     id: 'LOG-HYD-104',
     time: '08:41:09',
     type: 'OPTIMIZATION',
-    title: 'NARROWED TO SEGMENT S-14',
-    detail: 'Hydraulic intelligence narrowed probable leak zone to Segment S-14 (Edappally trunk).'
+    title: 'NARROWED TO SEGMENT S-14 (ZONE Z-07)',
+    detail: 'Hydraulic intelligence narrowed probable leak zone to Segment S-14 (Zone Z-07 Bengaluru).'
   },
   {
     id: 'LOG-HYD-105',
@@ -467,13 +463,13 @@ export const INITIAL_AI_LOGS: HydraulicEventLog[] = [
     type: 'DEPLOYMENT',
     title: 'ACOUSTIC PINPOINTING SOLVED',
     detail: 'GCC-PHAT cross-correlation computed leak at exactly 38.4m downstream of Sensor A (PS-01).',
-    segmentId: 'S_03_EDAPPALLY'
+    segmentId: 'S_03_ZONE_Z07'
   },
   {
     id: 'LOG-HYD-106',
     time: '08:41:14',
     type: 'OPTIMIZATION',
-    title: 'MITIGATION DISPATCH PREPARED',
+    title: 'BWSSB MITIGATION DISPATCH PREPARED',
     detail: 'Valve V-04 automated throttling instruction ready for operator confirmation.'
   }
 ];
@@ -483,47 +479,47 @@ export const SCENARIOS: ScenarioDefinition[] = [
     id: 'baseline',
     title: '01. Baseline Steady-State Supply',
     badge: 'NORMAL OPERATING',
-    description: 'Steady municipal drinking water distribution. Normal pressure profile and zero unaccounted flow residuals across all DMA sectors.',
+    description: 'Steady municipal drinking water distribution from Cauvery to Bengaluru reservoirs. Normal pressure profile and zero unaccounted flow residuals across all DMA sectors.',
     iconName: 'Activity',
     flowMultiplier: {
       RESERVOIR: 1.0,
-      S_01_ALUVA: 1.0,
-      S_02_KALAMASSERY: 1.0,
-      S_03_EDAPPALLY: 1.0,
-      S_04_KALOOR: 1.0,
+      S_01_KENGERI: 1.0,
+      S_02_RRNAGAR: 1.0,
+      S_03_ZONE_Z07: 1.0,
+      S_04_KORAMANGALA: 1.0,
       S_05_MG_ROAD: 1.0,
-      S_06_TRIPUNITHURA: 1.0
+      S_06_WHITEFIELD: 1.0
     },
     affectedSensors: [],
-    expectedAIAction: 'Hydraulic digital twin verifies balanced water network. Sensors report nominal telemetry.',
+    expectedAIAction: 'Hydraulic digital twin verifies balanced Bengaluru water network. Sensors report nominal telemetry.',
     simulationState: 'NORMAL'
   },
   {
     id: 'mainline_burst',
-    title: '02. Mainline Burst on Segment S-14',
+    title: '02. Mainline Burst on Segment S-14 (Zone Z-07)',
     badge: 'CRITICAL LEAK',
-    description: 'Severe pipe burst between Sensor A and Sensor B on Segment S-14. Rapid pressure drop and flow loss of 70 m³/h.',
+    description: 'Severe pipe burst between Sensor A and Sensor B on Segment S-14 in Zone Z-07. Rapid pressure drop and flow loss of 70 m³/h.',
     iconName: 'AlertTriangle',
     flowMultiplier: {
       RESERVOIR: 1.0,
-      S_01_ALUVA: 1.0,
-      S_02_KALAMASSERY: 1.05,
-      S_03_EDAPPALLY: 0.92,
-      S_04_KALOOR: 0.95,
+      S_01_KENGERI: 1.0,
+      S_02_RRNAGAR: 1.05,
+      S_03_ZONE_Z07: 0.92,
+      S_04_KORAMANGALA: 0.95,
       S_05_MG_ROAD: 0.96,
-      S_06_TRIPUNITHURA: 1.0
+      S_06_WHITEFIELD: 1.0
     },
     affectedSensors: [
       { id: 'PS-01', targetStatus: 'NORMAL', note: 'Upstream pressure normal at 4.8 bar' },
       { id: 'FS-02', targetStatus: 'WARNING', note: 'Downstream flow drops from 930 to 860 m³/h' },
       { id: 'AL-03', targetStatus: 'CRITICAL', note: 'Acoustic burst signature detected at 1.8 kHz' }
     ],
-    expectedAIAction: 'Instantly narrows to Segment S-14, pinpoints leak at 38.4m from Sensor A with 97.4% confidence, and recommends V-04 valve throttling.',
+    expectedAIAction: 'Instantly narrows to Segment S-14 (Zone Z-07), pinpoints leak at 38.4m from Sensor A with 97.4% confidence, and recommends V-04 valve throttling.',
     simulationState: 'LEAK_SUSPECTED',
     leakDetails: {
-      segmentName: 'Segment S-14 (Edappally Trunk)',
+      segmentName: 'Segment S-14 (Zone Z-07 Bengaluru)',
       distanceFromSensorAMeters: 38.4,
-      estimatedLossM3h: 12.8,
+      estimatedLossM3h: 70.0,
       acousticConfidence: 97.4
     }
   },
@@ -531,16 +527,16 @@ export const SCENARIOS: ScenarioDefinition[] = [
     id: 'partial_blockage',
     title: '03. Valve Cavitation & Throttling Anomaly',
     badge: 'WARNING EVENT',
-    description: 'Upstream gate valve partial obstruction causes localized head loss and micro-pressure transients.',
+    description: 'Upstream gate valve partial obstruction in RR Nagar feeder causes localized head loss and micro-pressure transients.',
     iconName: 'Wrench',
     flowMultiplier: {
       RESERVOIR: 1.0,
-      S_01_ALUVA: 1.0,
-      S_02_KALAMASSERY: 0.95,
-      S_03_EDAPPALLY: 0.96,
-      S_04_KALOOR: 0.97,
+      S_01_KENGERI: 1.0,
+      S_02_RRNAGAR: 0.95,
+      S_03_ZONE_Z07: 0.96,
+      S_04_KORAMANGALA: 0.97,
       S_05_MG_ROAD: 1.0,
-      S_06_TRIPUNITHURA: 1.0
+      S_06_WHITEFIELD: 1.0
     },
     affectedSensors: [
       { id: 'FS-02', targetStatus: 'WARNING', note: 'Flow turbulence detected' },
@@ -551,39 +547,39 @@ export const SCENARIOS: ScenarioDefinition[] = [
   },
   {
     id: 'peak_demand',
-    title: '04. Peak Diurnal Demand Surge (CBD)',
+    title: '04. Peak Diurnal Demand Surge (Bengaluru CBD)',
     badge: 'HIGH DEMAND',
-    description: 'Heavy evening municipal water draw in MG Road & Kaloor commercial zones. Widespread expected pressure dip.',
+    description: 'Heavy evening municipal water draw in MG Road & Bengaluru CBD commercial zones. Widespread expected pressure dip.',
     iconName: 'TrendingUp',
     flowMultiplier: {
       RESERVOIR: 1.25,
-      S_01_ALUVA: 1.2,
-      S_02_KALAMASSERY: 1.15,
-      S_03_EDAPPALLY: 1.1,
-      S_04_KALOOR: 1.35,
+      S_01_KENGERI: 1.2,
+      S_02_RRNAGAR: 1.15,
+      S_03_ZONE_Z07: 1.1,
+      S_04_KORAMANGALA: 1.35,
       S_05_MG_ROAD: 1.45,
-      S_06_TRIPUNITHURA: 1.1
+      S_06_WHITEFIELD: 1.1
     },
     affectedSensors: [
-      { id: 'RV-05', targetStatus: 'NORMAL', note: 'Booster pump discharge increased to 1,450 m³/h' }
+      { id: 'RV-05', targetStatus: 'NORMAL', note: 'TK Halli booster discharge increased to 1,450 m³/h' }
     ],
-    expectedAIAction: 'Hydraulic digital twin predicts dynamic head loss, preventing false positive leak alarms during legitimate high consumption.',
+    expectedAIAction: 'Hydraulic digital twin predicts dynamic head loss, preventing false positive leak alarms during legitimate high consumption in Bengaluru.',
     simulationState: 'NORMAL'
   },
   {
     id: 'sensor_drift',
     title: '05. Sensor Calibration Drift Isolation',
     badge: 'MAINTENANCE',
-    description: 'Sensor B electromagnetic flow meter exhibits continuous -3% offset drift without corresponding pressure drop.',
+    description: 'Sensor B electromagnetic flow meter in Zone Z-07 exhibits continuous -3% offset drift without corresponding pressure drop.',
     iconName: 'Zap',
     flowMultiplier: {
       RESERVOIR: 1.0,
-      S_01_ALUVA: 1.0,
-      S_02_KALAMASSERY: 1.0,
-      S_03_EDAPPALLY: 1.0,
-      S_04_KALOOR: 1.0,
+      S_01_KENGERI: 1.0,
+      S_02_RRNAGAR: 1.0,
+      S_03_ZONE_Z07: 1.0,
+      S_04_KORAMANGALA: 1.0,
       S_05_MG_ROAD: 1.0,
-      S_06_TRIPUNITHURA: 1.0
+      S_06_WHITEFIELD: 1.0
     },
     affectedSensors: [
       { id: 'FS-02', targetStatus: 'CALIBRATING', note: 'Zero-point calibration offset detected' }
@@ -595,25 +591,25 @@ export const SCENARIOS: ScenarioDefinition[] = [
     id: 'night_minimum_flow',
     title: '06. Minimum Night Flow (MNF) Leak Audit',
     badge: 'ACOUSTIC AUDIT',
-    description: '02:00 to 04:00 AM low-noise acoustic window. Extremely sensitive background leak detection across network.',
+    description: '02:00 to 04:00 AM low-noise acoustic window across Bengaluru. Extremely sensitive background leak detection across network.',
     iconName: 'Users',
     flowMultiplier: {
       RESERVOIR: 0.35,
-      S_01_ALUVA: 0.35,
-      S_02_KALAMASSERY: 0.32,
-      S_03_EDAPPALLY: 0.38,
-      S_04_KALOOR: 0.30,
+      S_01_KENGERI: 0.35,
+      S_02_RRNAGAR: 0.32,
+      S_03_ZONE_Z07: 0.38,
+      S_04_KORAMANGALA: 0.30,
       S_05_MG_ROAD: 0.28,
-      S_06_TRIPUNITHURA: 0.25
+      S_06_WHITEFIELD: 0.25
     },
     affectedSensors: [
       { id: 'AL-03', targetStatus: 'NORMAL', note: 'Acoustic noise floor reduced by 18 dB' },
       { id: 'AL-08', targetStatus: 'NORMAL', note: 'Deep cross-correlation scan active' }
     ],
-    expectedAIAction: 'Leverages low acoustic noise floor to locate tiny pinhole leaks down to 0.4 m³/h.',
+    expectedAIAction: 'Leverages low acoustic noise floor to locate tiny pinhole leaks down to 0.4 m³/h across Cauvery distribution mains.',
     simulationState: 'LEAK_SUSPECTED',
     leakDetails: {
-      segmentName: 'Segment S-14 (Edappally Trunk)',
+      segmentName: 'Segment S-14 (Zone Z-07 Bengaluru)',
       distanceFromSensorAMeters: 38.4,
       estimatedLossM3h: 2.1,
       acousticConfidence: 98.6
