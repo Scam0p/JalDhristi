@@ -371,17 +371,27 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
                 </g>
               ))}
 
-              {/* Pipe Body Label */}
+              {/* Pipe Body Label with High-Contrast SCADA Pill */}
+              <rect
+                x="250"
+                y="166"
+                width="500"
+                height="26"
+                rx="4"
+                fill="#0F281E"
+                fillOpacity="0.85"
+                stroke="#16A34A"
+                strokeWidth="1"
+              />
               <text
                 x="500"
-                y="180"
+                y="183.5"
                 fill="#FFFFFF"
-                fontSize="10"
+                fontSize="12.5"
                 fontWeight="bold"
                 fontFamily="JetBrains Mono"
                 letterSpacing="0.08em"
                 textAnchor="middle"
-                opacity="0.85"
               >
                 PHYSICAL WATER PIPELINE • 100 CM TEST APPARATUS
               </text>
@@ -495,10 +505,10 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
               {/* Top T-Valve Identification Card */}
               <g transform="translate(0, 14)">
                 <rect
-                  x={is75CmLeakActive ? "-62" : "-56"}
-                  y="-14"
-                  width={is75CmLeakActive ? "124" : "112"}
-                  height="34"
+                  x={is75CmLeakActive ? "-68" : "-62"}
+                  y="-16"
+                  width={is75CmLeakActive ? "136" : "124"}
+                  height="38"
                   rx="7"
                   fill={is75CmLeakActive ? "#FEF2F2" : "#FFFBEB"}
                   stroke={is75CmLeakActive ? "#EF4444" : "#F59E0B"}
@@ -507,9 +517,9 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
                 />
                 <text 
                   x="0" 
-                  y="0" 
+                  y="-1" 
                   fill={is75CmLeakActive ? "#DC2626" : "#92400E"} 
-                  fontSize="9" 
+                  fontSize="11" 
                   fontWeight="bold" 
                   fontFamily="Plus Jakarta Sans" 
                   textAnchor="middle"
@@ -518,9 +528,9 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
                 </text>
                 <text 
                   x="0" 
-                  y="12" 
+                  y="13" 
                   fill={is75CmLeakActive ? "#991B1B" : "#78350F"} 
-                  fontSize="8" 
+                  fontSize="9.5" 
                   fontFamily="JetBrains Mono" 
                   fontWeight="bold" 
                   textAnchor="middle"
@@ -614,10 +624,10 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
               {/* Top Sensor 1 Label Card */}
               <g transform="translate(0, -114)">
                 <rect
-                  x="-68"
-                  y="-20"
-                  width="136"
-                  height="50"
+                  x="-75"
+                  y="-24"
+                  width="150"
+                  height="58"
                   rx="8"
                   fill={
                     s1Condition === 'POTENTIAL LEAK'
@@ -644,9 +654,9 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
                 {/* Line 1: Name and Location */}
                 <text 
                   x="0" 
-                  y="-6" 
+                  y="-9" 
                   fill="#111827"
-                  fontSize="9.5" 
+                  fontSize="11.5" 
                   fontWeight="bold" 
                   fontFamily="Plus Jakarta Sans" 
                   textAnchor="middle"
@@ -656,10 +666,10 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
                 
                 {/* Line 2: Dedicated Status Badge Pill */}
                 <rect
-                  x="-42"
-                  y="-2"
-                  width="84"
-                  height="14"
+                  x="-50"
+                  y="-4"
+                  width="100"
+                  height="16"
                   rx="4"
                   fill={
                     s1Condition === 'POTENTIAL LEAK'
@@ -679,7 +689,7 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
                 />
                 <text 
                   x="0" 
-                  y="8.5" 
+                  y="7.5" 
                   fill={
                     s1Condition === 'POTENTIAL LEAK'
                       ? '#DC2626'
@@ -687,7 +697,7 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
                       ? '#D97706'
                       : '#144230'
                   } 
-                  fontSize="8" 
+                  fontSize="9.5" 
                   fontFamily="JetBrains Mono" 
                   fontWeight="bold" 
                   textAnchor="middle"
@@ -698,7 +708,7 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
                 {/* Line 3: Vibration Value */}
                 <text 
                   x="0" 
-                  y="22" 
+                  y="25" 
                   fill={
                     s1Condition === 'POTENTIAL LEAK'
                       ? '#DC2626'
@@ -706,7 +716,7 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
                       ? '#B45309'
                       : '#047857'
                   } 
-                  fontSize="8.5" 
+                  fontSize="10" 
                   fontFamily="JetBrains Mono" 
                   fontWeight="bold" 
                   textAnchor="middle"
@@ -800,10 +810,10 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
               {/* Top Sensor 2 Label Card */}
               <g transform="translate(0, -114)">
                 <rect
-                  x="-48"
-                  y="-20"
-                  width="136"
-                  height="50"
+                  x="-55"
+                  y="-24"
+                  width="150"
+                  height="58"
                   rx="8"
                   fill={
                     s2Condition === 'POTENTIAL LEAK'
@@ -830,9 +840,9 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
                 {/* Line 1: Name and Location */}
                 <text 
                   x="20" 
-                  y="-6" 
+                  y="-9" 
                   fill="#111827"
-                  fontSize="9.5" 
+                  fontSize="11.5" 
                   fontWeight="bold" 
                   fontFamily="Plus Jakarta Sans" 
                   textAnchor="middle"
@@ -842,10 +852,10 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
                 
                 {/* Line 2: Dedicated Status Badge Pill */}
                 <rect
-                  x="-22"
-                  y="-2"
-                  width="84"
-                  height="14"
+                  x="-30"
+                  y="-4"
+                  width="100"
+                  height="16"
                   rx="4"
                   fill={
                     s2Condition === 'POTENTIAL LEAK'
@@ -865,7 +875,7 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
                 />
                 <text 
                   x="20" 
-                  y="8.5" 
+                  y="7.5" 
                   fill={
                     s2Condition === 'POTENTIAL LEAK'
                       ? '#DC2626'
@@ -873,7 +883,7 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
                       ? '#D97706'
                       : '#144230'
                   } 
-                  fontSize="8" 
+                  fontSize="9.5" 
                   fontFamily="JetBrains Mono" 
                   fontWeight="bold" 
                   textAnchor="middle"
@@ -884,7 +894,7 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
                 {/* Line 3: Vibration Value */}
                 <text 
                   x="20" 
-                  y="22" 
+                  y="25" 
                   fill={
                     s2Condition === 'POTENTIAL LEAK'
                       ? '#DC2626'
@@ -892,7 +902,7 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
                       ? '#B45309'
                       : '#047857'
                   } 
-                  fontSize="8.5" 
+                  fontSize="10" 
                   fontFamily="JetBrains Mono" 
                   fontWeight="bold" 
                   textAnchor="middle"
@@ -908,14 +918,14 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
               {/* Ruler Guide Background Pill */}
               <rect
                 x={PIPE_START_X - 10}
-                y="-4"
+                y="-6"
                 width={PIPE_WIDTH + 20}
-                height="38"
+                height="48"
                 rx="6"
                 fill="#FFFFFF"
                 stroke="#ECEEF2"
                 strokeWidth="1"
-                opacity="0.9"
+                opacity="0.95"
               />
 
               {/* Main Ruler Baseline */}
@@ -924,7 +934,7 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
                 y1="0"
                 x2={PIPE_END_X}
                 y2="0"
-                stroke="#6B7280"
+                stroke="#4B5563"
                 strokeWidth="1.5"
                 strokeLinecap="round"
               />
@@ -938,10 +948,10 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
                     x1={tickX}
                     y1="0"
                     x2={tickX}
-                    y2="5"
+                    y2="6"
                     stroke="#9CA3AF"
-                    strokeWidth="1"
-                    strokeOpacity="0.7"
+                    strokeWidth="1.2"
+                    strokeOpacity="0.8"
                   />
                 );
               })}
@@ -957,16 +967,16 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
                       x1={tickX}
                       y1="0"
                       x2={tickX}
-                      y2={isKey ? "10" : "8"}
-                      stroke={isKey ? "#144230" : "#4B5563"}
-                      strokeWidth={isKey ? "2" : "1.2"}
+                      y2={isKey ? "11" : "8"}
+                      stroke={isKey ? "#144230" : "#374151"}
+                      strokeWidth={isKey ? "2.5" : "1.5"}
                     />
                     <text
                       x={tickX}
-                      y="20"
-                      fill={isKey ? "#144230" : "#4B5563"}
-                      fontSize={cm === 100 ? "8.5" : "9"}
-                      fontWeight={isKey ? "bold" : "600"}
+                      y="19"
+                      fill={isKey ? "#144230" : "#1F2937"}
+                      fontSize={cm === 100 ? "11" : "11.5"}
+                      fontWeight="bold"
                       fontFamily="JetBrains Mono"
                       textAnchor="middle"
                     >
@@ -981,20 +991,20 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
               <g transform={`translate(${SENSOR_1_X}, 0)`}>
                 <polygon points="0,0 -4,5 0,10 4,5" fill={isS1Triggered ? "#F59E0B" : "#144230"} />
                 <rect 
-                  x="-24" 
+                  x="-28" 
                   y="24" 
-                  width="48" 
-                  height="12" 
+                  width="56" 
+                  height="15" 
                   rx="3" 
                   fill={isS1Triggered ? "#FEF3C7" : "#E8F7EE"} 
                   stroke={isS1Triggered ? "#FDE68A" : "#B7E4C7"} 
-                  strokeWidth="0.8" 
+                  strokeWidth="1" 
                 />
                 <text 
                   x="0" 
-                  y="32.5" 
+                  y="35" 
                   fill={isS1Triggered ? "#92400E" : "#144230"} 
-                  fontSize="7.5" 
+                  fontSize="8.5" 
                   fontWeight="bold" 
                   fontFamily="JetBrains Mono" 
                   textAnchor="middle"
@@ -1005,23 +1015,23 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
 
               {/* T-Valve (75 cm) triangle flag */}
               <g transform={`translate(${LEAK_VALVE_X}, 0)`}>
-                <line x1="0" y1="0" x2="0" y2="10" stroke={is75CmLeakActive ? "#EF4444" : "#D97706"} strokeWidth="1.5" />
+                <line x1="0" y1="0" x2="0" y2="8" stroke={is75CmLeakActive ? "#EF4444" : "#D97706"} strokeWidth="1.5" />
                 <polygon points="0,0 -4,6 4,6" fill={is75CmLeakActive ? "#EF4444" : "#D97706"} />
                 <rect 
-                  x="-24" 
+                  x="-28" 
                   y="24" 
-                  width="48" 
-                  height="12" 
+                  width="56" 
+                  height="15" 
                   rx="3" 
                   fill={is75CmLeakActive ? "#FEF2F2" : "#FFFBEB"} 
                   stroke={is75CmLeakActive ? "#FECACA" : "#FDE68A"} 
-                  strokeWidth="0.8" 
+                  strokeWidth="1" 
                 />
                 <text 
                   x="0" 
-                  y="32.5" 
+                  y="35" 
                   fill={is75CmLeakActive ? "#DC2626" : "#92400E"} 
-                  fontSize="7.5" 
+                  fontSize="8.5" 
                   fontWeight="bold" 
                   fontFamily="JetBrains Mono" 
                   textAnchor="middle"
@@ -1034,20 +1044,20 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
               <g transform={`translate(${SENSOR_2_X}, 0)`}>
                 <polygon points="0,0 -4,5 0,10 4,5" fill={isS2Triggered ? "#F59E0B" : "#144230"} />
                 <rect 
-                  x="-24" 
+                  x="-28" 
                   y="24" 
-                  width="48" 
-                  height="12" 
+                  width="56" 
+                  height="15" 
                   rx="3" 
                   fill={isS2Triggered ? "#FEF3C7" : "#E8F7EE"} 
                   stroke={isS2Triggered ? "#FDE68A" : "#B7E4C7"} 
-                  strokeWidth="0.8" 
+                  strokeWidth="1" 
                 />
                 <text 
                   x="0" 
-                  y="32.5" 
+                  y="35" 
                   fill={isS2Triggered ? "#92400E" : "#144230"} 
-                  fontSize="7.5" 
+                  fontSize="8.5" 
                   fontWeight="bold" 
                   fontFamily="JetBrains Mono" 
                   textAnchor="middle"

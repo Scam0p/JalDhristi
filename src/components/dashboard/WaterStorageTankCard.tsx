@@ -37,32 +37,32 @@ export const WaterStorageTankCard: React.FC<WaterStorageTankCardProps> = ({
   return (
     <div className="bg-white border border-[#E5E7EB] rounded-lg p-5 flex flex-col justify-between h-full select-none shadow-none">
       {/* SCADA Header */}
-      <div className="flex items-center justify-between pb-3 mb-2 border-b border-[#E5E7EB]">
-        <div className="flex items-center gap-2.5">
-          <div className="p-1.5 rounded bg-[#F4F5F7] border border-[#E5E7EB] text-[#144230]">
+      <div className="flex items-center justify-between gap-2 pb-3 mb-2 border-b border-[#E5E7EB]">
+        <div className="flex items-center gap-2.5 min-w-0 flex-1">
+          <div className="p-1.5 rounded bg-[#F4F5F7] border border-[#E5E7EB] text-[#144230] flex-shrink-0">
             <Database className="w-4 h-4 text-[#22C55E]" />
           </div>
-          <div>
-            <h3 className="font-mono-tech font-bold text-xs uppercase tracking-wider text-[#111827]">
+          <div className="min-w-0">
+            <h3 className="font-mono-tech font-bold text-xs sm:text-sm uppercase tracking-wider text-[#111827] truncate">
               {tankId} • {tankName}
             </h3>
-            <span className="text-[10px] font-mono-tech text-[#6B7280]">
+            <span className="text-[11px] font-mono-tech text-[#4B5563] block whitespace-nowrap truncate">
               VERTICAL WATER STORAGE TANK • ZONE Z-07
             </span>
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5 text-[10px] font-mono-tech text-[#144230] bg-[#E8F7EE] px-2.5 py-1 rounded border border-[#B7E4C7] font-bold">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E]" />
+        <div className="flex-shrink-0 flex items-center gap-1.5 text-xs font-mono-tech text-[#144230] bg-[#E8F7EE] px-2.5 py-1 rounded border border-[#B7E4C7] font-bold">
+          <span className="w-2 h-2 rounded-full bg-[#22C55E]" />
           <span>STATUS: {status}</span>
         </div>
       </div>
 
       {/* Graphical Water Storage Tank SVG Canvas */}
-      <div className="relative flex-1 flex items-center justify-center min-h-[330px] my-1 bg-[#F9FAFB] rounded border border-[#E5E7EB] p-2">
+      <div className="relative flex-1 flex items-center justify-center min-h-[340px] my-1 bg-[#F9FAFB] rounded border border-[#E5E7EB] p-2">
         <svg
-          viewBox="0 0 320 360"
-          className="w-full h-auto max-h-[350px] select-none"
+          viewBox="0 0 340 370"
+          className="w-full h-auto max-h-[360px] select-none"
           preserveAspectRatio="xMidYMid meet"
         >
           <defs>
@@ -104,36 +104,40 @@ export const WaterStorageTankCard: React.FC<WaterStorageTankCardProps> = ({
           {/* Background Engineering Alignment Grid */}
           <g opacity="0.04">
             {Array.from({ length: 9 }).map((_, i) => (
-              <line key={`vg-${i}`} x1={i * 40} y1="0" x2={i * 40} y2="360" stroke="#111827" strokeWidth="1" />
+              <line key={`vg-${i}`} x1={i * 40} y1="0" x2={i * 40} y2="370" stroke="#111827" strokeWidth="1" />
             ))}
             {Array.from({ length: 10 }).map((_, i) => (
-              <line key={`hg-${i}`} x1="0" y1={i * 40} x2="320" y2={i * 40} stroke="#111827" strokeWidth="1" />
+              <line key={`hg-${i}`} x1="0" y1={i * 40} x2="340" y2={i * 40} stroke="#111827" strokeWidth="1" />
             ))}
           </g>
 
           {/* ================= INLET & OUTLET CONNECTING PIPES ================= */}
           {/* Inlet Pipe on Left (Connected to Pipeline) */}
           <g id="tank-inlet-pipe">
-            <rect x="35" y="95" width="50" height="14" rx="2" fill="url(#tankSteelGradient)" stroke="#1F2937" strokeWidth="1.5" />
-            <rect x="42" y="92" width="6" height="20" rx="1" fill="#4B5563" stroke="#1F2937" strokeWidth="1" />
+            <rect x="35" y="112" width="50" height="15" rx="2" fill="url(#tankSteelGradient)" stroke="#1F2937" strokeWidth="1.5" />
+            <rect x="44" y="109" width="6" height="21" rx="1" fill="#4B5563" stroke="#1F2937" strokeWidth="1" />
             {/* Fluid flow through inlet */}
-            <line x1="38" y1="102" x2="85" y2="102" stroke="#22C55E" strokeWidth="3" strokeDasharray="6 4">
+            <line x1="38" y1="119.5" x2="85" y2="119.5" stroke="#22C55E" strokeWidth="3.5" strokeDasharray="6 4">
               <animate attributeName="stroke-dashoffset" values="20;0" dur="1.2s" repeatCount="indefinite" />
             </line>
-            <text x="35" y="88" fill="#6B7280" fontSize="7" fontFamily="monospace" fontWeight="bold">
+            {/* Crisp High-Visibility SCADA Inlet Label Badge (Positioned with clean vertical clearance) */}
+            <rect x="25" y="91" width="48" height="17" rx="3" fill="#FFFFFF" stroke="#D1D5DB" strokeWidth="1" />
+            <text x="49" y="103.5" textAnchor="middle" fill="#111827" fontSize="10.5" fontFamily="monospace" fontWeight="bold" letterSpacing="0.05em">
               INLET
             </text>
           </g>
 
           {/* Outlet Drain Pipe on Right Bottom */}
           <g id="tank-outlet-pipe">
-            <rect x={TANK_RIGHT_X} y="295" width="45" height="14" rx="2" fill="url(#tankSteelGradient)" stroke="#1F2937" strokeWidth="1.5" />
-            <rect x={TANK_RIGHT_X + 28} y="292" width="6" height="20" rx="1" fill="#4B5563" stroke="#1F2937" strokeWidth="1" />
+            <rect x={TANK_RIGHT_X} y="295" width="50" height="15" rx="2" fill="url(#tankSteelGradient)" stroke="#1F2937" strokeWidth="1.5" />
+            <rect x={TANK_RIGHT_X + 28} y="292" width="6" height="21" rx="1" fill="#4B5563" stroke="#1F2937" strokeWidth="1" />
             {/* Fluid outflow */}
-            <line x1={TANK_RIGHT_X} y1="302" x2={TANK_RIGHT_X + 40} y2="302" stroke="#22C55E" strokeWidth="3" strokeDasharray="6 4">
+            <line x1={TANK_RIGHT_X} y1="302.5" x2={TANK_RIGHT_X + 45} y2="302.5" stroke="#22C55E" strokeWidth="3.5" strokeDasharray="6 4">
               <animate attributeName="stroke-dashoffset" values="0;20" dur="1.2s" repeatCount="indefinite" />
             </line>
-            <text x={TANK_RIGHT_X + 10} y="288" fill="#6B7280" fontSize="7" fontFamily="monospace" fontWeight="bold">
+            {/* Crisp High-Visibility SCADA Outlet Label Badge */}
+            <rect x={TANK_RIGHT_X + 5} y="270" width="54" height="18" rx="3" fill="#FFFFFF" stroke="#D1D5DB" strokeWidth="1" />
+            <text x={TANK_RIGHT_X + 32} y="283" textAnchor="middle" fill="#111827" fontSize="10.5" fontFamily="monospace" fontWeight="bold" letterSpacing="0.05em">
               OUTLET
             </text>
           </g>
@@ -321,25 +325,26 @@ export const WaterStorageTankCard: React.FC<WaterStorageTankCardProps> = ({
               <animate attributeName="stroke-dashoffset" values="0;-12" dur="1s" repeatCount="indefinite" />
             </line>
 
-            {/* Sensor Label Tag */}
+            {/* Large, Prominent Sensor Label Tag */}
             <rect
-              x={TANK_CENTER_X - 50}
-              y={18}
-              width="100"
-              height="15"
-              rx="2"
+              x={TANK_CENTER_X - 78}
+              y={10}
+              width="156"
+              height="22"
+              rx="4"
               fill="#FFFFFF"
-              stroke="#E5E7EB"
-              strokeWidth="1"
+              stroke="#D1D5DB"
+              strokeWidth="1.5"
             />
             <text
               x={TANK_CENTER_X}
-              y={29}
+              y={25.5}
               textAnchor="middle"
               fill="#111827"
-              fontSize="8"
+              fontSize="11.5"
               fontFamily="monospace"
               fontWeight="bold"
+              letterSpacing="0.04em"
             >
               ULTRASONIC TRANSDUCER
             </text>
@@ -353,37 +358,37 @@ export const WaterStorageTankCard: React.FC<WaterStorageTankCardProps> = ({
               y1={TANK_TOP_Y + 6}
               x2="70"
               y2={TANK_BOTTOM_Y - 6}
-              stroke="#4B5563"
-              strokeWidth="1.5"
+              stroke="#374151"
+              strokeWidth="2"
             />
 
             {/* 100% Mark (500L) */}
-            <line x1="62" y1={TANK_TOP_Y + 6} x2="70" y2={TANK_TOP_Y + 6} stroke="#111827" strokeWidth="2" />
-            <text x="56" y={TANK_TOP_Y + 9} textAnchor="end" fill="#111827" fontSize="8" fontFamily="monospace" fontWeight="bold">
+            <line x1="60" y1={TANK_TOP_Y + 6} x2="70" y2={TANK_TOP_Y + 6} stroke="#111827" strokeWidth="2.5" />
+            <text x="54" y={TANK_TOP_Y + 10} textAnchor="end" fill="#111827" fontSize="12" fontFamily="monospace" fontWeight="bold">
               100%
             </text>
 
             {/* 75% Mark (375L) */}
-            <line x1="64" y1={TANK_TOP_Y + TANK_HEIGHT * 0.25} x2="70" y2={TANK_TOP_Y + TANK_HEIGHT * 0.25} stroke="#4B5563" strokeWidth="1.5" />
-            <text x="56" y={TANK_TOP_Y + TANK_HEIGHT * 0.25 + 3} textAnchor="end" fill="#4B5563" fontSize="8" fontFamily="monospace">
+            <line x1="62" y1={TANK_TOP_Y + TANK_HEIGHT * 0.25} x2="70" y2={TANK_TOP_Y + TANK_HEIGHT * 0.25} stroke="#374151" strokeWidth="2" />
+            <text x="54" y={TANK_TOP_Y + TANK_HEIGHT * 0.25 + 4} textAnchor="end" fill="#374151" fontSize="11.5" fontFamily="monospace" fontWeight="bold">
               75%
             </text>
 
             {/* 50% Mark (250L) */}
-            <line x1="62" y1={TANK_TOP_Y + TANK_HEIGHT * 0.50} x2="70" y2={TANK_TOP_Y + TANK_HEIGHT * 0.50} stroke="#111827" strokeWidth="2" />
-            <text x="56" y={TANK_TOP_Y + TANK_HEIGHT * 0.50 + 3} textAnchor="end" fill="#111827" fontSize="8" fontFamily="monospace" fontWeight="bold">
+            <line x1="60" y1={TANK_TOP_Y + TANK_HEIGHT * 0.50} x2="70" y2={TANK_TOP_Y + TANK_HEIGHT * 0.50} stroke="#111827" strokeWidth="2.5" />
+            <text x="54" y={TANK_TOP_Y + TANK_HEIGHT * 0.50 + 4} textAnchor="end" fill="#111827" fontSize="12" fontFamily="monospace" fontWeight="bold">
               50%
             </text>
 
             {/* 25% Mark (125L) */}
-            <line x1="64" y1={TANK_TOP_Y + TANK_HEIGHT * 0.75} x2="70" y2={TANK_TOP_Y + TANK_HEIGHT * 0.75} stroke="#4B5563" strokeWidth="1.5" />
-            <text x="56" y={TANK_TOP_Y + TANK_HEIGHT * 0.75 + 3} textAnchor="end" fill="#4B5563" fontSize="8" fontFamily="monospace">
+            <line x1="62" y1={TANK_TOP_Y + TANK_HEIGHT * 0.75} x2="70" y2={TANK_TOP_Y + TANK_HEIGHT * 0.75} stroke="#374151" strokeWidth="2" />
+            <text x="54" y={TANK_TOP_Y + TANK_HEIGHT * 0.75 + 4} textAnchor="end" fill="#374151" fontSize="11.5" fontFamily="monospace" fontWeight="bold">
               25%
             </text>
 
             {/* 0% Mark (0L) */}
-            <line x1="62" y1={TANK_BOTTOM_Y - 6} x2="70" y2={TANK_BOTTOM_Y - 6} stroke="#111827" strokeWidth="2" />
-            <text x="56" y={TANK_BOTTOM_Y - 3} textAnchor="end" fill="#111827" fontSize="8" fontFamily="monospace" fontWeight="bold">
+            <line x1="60" y1={TANK_BOTTOM_Y - 6} x2="70" y2={TANK_BOTTOM_Y - 6} stroke="#111827" strokeWidth="2.5" />
+            <text x="54" y={TANK_BOTTOM_Y - 2} textAnchor="end" fill="#111827" fontSize="12" fontFamily="monospace" fontWeight="bold">
               0%
             </text>
 
@@ -391,12 +396,12 @@ export const WaterStorageTankCard: React.FC<WaterStorageTankCardProps> = ({
             {[0.125, 0.375, 0.625, 0.875].map((fraction, idx) => (
               <line
                 key={`subtick-${idx}`}
-                x1="66"
+                x1="64"
                 y1={TANK_TOP_Y + TANK_HEIGHT * fraction}
                 x2="70"
                 y2={TANK_TOP_Y + TANK_HEIGHT * fraction}
-                stroke="#9CA3AF"
-                strokeWidth="1"
+                stroke="#6B7280"
+                strokeWidth="1.5"
               />
             ))}
           </g>
@@ -410,31 +415,31 @@ export const WaterStorageTankCard: React.FC<WaterStorageTankCardProps> = ({
               x2={TANK_RIGHT_X + 15}
               y2="0"
               stroke="#15803D"
-              strokeWidth="1.5"
+              strokeWidth="2"
               strokeDasharray="4 2"
             />
             {/* Triangular Arrow Pointer on Right */}
             <polygon
-              points={`${TANK_RIGHT_X + 15},0 ${TANK_RIGHT_X + 24},-5 ${TANK_RIGHT_X + 24},5`}
+              points={`${TANK_RIGHT_X + 12},0 ${TANK_RIGHT_X + 24},-6 ${TANK_RIGHT_X + 24},6`}
               fill="#144230"
             />
-            {/* Readout Badge on Right */}
+            {/* Readout Badge on Right (Large & Bold) */}
             <rect
-              x={TANK_RIGHT_X + 25}
-              y="-9"
-              width="45"
-              height="18"
-              rx="2"
+              x={TANK_RIGHT_X + 24}
+              y="-12"
+              width="58"
+              height="24"
+              rx="4"
               fill="#144230"
               stroke="#0F3224"
-              strokeWidth="1"
+              strokeWidth="1.5"
             />
             <text
-              x={TANK_RIGHT_X + 47}
-              y="3.5"
+              x={TANK_RIGHT_X + 53}
+              y="4.5"
               textAnchor="middle"
               fill="#FFFFFF"
-              fontSize="9"
+              fontSize="12.5"
               fontFamily="monospace"
               fontWeight="bold"
             >
@@ -445,33 +450,33 @@ export const WaterStorageTankCard: React.FC<WaterStorageTankCardProps> = ({
       </div>
 
       {/* Bottom Industrial Telemetry Readout Grid */}
-      <div className="pt-3 border-t border-[#E5E7EB] grid grid-cols-3 gap-2 font-mono-tech text-xs">
-        <div className="p-2 rounded bg-[#F9FAFB] border border-[#E5E7EB] text-center">
-          <span className="text-[9px] text-[#6B7280] uppercase block font-bold">
+      <div className="pt-3 border-t border-[#E5E7EB] grid grid-cols-3 gap-2.5 font-mono-tech">
+        <div className="p-2.5 rounded bg-[#F9FAFB] border border-[#E5E7EB] text-center">
+          <span className="text-xs text-[#4B5563] uppercase block font-bold tracking-wider">
             WATER LEVEL
           </span>
-          <span className="font-bold text-sm text-[#144230] block mt-0.5">
+          <span className="font-bold text-xl text-[#144230] block mt-1">
             {clampedLevel}%
           </span>
         </div>
 
-        <div className="p-2 rounded bg-[#F9FAFB] border border-[#E5E7EB] text-center">
-          <span className="text-[9px] text-[#6B7280] uppercase block font-bold">
+        <div className="p-2.5 rounded bg-[#F9FAFB] border border-[#E5E7EB] text-center">
+          <span className="text-xs text-[#4B5563] uppercase block font-bold tracking-wider">
             STORED VOLUME
           </span>
-          <span className="font-bold text-sm text-[#111827] block mt-0.5">
+          <span className="font-bold text-xl text-[#111827] block mt-1">
             {storedVolumeL}{' '}
-            <span className="text-[9px] font-normal text-[#6B7280]">L</span>
+            <span className="text-xs font-semibold text-[#6B7280]">L</span>
           </span>
         </div>
 
-        <div className="p-2 rounded bg-[#F9FAFB] border border-[#E5E7EB] text-center">
-          <span className="text-[9px] text-[#6B7280] uppercase block font-bold">
+        <div className="p-2.5 rounded bg-[#F9FAFB] border border-[#E5E7EB] text-center">
+          <span className="text-xs text-[#4B5563] uppercase block font-bold tracking-wider">
             CAPACITY
           </span>
-          <span className="font-bold text-sm text-[#111827] block mt-0.5">
+          <span className="font-bold text-xl text-[#111827] block mt-1">
             {capacityL}{' '}
-            <span className="text-[9px] font-normal text-[#6B7280]">L</span>
+            <span className="text-xs font-semibold text-[#6B7280]">L</span>
           </span>
         </div>
       </div>
