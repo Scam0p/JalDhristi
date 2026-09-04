@@ -13,14 +13,14 @@ import { ProjectAnalyticsChart } from './ProjectAnalyticsChart';
 import { RemindersCard } from './RemindersCard';
 import { TimeTrackerCard } from './TimeTrackerCard';
 import { ProgressGaugeCard } from './ProgressGaugeCard';
-import { CaseSwitcher } from './CaseSwitcher';
 import { RailwayNetwork } from '../railway/RailwayNetwork';
 import { AIEnginePanel } from './AIEnginePanel';
 import { DecisionFeed } from './DecisionFeed';
 import { FleetOverview } from '../fleet/FleetOverview';
-import { ScenarioControlCenter } from '../scenarios/ScenarioControlCenter';
 import { PerformanceComparison } from '../comparison/PerformanceComparison';
-import { RotateCcw, Droplets } from 'lucide-react';
+import { RotateCcw, Droplets, FileText } from 'lucide-react';
+import { DashboardMode, SimulationScenario } from '../../hooks/useSimulation';
+import { PipelineEventState } from '../../config/pipelineConfig';
 
 interface ControlCentreProps {
   currentCase: CaseType;
@@ -47,12 +47,20 @@ interface ControlCentreProps {
   onDeployRecommendation: (id: string) => void;
   onReset: () => void;
   isCaseTransitioning: boolean;
-  // JalDrishti interactive extension props
+  // Mode-Specific and Real-Time Event Props
+  dashboardMode?: DashboardMode;
+  onSelectMode?: (mode: DashboardMode) => void;
+  selectedSensorKey?: 'sensor_1' | 'sensor_2';
+  onSelectSensorKey?: (key: 'sensor_1' | 'sensor_2') => void;
+  simulationScenario?: SimulationScenario;
+  onSelectSimulationScenario?: (scen: SimulationScenario) => void;
+  realTimeEventState?: PipelineEventState;
   simulationState?: 'NORMAL' | 'WARNING' | 'LEAK_SUSPECTED';
   onSetSimulationState?: (state: 'NORMAL' | 'WARNING' | 'LEAK_SUSPECTED') => void;
   isFetchingSensor?: boolean;
   fetchingSensorId?: string | null;
   onSelectSensorAsync?: (sensor: SensorNode) => void;
+  onOpenComplaintPortal?: () => void;
 }
 
 export const ControlCentre: React.FC<ControlCentreProps> = ({
@@ -80,11 +88,19 @@ export const ControlCentre: React.FC<ControlCentreProps> = ({
   onDeployRecommendation,
   onReset,
   isCaseTransitioning,
+  dashboardMode = 'REAL',
+  onSelectMode,
+  selectedSensorKey,
+  onSelectSensorKey,
+  simulationScenario = 'NORMAL',
+  onSelectSimulationScenario,
+  realTimeEventState,
   simulationState,
   onSetSimulationState,
   isFetchingSensor,
   fetchingSensorId,
-  onSelectSensorAsync
+  onSelectSensorAsync,
+  onOpenComplaintPortal
 }) => {
   return (
     <div id="control-deck" className="space-y-8 max-w-7xl mx-auto select-none">
@@ -100,7 +116,7 @@ export const ControlCentre: React.FC<ControlCentreProps> = ({
             </span>
           </div>
           <p className="text-sm text-[#6B7280] font-normal mt-0.5">
-            Bengaluru&apos;s Cauvery Water Pipeline Network — Sparse sensor monitoring, hydraulic digital twin intelligence, and targeted acoustic leak pinpointing.
+            Bengaluru&apos;s Cauvery Water Pipeline Network — Dual physical accelerometer test rig, hydraulic digital twin intelligence, and targeted acoustic leak pinpointing.
           </p>
         </div>
 
@@ -152,6 +168,8 @@ export const ControlCentre: React.FC<ControlCentreProps> = ({
             onDeployRecommendation={onDeployRecommendation}
             onRunOptimization={onRunOptimization}
             isOptimizing={isOptimizing}
+            dashboardMode={dashboardMode}
+            realTimeEventState={realTimeEventState}
           />
         </div>
 
@@ -174,7 +192,7 @@ export const ControlCentre: React.FC<ControlCentreProps> = ({
       {/* 1. PIPELINE SIMULATION -> 2. HYDRAULIC EVENTS -> 3. TELEMETRY STREAM     */}
       {/* ========================================================================= */}
 
-      {/* 1. PIPELINE SIMULATION (Interactive pipeline with Sensor A and Sensor B) */}
+      {/* 1. PIPELINE SIMULATION (Interactive pipeline with Sensor 1 at 50 cm and Sensor 2 at 90 cm) */}
       <section id="pipeline-section">
         <RailwayNetwork
           trains={trains}
@@ -193,6 +211,13 @@ export const ControlCentre: React.FC<ControlCentreProps> = ({
           onSetSpeed={onSetSpeed}
           onReset={onReset}
           onRunOptimization={onRunOptimization}
+          dashboardMode={dashboardMode}
+          onSelectMode={onSelectMode}
+          selectedSensorKey={selectedSensorKey}
+          onSelectSensorKey={onSelectSensorKey}
+          simulationScenario={simulationScenario}
+          onSelectSimulationScenario={onSelectSimulationScenario}
+          realTimeEventState={realTimeEventState}
           simulationState={simulationState}
           onSetSimulationState={onSetSimulationState}
           isFetchingSensor={isFetchingSensor}
@@ -229,7 +254,7 @@ export const ControlCentre: React.FC<ControlCentreProps> = ({
       </section>
 
       {/* ========================================================================= */}
-      {/* OTHER EXISTING DASHBOARD SECTIONS (Preserved)                             */}
+      {/* OTHER DASHBOARD SECTIONS                                                  */}
       {/* ========================================================================= */}
 
       {/* 4. Sensor Fleet Operational Inventory */}
@@ -241,22 +266,38 @@ export const ControlCentre: React.FC<ControlCentreProps> = ({
         />
       </section>
 
-      {/* 5. Operational Paradigm Case Switcher */}
-      <section id="cases-section">
-        <CaseSwitcher
-          currentCase={currentCase}
-          onSelectCase={onSelectCase}
-          isTransitioning={isCaseTransitioning}
-        />
-      </section>
+      {/* 5. Citizen Complaint Portal Access Card */}
+      {onOpenComplaintPortal && (
+        <section id="complaint-access-section" className="donezo-card p-6 border border-[#ECEEF2] bg-white">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3.5">
+              <div className="w-12 h-12 rounded-2xl bg-[#E8F7EE] text-[#144230] flex items-center justify-center shadow-2xs">
+                <FileText className="w-6 h-6 text-[#144230]" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="font-display font-bold text-base text-[#111827]">
+                    Citizen Grievance &amp; Complaint Portal
+                  </h3>
+                  <span className="text-[10px] font-mono-tech font-bold px-2 py-0.5 rounded-full bg-[#E8F7EE] text-[#144230] border border-[#B7E4C7]">
+                    NEW CIVIC REPORTING
+                  </span>
+                </div>
+                <p className="text-xs text-[#6B7280] mt-0.5 max-w-xl">
+                  Notice a visible pipeline leak, burst main, waterlogging, or damaged infrastructure in Bengaluru? Report it directly to the 24x7 JalDrishti civic inspection team.
+                </p>
+              </div>
+            </div>
 
-      {/* 6. Contingency Scenarios Simulator */}
-      <section id="scenarios-section">
-        <ScenarioControlCenter
-          activeScenario={activeScenario}
-          onSelectScenario={onSelectScenario}
-        />
-      </section>
+            <button
+              onClick={onOpenComplaintPortal}
+              className="px-5 py-2.5 rounded-full bg-[#144230] hover:bg-[#1A543E] text-white font-display font-bold text-xs tracking-wide transition-all shadow-sm cursor-pointer flex items-center justify-center gap-2 shrink-0 active:scale-98"
+            >
+              <span>Open Complaint Portal</span>
+            </button>
+          </div>
+        </section>
+      )}
 
       {/* 7. Empirical Performance Benchmark & Comparison */}
       <section id="comparison-section">
@@ -265,3 +306,5 @@ export const ControlCentre: React.FC<ControlCentreProps> = ({
     </div>
   );
 };
+
+export default ControlCentre;

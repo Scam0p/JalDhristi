@@ -15,6 +15,7 @@ import {
   CheckCircle2,
   AlertTriangle
 } from 'lucide-react';
+import { LiveHardwareTelemetryPanel } from './LiveHardwareTelemetryPanel';
 
 interface TrainDetailDrawerProps {
   train: SensorNode | null;
@@ -26,6 +27,17 @@ export const TrainDetailDrawer: React.FC<TrainDetailDrawerProps> = ({ train: sen
 
   const isWarning = sensor.status === 'WARNING';
   const isCritical = sensor.status === 'CRITICAL';
+  const isPhysicalNode = 
+    sensor.sensorType === 'VIBRATION_SENSOR' || 
+    sensor.id === 'sensor_1' || 
+    sensor.id === 'sensor_2' || 
+    sensor.hardwareSensorKey !== undefined || 
+    sensor.id === 'VB-04' || 
+    sensor.id === 'jaldrishti-node-01';
+
+  const sensorKey: 'sensor_1' | 'sensor_2' = 
+    sensor.hardwareSensorKey || 
+    (sensor.id === 'sensor_2' || sensor.id === 'FS-02' ? 'sensor_2' : 'sensor_1');
 
   // Pressure history sparkline points
   const pressurePoints = sensor.history?.map(h => h.pressure) || [
@@ -56,17 +68,17 @@ export const TrainDetailDrawer: React.FC<TrainDetailDrawerProps> = ({ train: sen
           {/* Drawer Header */}
           <div className="flex items-center justify-between pb-4 border-b border-[#F0F2F5] mb-6">
             <div className="flex items-center gap-3">
-              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white font-mono-tech font-black text-lg shadow-sm ${
+              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white font-mono-tech font-black text-sm shadow-sm ${
                 isCritical ? 'bg-[#EF4444]' : isWarning ? 'bg-[#F59E0B]' : 'bg-[#144230]'
               }`}>
-                {sensor.id}
+                {sensor.id === 'sensor_1' ? 'S1' : sensor.id === 'sensor_2' ? 'S2' : sensor.id}
               </div>
               <div>
                 <h3 className="font-display font-bold text-lg text-[#111827]">
                   {sensor.name}
                 </h3>
                 <span className="text-xs text-[#6B7280]">
-                  {sensor.sensorType.replace(/_/g, ' ')} • {sensor.protocol}
+                  {sensor.physicalPositionCm ? `100 cm Rig • Position ${sensor.physicalPositionCm} cm` : `${sensor.sensorType.replace(/_/g, ' ')} • ${sensor.protocol}`}
                 </span>
               </div>
             </div>
@@ -106,129 +118,137 @@ export const TrainDetailDrawer: React.FC<TrainDetailDrawerProps> = ({ train: sen
             </div>
           </div>
 
-          {/* Location & Chainage Info */}
+          {/* Location & Physical Pipeline Position Info */}
           <div className="p-3.5 rounded-2xl bg-[#F4F5F7] border border-[#E5E7EB] mb-6 text-xs">
             <span className="text-[10px] text-[#6B7280] font-bold block uppercase mb-1">
               PIPELINE MOUNTING LOCATION
             </span>
             <div className="font-bold text-[#111827]">{sensor.location}</div>
-            <div className="text-[10px] text-[#6B7280] mt-0.5">
-              Chainage: KM {sensor.chainageKm.toFixed(2)} • Firmware: {sensor.firmwareVersion}
+            <div className="text-[10px] text-[#144230] font-bold mt-1 flex items-center justify-between">
+              <span>PHYSICAL POSITION: {sensor.physicalPositionCm ? `${sensor.physicalPositionCm} cm` : 'Ch. 12+480m'}</span>
+              <span className="text-[#6B7280] font-normal">Firmware: {sensor.firmwareVersion}</span>
             </div>
           </div>
 
-          {/* Real-Time Telemetry Metrics Grid */}
-          <div className="space-y-4 mb-6">
-            <span className="text-[10px] uppercase tracking-wider text-[#6B7280] block font-bold">
-              LIVE HYDRAULIC SENSOR TELEMETRY
-            </span>
-
-            <div className="grid grid-cols-2 gap-3">
-              {/* Pressure Card */}
-              <div className="p-3.5 rounded-2xl bg-[#F4F5F7] border border-[#E5E7EB]">
-                <div className="flex items-center gap-1.5 text-[#6B7280] text-[10px] mb-1 font-bold">
-                  <Gauge className="w-3.5 h-3.5 text-[#144230]" />
-                  <span>LINE PRESSURE</span>
-                </div>
-                <span className="font-display font-bold text-2xl text-[#111827]">
-                  {sensor.pressureBar.toFixed(2)} <span className="text-xs font-normal text-[#6B7280]">bar</span>
+          {/* If physical ESP32 vibration node, display Real ESP32 Telemetry immediately at the top */}
+          {isPhysicalNode ? (
+            <LiveHardwareTelemetryPanel sensorId={sensor.id} sensorKey={sensorKey} />
+          ) : (
+            <>
+              {/* Real-Time Telemetry Metrics Grid (Hydraulic Sensors) */}
+              <div className="space-y-4 mb-6">
+                <span className="text-[10px] uppercase tracking-wider text-[#6B7280] block font-bold">
+                  LIVE HYDRAULIC SENSOR TELEMETRY
                 </span>
-                <div className="text-[9px] text-[#144230] font-semibold mt-1">
-                  Nominal: 4.80 bar
-                </div>
-              </div>
 
-              {/* Flow Rate Card */}
-              <div className="p-3.5 rounded-2xl bg-[#F4F5F7] border border-[#E5E7EB]">
-                <div className="flex items-center gap-1.5 text-[#6B7280] text-[10px] mb-1 font-bold">
-                  <Droplets className="w-3.5 h-3.5 text-[#22C55E]" />
-                  <span>FLOW VELOCITY</span>
-                </div>
-                <span className={`font-display font-bold text-2xl ${
-                  sensor.flowRateM3h < 900 ? 'text-[#D97706]' : 'text-[#111827]'
-                }`}>
-                  {sensor.flowRateM3h} <span className="text-xs font-normal text-[#6B7280]">m³/h</span>
-                </span>
-                <div className="text-[9px] text-[#6B7280] font-medium mt-1">
-                  Expected: 930 m³/h
-                </div>
-              </div>
-
-              {/* Battery Level Card */}
-              <div className="p-3.5 rounded-2xl bg-[#F4F5F7] border border-[#E5E7EB]">
-                <div className="flex items-center gap-1.5 text-[#6B7280] text-[10px] mb-1 font-bold">
-                  <Battery className="w-3.5 h-3.5 text-[#144230]" />
-                  <span>BATTERY LEVEL</span>
-                </div>
-                <span className="font-display font-bold text-2xl text-[#111827]">
-                  {sensor.batteryPct}%
-                </span>
-                <div className="text-[9px] text-[#144230] font-semibold mt-1">
-                  LiFePO4 Internal Pack
-                </div>
-              </div>
-
-              {/* Fluid Temperature Card */}
-              <div className="p-3.5 rounded-2xl bg-[#F4F5F7] border border-[#E5E7EB]">
-                <div className="flex items-center gap-1.5 text-[#6B7280] text-[10px] mb-1 font-bold">
-                  <Thermometer className="w-3.5 h-3.5 text-[#144230]" />
-                  <span>TEMPERATURE</span>
-                </div>
-                <span className="font-display font-bold text-2xl text-[#111827]">
-                  {sensor.temperatureC}° <span className="text-xs font-normal text-[#6B7280]">C</span>
-                </span>
-                <div className="text-[9px] text-[#6B7280] font-medium mt-1">
-                  Ambient Stable
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Mini Sparkline Telemetry Trend Charts */}
-          <div className="p-4 rounded-2xl bg-[#F9FAFB] border border-[#ECEEF2] mb-6 space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold text-[#111827] uppercase">
-                TELEMETRY ACTIVITY TRENDS
-              </span>
-              <span className="text-[9px] text-[#6B7280]">PAST 60 MINUTES</span>
-            </div>
-
-            {/* Pressure Trend Sparkline */}
-            <div className="space-y-1">
-              <div className="flex justify-between text-[10px] text-[#4B5563]">
-                <span>Pressure Gradient (bar)</span>
-                <span className="font-bold text-[#144230]">{sensor.pressureBar} bar</span>
-              </div>
-              <div className="h-9 w-full bg-white rounded-xl border border-[#E5E7EB] p-1.5 flex items-end justify-between gap-1">
-                {pressurePoints.map((val, idx) => {
-                  const hPct = Math.max(20, Math.min(100, ((val - 3.5) / 2.0) * 100));
-                  return (
-                    <div key={idx} className="flex-1 bg-[#E8F7EE] rounded-sm relative group" style={{ height: `${hPct}%` }}>
-                      <div className="w-full h-full bg-[#144230] rounded-sm opacity-80 group-hover:opacity-100" />
+                <div className="grid grid-cols-2 gap-3">
+                  {/* Pressure Card */}
+                  <div className="p-3.5 rounded-2xl bg-[#F4F5F7] border border-[#E5E7EB]">
+                    <div className="flex items-center gap-1.5 text-[#6B7280] text-[10px] mb-1 font-bold">
+                      <Gauge className="w-3.5 h-3.5 text-[#144230]" />
+                      <span>LINE PRESSURE</span>
                     </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Flow Trend Sparkline */}
-            <div className="space-y-1 pt-1">
-              <div className="flex justify-between text-[10px] text-[#4B5563]">
-                <span>Flow Volume (m³/h)</span>
-                <span className="font-bold text-[#144230]">{sensor.flowRateM3h} m³/h</span>
-              </div>
-              <div className="h-9 w-full bg-white rounded-xl border border-[#E5E7EB] p-1.5 flex items-end justify-between gap-1">
-                {flowPoints.map((val, idx) => {
-                  const hPct = Math.max(20, Math.min(100, ((val - 700) / 300) * 100));
-                  return (
-                    <div key={idx} className="flex-1 bg-[#E8F7EE] rounded-sm relative group" style={{ height: `${hPct}%` }}>
-                      <div className="w-full h-full bg-[#22C55E] rounded-sm opacity-80 group-hover:opacity-100" />
+                    <span className="font-display font-bold text-2xl text-[#111827]">
+                      {sensor.pressureBar.toFixed(2)} <span className="text-xs font-normal text-[#6B7280]">bar</span>
+                    </span>
+                    <div className="text-[9px] text-[#144230] font-semibold mt-1">
+                      Nominal: 4.80 bar
                     </div>
-                  );
-                })}
+                  </div>
+
+                  {/* Flow Rate Card */}
+                  <div className="p-3.5 rounded-2xl bg-[#F4F5F7] border border-[#E5E7EB]">
+                    <div className="flex items-center gap-1.5 text-[#6B7280] text-[10px] mb-1 font-bold">
+                      <Droplets className="w-3.5 h-3.5 text-[#22C55E]" />
+                      <span>FLOW VELOCITY</span>
+                    </div>
+                    <span className={`font-display font-bold text-2xl ${
+                      sensor.flowRateM3h < 900 ? 'text-[#D97706]' : 'text-[#111827]'
+                    }`}>
+                      {sensor.flowRateM3h} <span className="text-xs font-normal text-[#6B7280]">m³/h</span>
+                    </span>
+                    <div className="text-[9px] text-[#6B7280] font-medium mt-1">
+                      Expected: 930 m³/h
+                    </div>
+                  </div>
+
+                  {/* Battery Level Card */}
+                  <div className="p-3.5 rounded-2xl bg-[#F4F5F7] border border-[#E5E7EB]">
+                    <div className="flex items-center gap-1.5 text-[#6B7280] text-[10px] mb-1 font-bold">
+                      <Battery className="w-3.5 h-3.5 text-[#144230]" />
+                      <span>BATTERY LEVEL</span>
+                    </div>
+                    <span className="font-display font-bold text-2xl text-[#111827]">
+                      {sensor.batteryPct}%
+                    </span>
+                    <div className="text-[9px] text-[#144230] font-semibold mt-1">
+                      LiFePO4 Internal Pack
+                    </div>
+                  </div>
+
+                  {/* Fluid Temperature Card */}
+                  <div className="p-3.5 rounded-2xl bg-[#F4F5F7] border border-[#E5E7EB]">
+                    <div className="flex items-center gap-1.5 text-[#6B7280] text-[10px] mb-1 font-bold">
+                      <Thermometer className="w-3.5 h-3.5 text-[#144230]" />
+                      <span>TEMPERATURE</span>
+                    </div>
+                    <span className="font-display font-bold text-2xl text-[#111827]">
+                      {sensor.temperatureC}° <span className="text-xs font-normal text-[#6B7280]">C</span>
+                    </span>
+                    <div className="text-[9px] text-[#6B7280] font-medium mt-1">
+                      Ambient Stable
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+
+              {/* Mini Sparkline Telemetry Trend Charts */}
+              <div className="p-4 rounded-2xl bg-[#F9FAFB] border border-[#ECEEF2] mb-6 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold text-[#111827] uppercase">
+                    TELEMETRY ACTIVITY TRENDS
+                  </span>
+                  <span className="text-[9px] text-[#6B7280]">PAST 60 MINUTES</span>
+                </div>
+
+                {/* Pressure Trend Sparkline */}
+                <div className="space-y-1">
+                  <div className="flex justify-between text-[10px] text-[#4B5563]">
+                    <span>Pressure Gradient (bar)</span>
+                    <span className="font-bold text-[#144230]">{sensor.pressureBar} bar</span>
+                  </div>
+                  <div className="h-9 w-full bg-white rounded-xl border border-[#E5E7EB] p-1.5 flex items-end justify-between gap-1">
+                    {pressurePoints.map((val, idx) => {
+                      const hPct = Math.max(20, Math.min(100, ((val - 3.5) / 2.0) * 100));
+                      return (
+                        <div key={idx} className="flex-1 bg-[#E8F7EE] rounded-sm relative group" style={{ height: `${hPct}%` }}>
+                          <div className="w-full h-full bg-[#144230] rounded-sm opacity-80 group-hover:opacity-100" />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Flow Trend Sparkline */}
+                <div className="space-y-1 pt-1">
+                  <div className="flex justify-between text-[10px] text-[#4B5563]">
+                    <span>Flow Volume (m³/h)</span>
+                    <span className="font-bold text-[#144230]">{sensor.flowRateM3h} m³/h</span>
+                  </div>
+                  <div className="h-9 w-full bg-white rounded-xl border border-[#E5E7EB] p-1.5 flex items-end justify-between gap-1">
+                    {flowPoints.map((val, idx) => {
+                      const hPct = Math.max(20, Math.min(100, ((val - 700) / 300) * 100));
+                      return (
+                        <div key={idx} className="flex-1 bg-[#E8F7EE] rounded-sm relative group" style={{ height: `${hPct}%` }}>
+                          <div className="w-full h-full bg-[#22C55E] rounded-sm opacity-80 group-hover:opacity-100" />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Bottom Drawer Actions */}

@@ -2,14 +2,14 @@ import React from 'react';
 import { 
   LayoutDashboard, 
   Droplets, 
-  Activity,
-  Sliders, 
+  Activity, 
   Cpu, 
   BarChart3, 
   Settings, 
   HelpCircle, 
   RotateCcw,
-  X
+  X,
+  FileText
 } from 'lucide-react';
 import { CaseType } from '../../types/simulation';
 
@@ -41,7 +41,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'hydraulic-events', label: 'Hydraulic Events', icon: Cpu },
     { id: 'telemetry-stream', label: 'Telemetry Stream', icon: Activity },
     { id: 'fleet', label: 'Sensor Fleet', icon: Activity, badge: `${activeTrainsCount}/${totalTrainsCount}` },
-    { id: 'scenarios', label: 'Scenarios', icon: Sliders },
+    { id: 'complaints', label: 'Citizen Grievance Portal', icon: FileText, badge: 'PORTAL' },
     { id: 'comparison', label: 'Benchmarks', icon: BarChart3 }
   ];
 
@@ -59,6 +59,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
     }
     setActiveTab(id);
     onCloseMobile?.();
+
+    if (id === 'complaints') {
+      const scrollContainer = document.querySelector('.overflow-y-auto');
+      if (scrollContainer) {
+        scrollContainer.scrollTop = 0;
+      }
+      window.scrollTo(0, 0);
+      return;
+    }
+
+    // Scroll to dashboard section
     const element = document.getElementById(`${id}-section`) || document.getElementById('control-deck');
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
@@ -111,6 +122,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               {menuItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = activeTab === item.id;
+                const isComplaints = item.id === 'complaints';
 
                 return (
                   <button
@@ -119,19 +131,23 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-full font-display text-xs font-semibold transition-all cursor-pointer ${
                       isActive
                         ? 'bg-[#144230] text-white shadow-sm'
+                        : isComplaints
+                        ? 'bg-[#E8F7EE] text-[#144230] border border-[#B7E4C7] font-bold shadow-2xs hover:bg-[#D8F3E5]'
                         : 'text-[#6B7280] hover:text-[#111827] hover:bg-[#F4F5F7]'
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-[#9CA3AF]'}`} />
+                      <Icon className={`w-4 h-4 ${isActive ? 'text-white' : isComplaints ? 'text-[#144230]' : 'text-[#9CA3AF]'}`} />
                       <span>{item.label}</span>
                     </div>
 
                     {item.badge && (
                       <span
-                        className={`text-[10px] font-mono-tech px-2 py-0.5 rounded-full font-bold ${
+                        className={`text-[9px] font-mono-tech px-2 py-0.5 rounded-full font-bold ${
                           isActive
                             ? 'bg-white/20 text-white'
+                            : isComplaints
+                            ? 'bg-[#144230] text-white'
                             : 'bg-[#E8F7EE] text-[#144230]'
                         }`}
                       >

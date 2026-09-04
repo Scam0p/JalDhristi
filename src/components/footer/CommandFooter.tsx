@@ -4,7 +4,6 @@ import { ShieldCheck, Users, GraduationCap, Award, Droplets } from 'lucide-react
 export const CommandFooter: React.FC = () => {
   const teamMembers = [
     { name: 'Arjun V', usn: '1EP24IC007', role: 'Team Member' },
-    { name: 'Harsh Jangir', usn: '1EP24IC012', role: 'Team Member' },
     { name: 'Himanshu Kumar', usn: '1EP24IC014', role: 'Team Member' },
     { name: 'Jeevan Jaikumar', usn: '1EP24IC015', role: 'Team Member' },
     { name: 'Roshni Singh R', usn: '1EP24IC044', role: 'Team Member' },
@@ -54,12 +53,12 @@ export const CommandFooter: React.FC = () => {
             </div>
 
             <div className="text-[11px] font-mono-tech text-[#6B7280] bg-white px-3 py-1 rounded-full border border-[#E5E7EB]">
-              6 Core Student Engineers
+              5 Core Student Engineers
             </div>
           </div>
 
-          {/* 6 Team Member Cards Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+          {/* 5 Team Member Cards Grid (Balanced 5-Column Desktop Layout) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3.5">
             {teamMembers.map((member, idx) => (
               <div
                 key={member.usn}

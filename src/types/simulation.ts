@@ -67,6 +67,12 @@ export interface SensorNode {
   history?: TelemetryPoint[];
   firmwareVersion: string;
   protocol: 'LoRaWAN' | 'NB-IoT' | 'Modbus-RTU';
+  physicalPositionCm?: number; // Physical pipeline position in cm (e.g. 50 cm or 90 cm)
+  hardwareSensorKey?: 'sensor_1' | 'sensor_2'; // MQTT dual-sensor hardware key
+  xAcc?: number; // Acceleration X in m/s²
+  yAcc?: number; // Acceleration Y in m/s²
+  zAcc?: number; // Acceleration Z in m/s²
+  vibrationMs2?: number; // Vibration magnitude in m/s²
 }
 
 export interface PipelineSegment {

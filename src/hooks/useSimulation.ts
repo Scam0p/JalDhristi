@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { 
   CaseType, 
   ScenarioType, 
@@ -6,8 +6,7 @@ import {
   PipelineSegment, 
   KPISet, 
   LeakAlert, 
-  HydraulicEventLog,
-  SensorStatus
+  HydraulicEventLog
 } from '../types/simulation';
 import { 
   INITIAL_STATIONS, 
@@ -17,8 +16,29 @@ import {
   INITIAL_AI_LOGS, 
   SCENARIOS 
 } from '../data/mockData';
+import { 
+  evaluateRealTimeTelemetry, 
+  PipelineEventState, 
+  RealTimeCondition,
+  SENSOR_1_POSITION_CM,
+  SENSOR_2_POSITION_CM,
+  LEAK_POSITION_CM
+} from '../config/pipelineConfig';
+import { useHardwareTelemetry } from './useHardwareTelemetry';
+
+export type DashboardMode = 'REAL' | 'SIMULATION';
+export type SimulationScenario = 'NORMAL' | 'ANOMALY' | 'LEAK';
 
 export function useSimulation() {
+  // Operational Mode: REAL MODE (default) vs SIMULATION MODE
+  const [dashboardMode, setDashboardMode] = useState<DashboardMode>('REAL');
+
+  // Centralized selected sensor state: 'sensor_1' (50 cm) vs 'sensor_2' (90 cm)
+  const [selectedSensorKey, setSelectedSensorKey] = useState<'sensor_1' | 'sensor_2'>('sensor_1');
+
+  // Simulation Mode Scenarios: 'NORMAL' | 'ANOMALY' | 'LEAK' (at 75 cm T-valve)
+  const [simulationScenario, setSimulationScenario] = useState<SimulationScenario>('NORMAL');
+
   const [currentCase, setCurrentCase] = useState<CaseType>('ai');
   const [activeScenario, setActiveScenario] = useState<ScenarioType>('mainline_burst');
   const [trains, setTrains] = useState<SensorNode[]>(INITIAL_TRAINS);
@@ -28,7 +48,7 @@ export function useSimulation() {
   const [eventLogs, setEventLogs] = useState<HydraulicEventLog[]>(INITIAL_AI_LOGS);
   
   // Pipeline Simulation State: 'NORMAL' | 'WARNING' | 'LEAK_SUSPECTED'
-  const [simulationState, setSimulationState] = useState<'NORMAL' | 'WARNING' | 'LEAK_SUSPECTED'>('LEAK_SUSPECTED');
+  const [simulationState, setSimulationState] = useState<'NORMAL' | 'WARNING' | 'LEAK_SUSPECTED'>('NORMAL');
 
   // Playback & Clock
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
@@ -39,7 +59,7 @@ export function useSimulation() {
   const [selectedTrain, setSelectedTrain] = useState<SensorNode | null>(null);
   const [selectedStation, setSelectedStation] = useState<PipelineSegment | null>(null);
 
-  // Asynchronous sensor fetch state (simulating real sensor telemetry polling)
+  // Asynchronous sensor fetch state
   const [isFetchingSensor, setIsFetchingSensor] = useState<boolean>(false);
   const [fetchingSensorId, setFetchingSensorId] = useState<string | null>(null);
 
@@ -47,6 +67,13 @@ export function useSimulation() {
   const [isOptimizing, setIsOptimizing] = useState<boolean>(false);
   const [optimizationStep, setOptimizationStep] = useState<number>(0);
   const [isCaseTransitioning, setIsCaseTransitioning] = useState<boolean>(false);
+
+  // Live Hardware Telemetry Connection
+  const hardwareTelemetry = useHardwareTelemetry(1000);
+  const { latestTelemetry, connectionStatus } = hardwareTelemetry;
+
+  // Track previous event condition to trigger logs on state changes
+  const prevEventConditionRef = useRef<RealTimeCondition>('NORMAL');
 
   // Formatted simulation time string
   const formatTime = (totalSeconds: number): string => {
@@ -58,14 +85,282 @@ export function useSimulation() {
 
   const simTimeString = formatTime(simSeconds);
 
+  // Evaluated Real-Time Event State based on current Mode
+  const realTimeEventState: PipelineEventState = useMemo(() => {
+    if (dashboardMode === 'REAL') {
+      return evaluateRealTimeTelemetry(latestTelemetry?.sensor_1, latestTelemetry?.sensor_2);
+    }
+
+    // SIMULATION MODE scenarios
+    if (simulationScenario === 'LEAK') {
+      return {
+        overall_status: 'POTENTIAL LEAK' as const,
+        active_sensor_id: 'sensor_2' as const,
+        sensor_position_cm: LEAK_POSITION_CM, // 75 cm T-valve leak
+        vibration: 0.650,
+        event_type: 'POTENTIAL LEAK' as const,
+        event_message: 'SIMULATED POTENTIAL LEAK AT 75 CM T-VALVE BRANCH',
+        timestamp: Date.now(),
+        sensor_1: {
+          sensorKey: 'sensor_1',
+          name: 'Sensor 1 (ADXL345 #1)',
+          positionCm: SENSOR_1_POSITION_CM,
+          vibration: 0.280,
+          x: 0.210,
+          y: -0.180,
+          z: 9.750,
+          condition: 'ANOMALY DETECTED',
+          eventStatus: 'ANOMALY DETECTED',
+          isTriggered: true
+        },
+        sensor_2: {
+          sensorKey: 'sensor_2',
+          name: 'Sensor 2 (ADXL345 #2)',
+          positionCm: SENSOR_2_POSITION_CM,
+          vibration: 0.650,
+          x: 0.520,
+          y: -0.390,
+          z: 10.120,
+          condition: 'POTENTIAL LEAK',
+          eventStatus: 'POTENTIAL LEAK',
+          isTriggered: true
+        }
+      };
+    } else if (simulationScenario === 'ANOMALY') {
+      return {
+        overall_status: 'ANOMALY DETECTED' as const,
+        active_sensor_id: 'sensor_1' as const,
+        sensor_position_cm: SENSOR_1_POSITION_CM,
+        vibration: 0.320,
+        event_type: 'ANOMALY DETECTED' as const,
+        event_message: 'Sensor 1: ANOMALY DETECTED (0.320 m/s² at 50 cm)',
+        timestamp: Date.now(),
+        sensor_1: {
+          sensorKey: 'sensor_1',
+          name: 'Sensor 1 (ADXL345 #1)',
+          positionCm: SENSOR_1_POSITION_CM,
+          vibration: 0.320,
+          x: 0.280,
+          y: -0.210,
+          z: 9.850,
+          condition: 'ANOMALY DETECTED',
+          eventStatus: 'ANOMALY DETECTED',
+          isTriggered: true
+        },
+        sensor_2: {
+          sensorKey: 'sensor_2',
+          name: 'Sensor 2 (ADXL345 #2)',
+          positionCm: SENSOR_2_POSITION_CM,
+          vibration: 0.065,
+          x: 0.035,
+          y: -0.045,
+          z: 9.810,
+          condition: 'NORMAL',
+          eventStatus: 'Nominal Baseline',
+          isTriggered: false
+        }
+      };
+    } else {
+      return {
+        overall_status: 'NORMAL' as const,
+        active_sensor_id: null,
+        sensor_position_cm: null,
+        vibration: 0.050,
+        event_type: 'NORMAL' as const,
+        event_message: 'Normal operation: Stationary baseline vibration readings',
+        timestamp: Date.now(),
+        sensor_1: {
+          sensorKey: 'sensor_1',
+          name: 'Sensor 1 (ADXL345 #1)',
+          positionCm: SENSOR_1_POSITION_CM,
+          vibration: 0.050,
+          x: 0.020,
+          y: -0.030,
+          z: 9.810,
+          condition: 'NORMAL',
+          eventStatus: 'Nominal Baseline',
+          isTriggered: false
+        },
+        sensor_2: {
+          sensorKey: 'sensor_2',
+          name: 'Sensor 2 (ADXL345 #2)',
+          positionCm: SENSOR_2_POSITION_CM,
+          vibration: 0.060,
+          x: 0.025,
+          y: -0.040,
+          z: 9.800,
+          condition: 'NORMAL',
+          eventStatus: 'Nominal Baseline',
+          isTriggered: false
+        }
+      };
+    }
+  }, [dashboardMode, simulationScenario, latestTelemetry]);
+
+  // Synchronize REAL MODE telemetry with trains state
+  useEffect(() => {
+    if (dashboardMode === 'REAL' && latestTelemetry) {
+      const evalState = evaluateRealTimeTelemetry(latestTelemetry.sensor_1, latestTelemetry.sensor_2);
+      
+      setTrains(prev => prev.map(s => {
+        if (s.id === 'sensor_1' || s.hardwareSensorKey === 'sensor_1') {
+          const s1Cond = evalState.sensor_1.condition;
+          return {
+            ...s,
+            status: s1Cond === 'POTENTIAL LEAK' ? 'CRITICAL' : s1Cond === 'ANOMALY DETECTED' ? 'WARNING' : 'NORMAL',
+            vibrationMs2: latestTelemetry.sensor_1.vibration,
+            xAcc: latestTelemetry.sensor_1.x,
+            yAcc: latestTelemetry.sensor_1.y,
+            zAcc: latestTelemetry.sensor_1.z,
+            lastUpdated: 'Live MQTT'
+          };
+        }
+        if (s.id === 'sensor_2' || s.hardwareSensorKey === 'sensor_2') {
+          const s2Cond = evalState.sensor_2.condition;
+          return {
+            ...s,
+            status: s2Cond === 'POTENTIAL LEAK' ? 'CRITICAL' : s2Cond === 'ANOMALY DETECTED' ? 'WARNING' : 'NORMAL',
+            vibrationMs2: latestTelemetry.sensor_2.vibration,
+            xAcc: latestTelemetry.sensor_2.x,
+            yAcc: latestTelemetry.sensor_2.y,
+            zAcc: latestTelemetry.sensor_2.z,
+            lastUpdated: 'Live MQTT'
+          };
+        }
+        return s;
+      }));
+
+      // Update simulation state for pipeline coloring
+      if (evalState.overall_status === 'POTENTIAL LEAK') {
+        setSimulationState('LEAK_SUSPECTED');
+      } else if (evalState.overall_status === 'ANOMALY DETECTED') {
+        setSimulationState('WARNING');
+      } else {
+        setSimulationState('NORMAL');
+      }
+
+      // Log event state transitions
+      if (evalState.overall_status !== prevEventConditionRef.current) {
+        if (evalState.overall_status !== 'NORMAL') {
+          const newLog: HydraulicEventLog = {
+            id: `LOG-EVT-${Date.now().toString().slice(-4)}`,
+            time: formatTime(simSeconds),
+            type: evalState.overall_status === 'POTENTIAL LEAK' ? 'WARNING' : 'ANOMALY',
+            title: `REAL SENSOR EVENT: ${evalState.overall_status}`,
+            detail: evalState.event_message
+          };
+          setEventLogs(prev => [newLog, ...prev.slice(0, 24)]);
+        } else {
+          const normalLog: HydraulicEventLog = {
+            id: `LOG-NORM-${Date.now().toString().slice(-4)}`,
+            time: formatTime(simSeconds),
+            type: 'DEPLOYMENT',
+            title: 'PHYSICAL RIG STABILIZED',
+            detail: 'All physical sensors returned to baseline stationary vibration limits.'
+          };
+          setEventLogs(prev => [normalLog, ...prev.slice(0, 24)]);
+        }
+        prevEventConditionRef.current = evalState.overall_status;
+      }
+    }
+  }, [dashboardMode, latestTelemetry, simSeconds]);
+
+  // Handle Mode Change (REAL MODE vs SIMULATION MODE)
+  const handleModeChange = useCallback((newMode: DashboardMode) => {
+    setDashboardMode(newMode);
+    if (newMode === 'REAL') {
+      // In REAL MODE: no simulated scenario is active
+      setSimulationState('NORMAL');
+      const log: HydraulicEventLog = {
+        id: `LOG-MODE-${Date.now().toString().slice(-4)}`,
+        time: formatTime(simSeconds),
+        type: 'OPTIMIZATION',
+        title: 'REAL MODE ENGAGED',
+        detail: 'Dashboard switched to live physical ESP32 dual ADXL345 sensor telemetry. Simulated scenarios disabled.'
+      };
+      setEventLogs(prev => [log, ...prev.slice(0, 24)]);
+    } else {
+      // In SIMULATION MODE: reset to current scenario
+      const log: HydraulicEventLog = {
+        id: `LOG-MODE-${Date.now().toString().slice(-4)}`,
+        time: formatTime(simSeconds),
+        type: 'OPTIMIZATION',
+        title: 'SIMULATION MODE ENGAGED',
+        detail: 'Interactive scenario testing mode active. Select Normal, Anomaly, or Leak (at 75 cm T-valve).'
+      };
+      setEventLogs(prev => [log, ...prev.slice(0, 24)]);
+    }
+  }, [simSeconds]);
+
+  // Handle Simulation Scenario Change (SIMULATION MODE ONLY)
+  const handleSimulationScenarioChange = useCallback((scenario: SimulationScenario) => {
+    setSimulationScenario(scenario);
+    if (scenario === 'NORMAL') {
+      setSimulationState('NORMAL');
+      setTrains(prev => prev.map(s => ({
+        ...s,
+        status: 'NORMAL',
+        vibrationMs2: s.id === 'sensor_1' ? 0.05 : s.id === 'sensor_2' ? 0.06 : s.vibrationMs2
+      })));
+      setStations(prev => prev.map(st => ({ ...st, status: 'NORMAL', flowResidualPct: 0 })));
+      const newLog: HydraulicEventLog = {
+        id: `LOG-SCEN-${Date.now().toString().slice(-4)}`,
+        time: formatTime(simSeconds),
+        type: 'OPTIMIZATION',
+        title: 'SCENARIO LOADED: NORMAL OPERATION',
+        detail: 'Baseline simulation parameters across 100 cm pipeline.'
+      };
+      setEventLogs(prev => [newLog, ...prev.slice(0, 24)]);
+    } else if (scenario === 'ANOMALY') {
+      setSimulationState('WARNING');
+      setTrains(prev => prev.map(s => {
+        if (s.id === 'sensor_1' || s.hardwareSensorKey === 'sensor_1') {
+          return { ...s, status: 'WARNING', vibrationMs2: 0.32 };
+        }
+        return s;
+      }));
+      const newLog: HydraulicEventLog = {
+        id: `LOG-SCEN-${Date.now().toString().slice(-4)}`,
+        time: formatTime(simSeconds),
+        type: 'ANOMALY',
+        title: 'SCENARIO LOADED: ANOMALY (SENSOR 1 AT 50 CM)',
+        detail: 'Simulated vibration anomaly injected on Sensor 1 (50 cm midpoint).'
+      };
+      setEventLogs(prev => [newLog, ...prev.slice(0, 24)]);
+    } else if (scenario === 'LEAK') {
+      setSimulationState('LEAK_SUSPECTED');
+      setTrains(prev => prev.map(s => {
+        if (s.id === 'sensor_1' || s.hardwareSensorKey === 'sensor_1') {
+          return { ...s, status: 'WARNING', vibrationMs2: 0.28 };
+        }
+        if (s.id === 'sensor_2' || s.hardwareSensorKey === 'sensor_2') {
+          return { ...s, status: 'CRITICAL', vibrationMs2: 0.65 };
+        }
+        return s;
+      }));
+      setStations(prev => prev.map(st => {
+        if (st.id === 'S_03_ZONE_Z07') {
+          return { ...st, status: 'CRITICAL_LEAK', flowResidualPct: -7.5 };
+        }
+        return st;
+      }));
+      const newLog: HydraulicEventLog = {
+        id: `LOG-SCEN-${Date.now().toString().slice(-4)}`,
+        time: formatTime(simSeconds),
+        type: 'WARNING',
+        title: 'SCENARIO LOADED: POTENTIAL LEAK AT 75 CM T-VALVE',
+        detail: 'Simulated potential leak injected at physical T-shaped valve position (75 cm) along 100 cm pipeline.'
+      };
+      setEventLogs(prev => [newLog, ...prev.slice(0, 24)]);
+    }
+  }, [simSeconds]);
+
   // Asynchronous sensor data fetcher with realistic network latency
   const handleSelectSensorAsync = useCallback((sensor: SensorNode) => {
     setIsFetchingSensor(true);
     setFetchingSensorId(sensor.id);
 
-    // Simulate 350ms async gateway query
     setTimeout(() => {
-      // Find latest sensor data with slight live jitter
       setTrains(prev => prev.map(s => {
         if (s.id === sensor.id) {
           const jitter = (Math.random() - 0.5) * 0.02;
@@ -115,15 +410,16 @@ export function useSimulation() {
     return base;
   }, []);
 
-  // Handle Scenario Change
+  // Handle Contingency Scenario Change
   const handleScenarioChange = useCallback((scenarioId: ScenarioType) => {
     setActiveScenario(scenarioId);
     const scenDef = SCENARIOS.find(s => s.id === scenarioId);
     if (!scenDef) return;
 
-    setSimulationState(scenDef.simulationState);
+    if (dashboardMode === 'SIMULATION') {
+      setSimulationState(scenDef.simulationState);
+    }
 
-    // Update segment pressures and flows
     setStations(prev => prev.map(station => {
       const mult = scenDef.flowMultiplier[station.id] || 1.0;
       const newActual = Math.round(station.expectedFlowM3h * mult);
@@ -144,23 +440,23 @@ export function useSimulation() {
       };
     }));
 
-    // Update sensor statuses
-    setTrains(prev => prev.map(sensor => {
-      const affected = scenDef.affectedSensors.find(a => a.id === sensor.id);
-      if (affected) {
+    if (dashboardMode === 'SIMULATION') {
+      setTrains(prev => prev.map(sensor => {
+        const affected = scenDef.affectedSensors.find(a => a.id === sensor.id);
+        if (affected) {
+          return {
+            ...sensor,
+            status: affected.targetStatus,
+            lastUpdated: 'Just now'
+          };
+        }
         return {
           ...sensor,
-          status: affected.targetStatus,
-          lastUpdated: 'Just now'
+          status: scenDef.simulationState === 'NORMAL' ? 'NORMAL' : sensor.status
         };
-      }
-      return {
-        ...sensor,
-        status: scenDef.simulationState === 'NORMAL' ? 'NORMAL' : sensor.status
-      };
-    }));
+      }));
+    }
 
-    // Add log entry
     const newLog: HydraulicEventLog = {
       id: `LOG-SCEN-${Date.now().toString().slice(-4)}`,
       time: formatTime(simSeconds),
@@ -171,7 +467,7 @@ export function useSimulation() {
     setEventLogs(prev => [newLog, ...prev.slice(0, 24)]);
 
     setKpis(computeKpis(currentCase, scenarioId));
-  }, [currentCase, computeKpis, simSeconds]);
+  }, [currentCase, computeKpis, simSeconds, dashboardMode]);
 
   // Handle Paradigm / Case Change
   const handleCaseChange = useCallback((newCase: CaseType) => {
@@ -198,13 +494,12 @@ export function useSimulation() {
             setIsOptimizing(false);
             setOptimizationStep(0);
             
-            // Add solver completion log
             const completionLog: HydraulicEventLog = {
               id: `LOG-SOLV-${Date.now().toString().slice(-4)}`,
               time: formatTime(simSeconds),
               type: 'DEPLOYMENT',
               title: 'HYDRAULIC SOLVER CONVERGED (42ms)',
-              detail: 'Digital twin converged at 97.4% confidence. Segment S-14 leak pinpointed at Ch. 12+238.4m.'
+              detail: 'Digital twin converged at 97.4% confidence. Pipeline 75 cm T-valve acoustic signature pinpointed.'
             };
             setEventLogs(l => [completionLog, ...l.slice(0, 24)]);
           }, 600);
@@ -215,30 +510,22 @@ export function useSimulation() {
     }, 450);
   }, [isOptimizing, simSeconds]);
 
-  // Deploy / Execute Mitigation Recommendation (e.g. Valve Throttling)
+  // Deploy / Execute Mitigation Recommendation
   const handleDeployRecommendation = useCallback((recId: string) => {
     setRecommendations(prev => prev.map(rec => {
       if (rec.id === recId) {
-        return {
-          ...rec,
-          status: 'DEPLOYED'
-        };
+        return { ...rec, status: 'DEPLOYED' };
       }
       return rec;
     }));
 
-    // Rebalance sensors
     setTrains(prev => prev.map(s => {
-      if (s.id === 'FS-02') {
+      if (s.id === 'FS-02' || s.id === 'sensor_2') {
         return { ...s, status: 'NORMAL', pressureBar: 4.4, flowRateM3h: 910 };
-      }
-      if (s.id === 'VS-06') {
-        return { ...s, status: 'NORMAL', flowRateM3h: 910 };
       }
       return s;
     }));
 
-    // Update segment status
     setStations(prev => prev.map(st => {
       if (st.id === 'S_03_ZONE_Z07') {
         return { ...st, status: 'MONITORING', flowResidualPct: -2.1 };
@@ -265,7 +552,8 @@ export function useSimulation() {
     setKpis(CASE_KPIS.ai);
     setCurrentCase('ai');
     setActiveScenario('mainline_burst');
-    setSimulationState('LEAK_SUSPECTED');
+    setSimulationState('NORMAL');
+    setSimulationScenario('NORMAL');
     setRecommendations(INITIAL_AI_RECOMMENDATIONS);
     setEventLogs(INITIAL_AI_LOGS);
     setSimSeconds(8 * 3600 + 42 * 60 + 15);
@@ -283,12 +571,20 @@ export function useSimulation() {
   }, [isPlaying, simSpeed]);
 
   return {
+    dashboardMode,
+    setDashboardMode: handleModeChange,
+    selectedSensorKey,
+    setSelectedSensorKey,
+    simulationScenario,
+    setSimulationScenario: handleSimulationScenarioChange,
+    realTimeEventState,
+    hardwareTelemetry,
     currentCase,
     handleCaseChange,
     activeScenario,
     handleScenarioChange,
-    trains, // sensors list
-    stations, // segments list
+    trains,
+    stations,
     sensors: trains,
     segments: stations,
     kpis,

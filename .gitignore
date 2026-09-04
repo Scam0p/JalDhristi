@@ -70,3 +70,9 @@ out/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Database / local runtime telemetry data
+backend/data/*.db*
+*.db
+*.db-wal
+*.db-shm

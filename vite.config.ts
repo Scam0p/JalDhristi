@@ -10,6 +10,24 @@ export default defineConfig({
   ],
   server: {
     host: true,
-    port: 5173
+    port: 5173,
+    watch: {
+      ignored: [
+        '**/backend/**',
+        '**/backend/data/**',
+        '**/firmware/**',
+        '**/*.db',
+        '**/*.db-wal',
+        '**/*.db-shm',
+        '**/*.db*',
+        (file: string) => file.includes('/backend/') || file.includes('.db') || file.includes('/firmware/')
+      ]
+    },
+    proxy: {
+      '/api': {
+        target: 'http://127.0.0.1:5001',
+        changeOrigin: true
+      }
+    }
   }
 });
