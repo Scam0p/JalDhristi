@@ -1,23 +1,26 @@
 import React from 'react';
 import { HydraulicEventLog } from '../../types/simulation';
-import { Terminal, AlertTriangle, AlertCircle, CheckCircle, Zap, Bell, Droplets } from 'lucide-react';
+import { Terminal } from 'lucide-react';
 
 interface DecisionFeedProps {
   logs: HydraulicEventLog[];
 }
 
 export const DecisionFeed: React.FC<DecisionFeedProps> = ({ logs }) => {
-  const getSeverityBadge = (type: HydraulicEventLog['type']) => {
+  const getSeverityBadge = (type: HydraulicEventLog['type'], title: string = '') => {
+    const upperTitle = title.toUpperCase();
+    if (upperTitle.includes('BURST') || upperTitle.includes('CRITICAL')) {
+      return {
+        label: 'CRITICAL',
+        style: 'bg-[#FEE2E2] text-[#DC2626] border-[#FECACA]'
+      };
+    }
     switch (type) {
+      case 'WARNING':
       case 'ANOMALY':
         return {
           label: 'WARNING',
           style: 'bg-[#FEF3C7] text-[#92400E] border-[#FDE68A]'
-        };
-      case 'WARNING':
-        return {
-          label: 'CRITICAL',
-          style: 'bg-[#FEE2E2] text-[#991B1B] border-[#FECACA]'
         };
       case 'DEPLOYMENT':
         return {
@@ -86,15 +89,15 @@ export const DecisionFeed: React.FC<DecisionFeedProps> = ({ logs }) => {
           <div className="col-span-2 text-right">SEVERITY</div>
         </div>
 
-        {/* Table Body */}
-        <div className="flex-1 overflow-y-auto divide-y divide-[#F3F4F6] font-mono-tech text-xs max-h-[380px]">
+        {/* Table Body - Expanded to reclaim vertical space naturally */}
+        <div className="flex-1 overflow-y-auto divide-y divide-[#F3F4F6] font-mono-tech text-xs max-h-[440px]">
           {logs.length === 0 ? (
-            <div className="p-6 text-center text-xs text-[#9CA3AF] font-mono-tech">
+            <div className="p-8 text-center text-xs text-[#9CA3AF] font-mono-tech">
               NO ALARM EVENTS IN ACTIVE BUFFER
             </div>
           ) : (
             logs.map((log) => {
-              const severity = getSeverityBadge(log.type);
+              const severity = getSeverityBadge(log.type, log.title);
               const source = getSourceDisplay(log);
 
               return (
@@ -128,7 +131,7 @@ export const DecisionFeed: React.FC<DecisionFeedProps> = ({ logs }) => {
 
                   {/* Severity Pill */}
                   <div className="col-span-2 text-right">
-                    <span className={`inline-block text-[9px] font-bold px-1.5 py-0.5 rounded border ${severity.style}`}>
+                    <span className={`inline-block text-[9px] font-bold px-1.5 py-0.5 rounded border uppercase ${severity.style}`}>
                       {severity.label}
                     </span>
                   </div>
@@ -147,3 +150,5 @@ export const DecisionFeed: React.FC<DecisionFeedProps> = ({ logs }) => {
     </div>
   );
 };
+
+export default DecisionFeed;

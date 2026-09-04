@@ -9,7 +9,8 @@ import {
   HelpCircle, 
   RotateCcw,
   X,
-  FileText
+  FileText,
+  Database
 } from 'lucide-react';
 import { CaseType } from '../../types/simulation';
 
@@ -40,8 +41,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'pipeline', label: 'Pipeline Sim', icon: Droplets },
-    { id: 'hydraulic-events', label: 'Hydraulic Events', icon: Cpu },
-    { id: 'telemetry-stream', label: 'Telemetry Stream', icon: Activity },
+    { id: 'telemetry-stream', label: 'Tank & Register', icon: Database },
     { id: 'fleet', label: 'Sensor Fleet', icon: Activity, badge: `${activeTrainsCount}/${totalTrainsCount}` },
     { id: 'complaints', label: 'Citizen Grievance Portal', icon: FileText, badge: 'PORTAL' },
     { id: 'comparison', label: 'Benchmarks', icon: BarChart3 }

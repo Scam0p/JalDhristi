@@ -12,9 +12,8 @@ import { KPIRibbon } from './KPIRibbon';
 import { ProjectAnalyticsChart } from './ProjectAnalyticsChart';
 import { RemindersCard } from './RemindersCard';
 import { TimeTrackerCard } from './TimeTrackerCard';
-import { ProgressGaugeCard } from './ProgressGaugeCard';
+import { WaterStorageTankCard } from './WaterStorageTankCard';
 import { RailwayNetwork } from '../railway/RailwayNetwork';
-import { AIEnginePanel } from './AIEnginePanel';
 import { DecisionFeed } from './DecisionFeed';
 import { FleetOverview } from '../fleet/FleetOverview';
 import { PerformanceComparison } from '../comparison/PerformanceComparison';
@@ -220,29 +219,21 @@ export const ControlCentre: React.FC<ControlCentreProps> = ({
         />
       </section>
 
-      {/* 2. HYDRAULIC EVENTS (Hydraulic Events & Digital Twin Intelligence) */}
-      <section id="hydraulic-events-section">
-        <AIEnginePanel
-          recommendations={recommendations}
-          onDeployRecommendation={onDeployRecommendation}
-          onRunOptimization={onRunOptimization}
-          isOptimizing={isOptimizing}
-          currentCase={currentCase}
-        />
-      </section>
-
-      {/* 3. TELEMETRY STREAM (Real-Time Telemetry Stream & NRW Progress Gauge) */}
+      {/* 2. STORAGE TANK & SCADA TELEMETRY STREAM */}
       <section id="telemetry-stream-section" className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
-        {/* Water Balance & NRW Progress Gauge (4 Cols) */}
-        <div className="lg:col-span-4">
-          <ProgressGaugeCard
-            kpis={kpis}
-            currentCase={currentCase}
+        {/* Physical Water Storage Tank (5 Cols) */}
+        <div className="lg:col-span-5">
+          <WaterStorageTankCard
+            tankId="TANK-01"
+            tankName="STORAGE RESERVOIR"
+            levelPct={72}
+            capacityL={500}
+            status="NORMAL"
           />
         </div>
 
-        {/* Real-time Telemetry Stream & Event Log (8 Cols) */}
-        <div className="lg:col-span-8">
+        {/* Real-time Telemetry Stream & Event Log (7 Cols) */}
+        <div className="lg:col-span-7">
           <DecisionFeed logs={eventLogs} />
         </div>
       </section>
