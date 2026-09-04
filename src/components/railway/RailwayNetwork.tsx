@@ -49,11 +49,9 @@ interface RailwayNetworkProps {
   onRunOptimization: () => void;
   // Mode-specific and Real-Time Event props
   dashboardMode?: DashboardMode;
-  onSelectMode?: (mode: DashboardMode) => void;
   selectedSensorKey?: 'sensor_1' | 'sensor_2';
   onSelectSensorKey?: (key: 'sensor_1' | 'sensor_2') => void;
   simulationScenario?: SimulationScenario;
-  onSelectSimulationScenario?: (scen: SimulationScenario) => void;
   realTimeEventState?: PipelineEventState;
   simulationState?: 'NORMAL' | 'WARNING' | 'LEAK_SUSPECTED';
   onSetSimulationState?: (state: 'NORMAL' | 'WARNING' | 'LEAK_SUSPECTED') => void;
@@ -80,11 +78,9 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
   onReset,
   onRunOptimization,
   dashboardMode = 'REAL',
-  onSelectMode,
   selectedSensorKey,
   onSelectSensorKey,
-  simulationScenario = 'NORMAL',
-  onSelectSimulationScenario,
+  simulationScenario = null,
   realTimeEventState,
   simulationState = 'NORMAL',
   onSetSimulationState,
@@ -99,18 +95,12 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
     ageSeconds
   } = useHardwareTelemetry(1000);
 
-  const [localMode, setLocalMode] = useState<DashboardMode>('REAL');
-  const [localSimScenario, setLocalSimScenario] = useState<SimulationScenario>('NORMAL');
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [localSelectedSensorKey, setLocalSelectedSensorKey] = useState<'sensor_1' | 'sensor_2'>('sensor_1');
 
-  const activeMode = onSelectMode ? dashboardMode : localMode;
-  const setMode = onSelectMode || setLocalMode;
-
-  const activeScenario = onSelectSimulationScenario ? simulationScenario : localSimScenario;
-  const setScenario = onSelectSimulationScenario || setLocalSimScenario;
-
-  const isRealMode = activeMode === 'REAL';
+  // Direct centralized single source of truth
+  const isRealMode = dashboardMode === 'REAL';
+  const activeScenario = simulationScenario;
   const isHardwareLive = connectionStatus === 'LIVE';
 
   // Retrieve Sensor 1 (50 cm), Sensor 2 (90 cm)
@@ -203,81 +193,12 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
           </div>
         </div>
 
-        {/* Operational Mode Toggle & Mode-Specific Controls */}
-        <div className="flex flex-wrap items-center gap-2.5">
-          {/* REAL MODE vs SIMULATION MODE Selector */}
-          <div className="flex items-center gap-1 p-1 bg-[#F4F5F7] rounded-full border border-[#E5E7EB] text-xs font-mono-tech">
-            <button
-              onClick={() => setMode('REAL')}
-              className={`px-3 py-1 rounded-full font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                isRealMode
-                  ? 'bg-[#144230] text-white shadow-xs'
-                  : 'text-[#6B7280] hover:text-[#111827]'
-              }`}
-            >
-              <Radio className={`w-3.5 h-3.5 ${isHardwareLive ? 'text-[#22C55E]' : 'text-[#F59E0B]'}`} />
-              <span>REAL MODE</span>
-              {isHardwareLive ? (
-                <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E] animate-pulse" />
-              ) : (
-                <span className="text-[9px] text-amber-300 font-normal">WAITING</span>
-              )}
-            </button>
-
-            <button
-              onClick={() => setMode('SIMULATION')}
-              className={`px-3 py-1 rounded-full font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                !isRealMode
-                  ? 'bg-[#144230] text-white shadow-xs'
-                  : 'text-[#6B7280] hover:text-[#111827]'
-              }`}
-            >
-              <Sliders className="w-3.5 h-3.5" />
-              <span>Simulation</span>
-            </button>
+        {/* Read-Only Hardware Telemetry Feed Indicator (Zero Mode/Scenario Buttons) */}
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#F4F5F7] border border-[#E5E7EB] text-xs font-mono-tech text-[#4B5563]">
+            <span className={`w-2 h-2 rounded-full ${isHardwareLive ? 'bg-[#22C55E] animate-pulse' : 'bg-[#F59E0B]'}`} />
+            <span className="font-semibold text-[11px]">{isHardwareLive ? 'HARDWARE FEED: ONLINE' : 'HARDWARE FEED: STANDBY'}</span>
           </div>
-
-          {/* SIMULATION MODE ONLY: Scenario Selection Controls (Normal / Anomaly / Leak) */}
-          {/* CRITICAL: These controls are REMOVED / HIDDEN when in REAL MODE */}
-          {!isRealMode && (
-            <div className="flex items-center gap-1 p-1 bg-[#F4F5F7] rounded-full border border-[#E5E7EB] text-xs font-mono-tech animate-in fade-in duration-200">
-              <button
-                onClick={() => setScenario('NORMAL')}
-                className={`px-2.5 py-1 rounded-full font-bold transition-all cursor-pointer flex items-center gap-1 ${
-                  activeScenario === 'NORMAL'
-                    ? 'bg-white text-[#144230] shadow-2xs border border-[#E5E7EB]'
-                    : 'text-[#6B7280] hover:text-[#111827]'
-                }`}
-              >
-                <CheckCircle2 className="w-3 h-3 text-[#22C55E]" />
-                <span>Normal</span>
-              </button>
-
-              <button
-                onClick={() => setScenario('ANOMALY')}
-                className={`px-2.5 py-1 rounded-full font-bold transition-all cursor-pointer flex items-center gap-1 ${
-                  activeScenario === 'ANOMALY'
-                    ? 'bg-white text-[#D97706] shadow-2xs border border-[#E5E7EB]'
-                    : 'text-[#6B7280] hover:text-[#111827]'
-                }`}
-              >
-                <AlertTriangle className="w-3 h-3 text-[#F59E0B]" />
-                <span>Anomaly</span>
-              </button>
-
-              <button
-                onClick={() => setScenario('LEAK')}
-                className={`px-2.5 py-1 rounded-full font-bold transition-all cursor-pointer flex items-center gap-1 ${
-                  activeScenario === 'LEAK'
-                    ? 'bg-white text-[#EF4444] shadow-2xs border border-[#E5E7EB]'
-                    : 'text-[#6B7280] hover:text-[#111827]'
-                }`}
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-[#EF4444] animate-ping" />
-                <span>Leak (75 cm Valve)</span>
-              </button>
-            </div>
-          )}
         </div>
       </div>
 

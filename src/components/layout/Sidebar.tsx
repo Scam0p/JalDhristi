@@ -24,6 +24,7 @@ interface SidebarProps {
   currentCase: CaseType;
   isMobileOpen?: boolean;
   onCloseMobile?: () => void;
+  onCycleMode?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -33,7 +34,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   totalTrainsCount,
   onReset,
   isMobileOpen = false,
-  onCloseMobile
+  onCloseMobile,
+  onCycleMode
 }) => {
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -46,7 +48,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   ];
 
   const generalItems = [
-    { id: 'settings', label: 'System Settings', icon: Settings, action: () => {} },
+    { id: 'settings', label: 'System Settings', icon: Settings, action: onCycleMode },
     { id: 'help', label: 'Architecture Docs', icon: HelpCircle, action: () => window.open('https://github.com/Scam0p/JalDhristi', '_blank') },
     { id: 'reset', label: 'Reset System', icon: RotateCcw, action: onReset }
   ];

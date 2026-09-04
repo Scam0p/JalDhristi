@@ -14,7 +14,6 @@ interface TopBarProps {
   isOptimizing: boolean;
   onToggleMobileMenu?: () => void;
   dashboardMode?: DashboardMode;
-  onSelectMode?: (mode: DashboardMode) => void;
   realTimeEventState?: PipelineEventState;
 }
 
@@ -23,7 +22,6 @@ export const TopBar: React.FC<TopBarProps> = ({
   currentCase,
   onToggleMobileMenu,
   dashboardMode = 'REAL',
-  onSelectMode,
   realTimeEventState
 }) => {
   const isReal = dashboardMode === 'REAL';
@@ -60,54 +58,18 @@ export const TopBar: React.FC<TopBarProps> = ({
         </div>
       </div>
 
-      {/* Middle/Right: Primary Mode Selector & Real-Time Status */}
+      {/* Middle/Right: Real-Time Event Status & Active Clock */}
       <div className="flex items-center gap-2.5 sm:gap-3.5">
-        {/* Mode Selector Pill (REAL MODE vs SIMULATION MODE) */}
-        {onSelectMode && (
-          <div className="flex items-center gap-1 p-1 bg-[#F4F5F7] rounded-full border border-[#E5E7EB] text-xs font-mono-tech">
-            <button
-              onClick={() => onSelectMode('REAL')}
-              className={`px-3 py-1 rounded-full font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                isReal
-                  ? 'bg-[#144230] text-white shadow-xs'
-                  : 'text-[#6B7280] hover:text-[#111827]'
-              }`}
-            >
-              <Radio className={`w-3.5 h-3.5 ${isReal ? 'text-[#22C55E]' : 'text-[#9CA3AF]'}`} />
-              <span>REAL MODE</span>
-              {isReal && <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E] animate-pulse" />}
-            </button>
-
-            <button
-              onClick={() => onSelectMode('SIMULATION')}
-              className={`px-3 py-1 rounded-full font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                !isReal
-                  ? 'bg-[#144230] text-white shadow-xs'
-                  : 'text-[#6B7280] hover:text-[#111827]'
-              }`}
-            >
-              <Sliders className="w-3.5 h-3.5" />
-              <span>SIMULATION</span>
-            </button>
-          </div>
-        )}
-
-        {/* Real Mode Event Status Pill */}
-        {isReal && realTimeEventState && (
+        {/* Active Telemetry Alert Status Pill */}
+        {isReal && realTimeEventState && isAlert && (
           <div className={`hidden lg:flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold font-mono-tech border ${
             isLeak 
               ? 'bg-[#FEF2F2] border-[#FECACA] text-[#DC2626] animate-pulse'
-              : isAlert 
-              ? 'bg-[#FFFBEB] border-[#FDE68A] text-[#D97706]'
-              : 'bg-[#E8F7EE] border-[#B7E4C7] text-[#144230]'
+              : 'bg-[#FFFBEB] border-[#FDE68A] text-[#D97706]'
           }`}>
-            {isAlert ? (
-              <AlertTriangle className="w-3.5 h-3.5 shrink-0 text-current" />
-            ) : (
-              <span className="w-2 h-2 rounded-full bg-[#22C55E] shrink-0" />
-            )}
+            <AlertTriangle className="w-3.5 h-3.5 shrink-0 text-current" />
             <span className="truncate max-w-[240px]">
-              {isAlert ? realTimeEventState.event_message : 'REAL: ALL SENSORS NORMAL'}
+              {realTimeEventState.event_message}
             </span>
           </div>
         )}

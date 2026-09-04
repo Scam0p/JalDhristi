@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { CheckCircle2 } from 'lucide-react';
 import { useSimulation } from './hooks/useSimulation';
 import { Sidebar } from './components/layout/Sidebar';
 import { TopBar } from './components/layout/TopBar';
@@ -17,6 +18,8 @@ export const App: React.FC = () => {
     setSelectedSensorKey,
     simulationScenario,
     setSimulationScenario,
+    cycleSystemMode,
+    modeToast,
     realTimeEventState,
     hardwareTelemetry,
     currentCase,
@@ -81,11 +84,12 @@ export const App: React.FC = () => {
         currentCase={currentCase}
         isMobileOpen={isMobileMenuOpen}
         onCloseMobile={() => setIsMobileMenuOpen(false)}
+        onCycleMode={cycleSystemMode}
       />
 
       {/* 2. Main Viewport Area */}
       <div ref={mainScrollRef} className="flex-1 flex flex-col min-w-0 min-h-screen overflow-y-auto">
-        {/* Top Header Bar with Mobile Menu Hamburger Trigger & Mode Selector */}
+        {/* Top Header Bar with Mobile Menu Hamburger Trigger */}
         <TopBar
           simTime={simTime}
           currentCase={currentCase}
@@ -96,7 +100,6 @@ export const App: React.FC = () => {
           isOptimizing={isOptimizing}
           onToggleMobileMenu={() => setIsMobileMenuOpen(prev => !prev)}
           dashboardMode={dashboardMode}
-          onSelectMode={setDashboardMode}
           realTimeEventState={realTimeEventState}
         />
 
@@ -108,11 +111,9 @@ export const App: React.FC = () => {
             <ControlCentre
               onOpenComplaintPortal={() => setActiveTab('complaints')}
               dashboardMode={dashboardMode}
-              onSelectMode={setDashboardMode}
               selectedSensorKey={selectedSensorKey}
               onSelectSensorKey={setSelectedSensorKey}
               simulationScenario={simulationScenario}
-              onSelectSimulationScenario={setSimulationScenario}
               realTimeEventState={realTimeEventState}
               currentCase={currentCase}
               onSelectCase={handleCaseChange}
@@ -168,6 +169,27 @@ export const App: React.FC = () => {
         isOpen={isOptimizing}
         step={optimizationStep}
       />
+
+      {/* Subtle Toast Feedback for Discreet Mode Transitions */}
+      {modeToast && (
+        <div
+          key={modeToast.id}
+          className="fixed bottom-6 right-6 z-50 pointer-events-none transition-all duration-300 animate-in fade-in slide-in-from-bottom-2"
+        >
+          <div className="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-[#144230] text-white shadow-xl border border-[#22C55E]/30 text-xs font-mono-tech font-semibold">
+            {modeToast.type === 'REAL' && (
+              <span className="w-2 h-2 rounded-full bg-[#22C55E] animate-pulse shrink-0" />
+            )}
+            {modeToast.type === 'NORMAL' && (
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#22C55E] shrink-0" />
+            )}
+            {modeToast.type === 'LEAK' && (
+              <span className="w-2 h-2 rounded-full bg-[#EF4444] animate-ping shrink-0" />
+            )}
+            <span>{modeToast.message}</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

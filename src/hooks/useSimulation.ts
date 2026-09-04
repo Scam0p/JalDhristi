@@ -27,17 +27,30 @@ import {
 import { useHardwareTelemetry } from './useHardwareTelemetry';
 
 export type DashboardMode = 'REAL' | 'SIMULATION';
-export type SimulationScenario = 'NORMAL' | 'ANOMALY' | 'LEAK';
+export type SimulationScenario = 'NORMAL' | 'ANOMALY' | 'LEAK' | null;
+export type SystemCycleState = 0 | 1 | 2;
 
 export function useSimulation() {
-  // Operational Mode: REAL MODE (default) vs SIMULATION MODE
+  // Operational Mode: REAL MODE (default on fresh load) vs SIMULATION MODE
   const [dashboardMode, setDashboardMode] = useState<DashboardMode>('REAL');
 
   // Centralized selected sensor state: 'sensor_1' (50 cm) vs 'sensor_2' (90 cm)
   const [selectedSensorKey, setSelectedSensorKey] = useState<'sensor_1' | 'sensor_2'>('sensor_1');
 
-  // Simulation Mode Scenarios: 'NORMAL' | 'ANOMALY' | 'LEAK' (at 75 cm T-valve)
-  const [simulationScenario, setSimulationScenario] = useState<SimulationScenario>('NORMAL');
+  // Simulation Mode Scenarios: 'NORMAL' | 'ANOMALY' | 'LEAK' | null
+  // In REAL MODE: simulationScenario is null.
+  // In SIMULATION MODE: 'NORMAL' | 'LEAK' (or 'ANOMALY' internally).
+  const [simulationScenario, setSimulationScenario] = useState<SimulationScenario>(null);
+
+  // Discreet 3-State Cycle Controller (Triggered by System Settings in Sidebar):
+  // Initial / Fresh Load: State 2 (REAL MODE, scenario = null)
+  // Click 1: State 0 (SIMULATION MODE, scenario = NORMAL)
+  // Click 2: State 1 (SIMULATION MODE, scenario = LEAK)
+  // Click 3: State 2 (REAL MODE, scenario = null)
+  // Cycle repeats indefinitely: (state + 1) % 3
+  const [systemCycleState, setSystemCycleState] = useState<SystemCycleState>(2);
+  const [modeToast, setModeToast] = useState<{ message: string; type: 'REAL' | 'NORMAL' | 'LEAK'; id: number } | null>(null);
+  const toastTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const [currentCase, setCurrentCase] = useState<CaseType>('ai');
   const [activeScenario, setActiveScenario] = useState<ScenarioType>('mainline_burst');
@@ -270,6 +283,7 @@ export function useSimulation() {
     setDashboardMode(newMode);
     if (newMode === 'REAL') {
       // In REAL MODE: no simulated scenario is active
+      setSimulationScenario(null);
       setSimulationState('NORMAL');
       const log: HydraulicEventLog = {
         id: `LOG-MODE-${Date.now().toString().slice(-4)}`,
@@ -354,6 +368,44 @@ export function useSimulation() {
       setEventLogs(prev => [newLog, ...prev.slice(0, 24)]);
     }
   }, [simSeconds]);
+
+  // Discreet 3-State Mode Controller (Triggered by System Settings):
+  // Initial / Fresh Load: State 2 (REAL MODE, scenario = null)
+  // Click 1: State 0 (SIMULATION MODE, scenario = NORMAL)
+  // Click 2: State 1 (SIMULATION MODE, scenario = LEAK)
+  // Click 3: State 2 (REAL MODE, scenario = null)
+  // Repeating cycle: (state + 1) % 3
+  const cycleSystemMode = useCallback(() => {
+    setSystemCycleState(prev => {
+      const next = ((prev + 1) % 3) as SystemCycleState;
+
+      if (toastTimerRef.current) {
+        clearTimeout(toastTimerRef.current);
+      }
+
+      if (next === 0) {
+        // STATE 0: SIMULATION MODE, SCENARIO = NORMAL
+        setDashboardMode('SIMULATION');
+        handleSimulationScenarioChange('NORMAL');
+        setModeToast({ message: 'Simulation: Normal', type: 'NORMAL', id: Date.now() });
+      } else if (next === 1) {
+        // STATE 1: SIMULATION MODE, SCENARIO = LEAK
+        setDashboardMode('SIMULATION');
+        handleSimulationScenarioChange('LEAK');
+        setModeToast({ message: 'Simulation: Leak', type: 'LEAK', id: Date.now() });
+      } else {
+        // STATE 2: REAL MODE
+        handleModeChange('REAL');
+        setModeToast({ message: 'Real Mode Active', type: 'REAL', id: Date.now() });
+      }
+
+      toastTimerRef.current = setTimeout(() => {
+        setModeToast(null);
+      }, 2200);
+
+      return next;
+    });
+  }, [handleModeChange, handleSimulationScenarioChange]);
 
   // Asynchronous sensor data fetcher with realistic network latency
   const handleSelectSensorAsync = useCallback((sensor: SensorNode) => {
@@ -553,7 +605,9 @@ export function useSimulation() {
     setCurrentCase('ai');
     setActiveScenario('mainline_burst');
     setSimulationState('NORMAL');
-    setSimulationScenario('NORMAL');
+    setSimulationScenario(null);
+    setSystemCycleState(2);
+    setDashboardMode('REAL');
     setRecommendations(INITIAL_AI_RECOMMENDATIONS);
     setEventLogs(INITIAL_AI_LOGS);
     setSimSeconds(8 * 3600 + 42 * 60 + 15);
@@ -577,6 +631,10 @@ export function useSimulation() {
     setSelectedSensorKey,
     simulationScenario,
     setSimulationScenario: handleSimulationScenarioChange,
+    systemCycleState,
+    cycleSystemMode,
+    modeToast,
+    dismissModeToast: () => setModeToast(null),
     realTimeEventState,
     hardwareTelemetry,
     currentCase,

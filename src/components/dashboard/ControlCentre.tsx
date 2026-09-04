@@ -49,11 +49,9 @@ interface ControlCentreProps {
   isCaseTransitioning: boolean;
   // Mode-Specific and Real-Time Event Props
   dashboardMode?: DashboardMode;
-  onSelectMode?: (mode: DashboardMode) => void;
   selectedSensorKey?: 'sensor_1' | 'sensor_2';
   onSelectSensorKey?: (key: 'sensor_1' | 'sensor_2') => void;
   simulationScenario?: SimulationScenario;
-  onSelectSimulationScenario?: (scen: SimulationScenario) => void;
   realTimeEventState?: PipelineEventState;
   simulationState?: 'NORMAL' | 'WARNING' | 'LEAK_SUSPECTED';
   onSetSimulationState?: (state: 'NORMAL' | 'WARNING' | 'LEAK_SUSPECTED') => void;
@@ -89,11 +87,9 @@ export const ControlCentre: React.FC<ControlCentreProps> = ({
   onReset,
   isCaseTransitioning,
   dashboardMode = 'REAL',
-  onSelectMode,
   selectedSensorKey,
   onSelectSensorKey,
-  simulationScenario = 'NORMAL',
-  onSelectSimulationScenario,
+  simulationScenario = null,
   realTimeEventState,
   simulationState,
   onSetSimulationState,
@@ -212,11 +208,9 @@ export const ControlCentre: React.FC<ControlCentreProps> = ({
           onReset={onReset}
           onRunOptimization={onRunOptimization}
           dashboardMode={dashboardMode}
-          onSelectMode={onSelectMode}
           selectedSensorKey={selectedSensorKey}
           onSelectSensorKey={onSelectSensorKey}
           simulationScenario={simulationScenario}
-          onSelectSimulationScenario={onSelectSimulationScenario}
           realTimeEventState={realTimeEventState}
           simulationState={simulationState}
           onSetSimulationState={onSetSimulationState}
