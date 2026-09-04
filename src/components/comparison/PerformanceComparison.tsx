@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CaseType } from '../../types/simulation';
-import { BarChart3, Award, Droplets, CheckCircle2 } from 'lucide-react';
+import { BarChart3, Award } from 'lucide-react';
 
 interface PerformanceComparisonProps {
   currentCase: CaseType;
@@ -85,70 +85,70 @@ export const PerformanceComparison: React.FC<PerformanceComparisonProps> = ({ cu
   ];
 
   return (
-    <div className="donezo-card p-6 space-y-6 select-none">
-      {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[#F0F2F5]">
-        <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-[#E8F7EE] text-[#144230]">
-            <BarChart3 className="w-5 h-5" />
+    <div className="bg-white border border-[#E5E7EB] rounded-lg p-5 space-y-5 select-none shadow-none">
+      {/* SCADA Header */}
+      <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[#E5E7EB]">
+        <div className="flex items-center gap-2.5">
+          <div className="p-1.5 rounded bg-[#F4F5F7] border border-[#E5E7EB] text-[#144230]">
+            <BarChart3 className="w-4 h-4 text-[#22C55E]" />
           </div>
           <div>
-            <h2 className="font-display font-bold text-base md:text-lg text-[#111827]">
-              Multi-Paradigm Performance Benchmark
+            <h2 className="font-mono-tech font-bold text-xs md:text-sm uppercase tracking-wider text-[#111827]">
+              OPERATIONAL BENCHMARK MATRIX
             </h2>
-            <p className="text-xs text-[#6B7280]">
-              Empirical quantitative comparison across 3 water intelligence operational models
+            <p className="text-[11px] font-mono-tech text-[#6B7280]">
+              Quantitative comparison across 3 pipeline monitoring paradigms
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="px-3 py-1 rounded-full bg-[#E8F7EE] text-[#144230] font-bold text-xs border border-[#B7E4C7] flex items-center gap-1.5 font-mono-tech">
-            <Award className="w-3.5 h-3.5 text-[#22C55E]" /> JALDRISHTI OPTIMAL
+          <span className="px-2.5 py-1 rounded bg-[#F4F5F7] text-[#144230] font-bold text-xs border border-[#E5E7EB] flex items-center gap-1.5 font-mono-tech">
+            <Award className="w-3.5 h-3.5 text-[#22C55E]" /> SCADA BENCHMARK MATRIX
           </span>
         </div>
       </div>
 
       {/* Primary Metrics Comparison Table */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto border border-[#E5E7EB] rounded">
         <table className="w-full text-left border-collapse text-xs font-mono-tech">
           <thead>
-            <tr className="border-b border-[#ECEEF2] text-[#6B7280]">
-              <th className="py-3 px-4 font-bold font-display uppercase tracking-wider text-[10px]">
-                Hydraulic Performance Dimension
+            <tr className="border-b border-[#E5E7EB] bg-[#F9FAFB] text-[#6B7280]">
+              <th className="py-2.5 px-3 font-bold uppercase tracking-wider text-[10px]">
+                HYDRAULIC PARAMETER
               </th>
-              <th className="py-3 px-4 font-bold text-center">
-                Manual Inspection
+              <th className="py-2.5 px-3 font-bold text-center text-[10px] uppercase">
+                MANUAL PATROL
               </th>
-              <th className="py-3 px-4 font-bold text-center">
-                Conventional SCADA
+              <th className="py-2.5 px-3 font-bold text-center text-[10px] uppercase">
+                CONVENTIONAL SCADA
               </th>
-              <th className="py-3 px-4 font-bold text-center text-[#144230] bg-[#E8F7EE]/60 rounded-t-xl">
-                JalDrishti Hydraulic AI
+              <th className="py-2.5 px-3 font-bold text-center text-[#144230] bg-[#E8F7EE]/60 text-[10px] uppercase">
+                JALDRISHTI SCADA
               </th>
-              <th className="py-3 px-4 font-bold text-right text-[#144230]">
-                Net Improvement
+              <th className="py-2.5 px-3 font-bold text-right text-[#144230] text-[10px] uppercase">
+                VARIANCE / DELTA
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#F0F2F5]">
+          <tbody className="divide-y divide-[#F3F4F6]">
             {comparisonMetrics.map((m, idx) => (
               <tr key={idx} className="hover:bg-[#F9FAFB] transition-colors">
-                <td className="py-3.5 px-4 font-medium text-[#111827]">
+                <td className="py-2.5 px-3 font-medium text-[#111827]">
                   <div className="font-bold text-xs">{m.name}</div>
-                  <div className="text-[10px] text-[#9CA3AF]">{m.unit}</div>
+                  <div className="text-[10px] text-[#6B7280]">{m.unit}</div>
                 </td>
-                <td className="py-3.5 px-4 text-center text-[#6B7280]">
+                <td className="py-2.5 px-3 text-center text-[#6B7280]">
                   {m.manual}
                 </td>
-                <td className="py-3.5 px-4 text-center text-[#4B5563] font-semibold">
+                <td className="py-2.5 px-3 text-center text-[#4B5563] font-semibold">
                   {m.conventional}
                 </td>
-                <td className="py-3.5 px-4 text-center text-[#144230] font-bold bg-[#E8F7EE]/40 text-sm">
+                <td className="py-2.5 px-3 text-center text-[#144230] font-bold bg-[#E8F7EE]/40 text-xs">
                   {m.ai}
                 </td>
-                <td className="py-3.5 px-4 text-right">
-                  <span className="px-2.5 py-1 rounded-full bg-[#E8F7EE] text-[#144230] font-bold text-[10px] border border-[#B7E4C7]">
+                <td className="py-2.5 px-3 text-right">
+                  <span className="px-1.5 py-0.5 rounded bg-[#E8F7EE] text-[#144230] font-bold text-[10px] border border-[#B7E4C7]">
                     {m.improvement}
                   </span>
                 </td>
@@ -159,18 +159,20 @@ export const PerformanceComparison: React.FC<PerformanceComparisonProps> = ({ cu
       </div>
 
       {/* Scenario Benchmark Case Cards */}
-      <div className="pt-2">
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-xs font-bold font-display text-[#111827] uppercase tracking-wider">
-            Empirical Stress-Test Benchmark Studies
+      <div className="pt-1">
+        <div className="flex items-center justify-between mb-2 pb-2 border-b border-[#E5E7EB]">
+          <span className="text-xs font-mono-tech font-bold text-[#111827] uppercase tracking-wider">
+            STRESS-TEST BENCHMARK SCENARIOS
           </span>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 font-mono-tech">
             {scenarioBenchmarks.map((_, i) => (
               <button
                 key={i}
                 onClick={() => setSelectedScenarioIndex(i)}
-                className={`w-7 h-7 rounded-full text-xs font-bold font-mono-tech transition-colors cursor-pointer ${
-                  selectedScenarioIndex === i ? 'bg-[#144230] text-white' : 'bg-[#F4F5F7] text-[#6B7280] hover:bg-[#E5E7EB]'
+                className={`w-6 h-6 rounded text-xs font-bold transition-colors cursor-pointer border ${
+                  selectedScenarioIndex === i 
+                    ? 'bg-[#144230] text-white border-[#0F3224]' 
+                    : 'bg-[#F4F5F7] text-[#6B7280] border-[#E5E7EB] hover:bg-[#E5E7EB]'
                 }`}
               >
                 0{i + 1}
@@ -182,36 +184,36 @@ export const PerformanceComparison: React.FC<PerformanceComparisonProps> = ({ cu
         {(() => {
           const s = scenarioBenchmarks[selectedScenarioIndex];
           return (
-            <div className="p-4 rounded-2xl bg-[#F9FAFB] border border-[#ECEEF2] space-y-3 font-mono-tech text-xs">
+            <div className="p-3.5 rounded bg-[#F9FAFB] border border-[#E5E7EB] space-y-2.5 font-mono-tech text-xs">
               <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#E5E7EB] pb-2">
-                <span className="font-display font-bold text-sm text-[#111827]">
+                <span className="font-bold text-xs text-[#111827]">
                   {s.name}
                 </span>
-                <span className="px-2.5 py-0.5 rounded-full bg-[#E8F7EE] text-[#144230] font-bold text-[10px]">
+                <span className="px-2 py-0.5 rounded bg-[#E8F7EE] text-[#144230] font-bold text-[10px] border border-[#B7E4C7]">
                   {s.gain}
                 </span>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
-                <div className="p-3 rounded-xl bg-white border border-[#E5E7EB]">
-                  <span className="text-[10px] text-[#9CA3AF] uppercase block font-bold mb-1">MANUAL PATROL</span>
-                  <div className="text-xs text-[#4B5563]">Loss: {s.manual.loss}</div>
-                  <div className="text-xs text-[#4B5563]">Accuracy: {s.manual.accuracy}</div>
-                  <div className="text-xs text-[#4B5563]">Response: {s.manual.response}</div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 pt-0.5">
+                <div className="p-2.5 rounded bg-white border border-[#E5E7EB]">
+                  <span className="text-[9px] text-[#6B7280] uppercase block font-bold mb-1">MANUAL PATROL</span>
+                  <div className="text-xs text-[#4B5563]">LOSS: {s.manual.loss}</div>
+                  <div className="text-xs text-[#4B5563]">ACCURACY: {s.manual.accuracy}</div>
+                  <div className="text-xs text-[#4B5563]">RESPONSE: {s.manual.response}</div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-white border border-[#E5E7EB]">
-                  <span className="text-[10px] text-[#9CA3AF] uppercase block font-bold mb-1">CONVENTIONAL SCADA</span>
-                  <div className="text-xs text-[#4B5563]">Loss: {s.conventional.loss}</div>
-                  <div className="text-xs text-[#4B5563]">Accuracy: {s.conventional.accuracy}</div>
-                  <div className="text-xs text-[#4B5563]">Response: {s.conventional.response}</div>
+                <div className="p-2.5 rounded bg-white border border-[#E5E7EB]">
+                  <span className="text-[9px] text-[#6B7280] uppercase block font-bold mb-1">CONVENTIONAL SCADA</span>
+                  <div className="text-xs text-[#4B5563]">LOSS: {s.conventional.loss}</div>
+                  <div className="text-xs text-[#4B5563]">ACCURACY: {s.conventional.accuracy}</div>
+                  <div className="text-xs text-[#4B5563]">RESPONSE: {s.conventional.response}</div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-[#E8F7EE] border border-[#B7E4C7]">
-                  <span className="text-[10px] text-[#144230] uppercase block font-bold mb-1">JALDRISHTI HYDRAULIC AI</span>
-                  <div className="text-xs text-[#144230] font-bold">Loss: {s.ai.loss}</div>
-                  <div className="text-xs text-[#144230] font-bold">Accuracy: {s.ai.accuracy}</div>
-                  <div className="text-xs text-[#144230] font-bold">Response: {s.ai.response}</div>
+                <div className="p-2.5 rounded bg-[#E8F7EE] border border-[#B7E4C7]">
+                  <span className="text-[9px] text-[#144230] uppercase block font-bold mb-1">JALDRISHTI SCADA</span>
+                  <div className="text-xs text-[#144230] font-bold">LOSS: {s.ai.loss}</div>
+                  <div className="text-xs text-[#144230] font-bold">ACCURACY: {s.ai.accuracy}</div>
+                  <div className="text-xs text-[#144230] font-bold">RESPONSE: {s.ai.response}</div>
                 </div>
               </div>
             </div>
@@ -221,3 +223,5 @@ export const PerformanceComparison: React.FC<PerformanceComparisonProps> = ({ cu
     </div>
   );
 };
+
+export default PerformanceComparison;

@@ -100,39 +100,39 @@ export const ControlCentre: React.FC<ControlCentreProps> = ({
 }) => {
   return (
     <div id="control-deck" className="space-y-8 max-w-7xl mx-auto select-none">
-      {/* 1. Dashboard Page Header (Donezo layout) */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {/* 1. SCADA Operations Deck Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-3 border-b border-[#E5E7EB]">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="font-display font-extrabold text-3xl text-[#111827] tracking-tight">
-              JalDrishti Operations Deck
+          <div className="flex flex-wrap items-center gap-2.5">
+            <h1 className="font-mono-tech font-bold text-xl md:text-2xl text-[#111827] tracking-tight">
+              JALDRISHTI SCADA CONTROL CENTRE
             </h1>
-            <span className="text-[10px] font-mono-tech font-bold px-2 py-0.5 rounded-full bg-[#E8F7EE] text-[#144230] border border-[#B7E4C7]">
-              BENGALURU • CAUVERY NETWORK
+            <span className="text-[10px] font-mono-tech font-bold px-2 py-0.5 rounded bg-[#F3F4F6] text-[#374151] border border-[#E5E7EB]">
+              CAUVERY TRANSMISSION ZONE Z-07
             </span>
           </div>
-          <p className="text-sm text-[#6B7280] font-normal mt-0.5">
-            Bengaluru&apos;s Cauvery Water Pipeline Network — Dual physical accelerometer test rig, hydraulic digital twin intelligence, and targeted acoustic leak pinpointing.
+          <p className="text-xs text-[#6B7280] font-mono-tech mt-1">
+            BWSSB Pipeline Telemetry Network • Dual ADXL345 Instrumentation Test Rig (100 cm) • Acoustic Leak Pinpointing Engine
           </p>
         </div>
 
-        {/* Action Buttons (Solid Forest Green Pill + White Border Pill) */}
-        <div className="flex items-center gap-3">
+        {/* Operator Action Buttons (Rectangular SCADA Engineering Buttons) */}
+        <div className="flex items-center gap-2.5">
           <button
             onClick={onRunOptimization}
             disabled={isOptimizing}
-            className="px-5 py-2.5 rounded-full bg-[#144230] hover:bg-[#1A543E] text-white font-display font-bold text-xs tracking-wide transition-all shadow-sm cursor-pointer flex items-center gap-2 active:scale-95 disabled:opacity-50"
+            className="px-3.5 py-2 rounded-md bg-[#144230] hover:bg-[#1A543E] text-white font-mono-tech font-bold text-xs tracking-wider transition-colors cursor-pointer flex items-center gap-2 disabled:opacity-50 border border-[#0D2D20]"
           >
-            <Droplets className="w-4 h-4 text-[#22C55E]" />
-            <span>{isOptimizing ? 'Pinpointing Leak...' : 'Run Hydraulic Solver'}</span>
+            <Droplets className="w-3.5 h-3.5 text-[#22C55E]" />
+            <span>{isOptimizing ? 'SOLVER RUNNING...' : 'RUN HYDRAULIC SOLVER'}</span>
           </button>
 
           <button
             onClick={onReset}
-            className="px-5 py-2.5 rounded-full bg-white hover:bg-[#F9FAFB] text-[#111827] border border-[#D1D5DB] font-display font-semibold text-xs transition-colors cursor-pointer flex items-center gap-1.5 shadow-2xs"
+            className="px-3.5 py-2 rounded-md bg-white hover:bg-[#F9FAFB] text-[#111827] border border-[#D1D5DB] font-mono-tech font-semibold text-xs transition-colors cursor-pointer flex items-center gap-1.5"
           >
             <RotateCcw className="w-3.5 h-3.5 text-[#6B7280]" />
-            <span>Reset Simulation</span>
+            <span>RESET RIG</span>
           </button>
         </div>
       </div>
@@ -260,34 +260,34 @@ export const ControlCentre: React.FC<ControlCentreProps> = ({
         />
       </section>
 
-      {/* 5. Citizen Complaint Portal Access Card */}
+      {/* 5. Citizen Grievance Portal Access Card */}
       {onOpenComplaintPortal && (
-        <section id="complaint-access-section" className="donezo-card p-6 border border-[#ECEEF2] bg-white">
+        <section id="complaint-access-section" className="donezo-card p-4 border border-[#E5E7EB] bg-white rounded-md">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3.5">
-              <div className="w-12 h-12 rounded-2xl bg-[#E8F7EE] text-[#144230] flex items-center justify-center shadow-2xs">
-                <FileText className="w-6 h-6 text-[#144230]" />
+              <div className="w-10 h-10 rounded-md bg-[#E8F7EE] text-[#144230] border border-[#B7E4C7] flex items-center justify-center shrink-0">
+                <FileText className="w-5 h-5 text-[#144230]" />
               </div>
               <div>
-                <div className="flex items-center gap-2">
-                  <h3 className="font-display font-bold text-base text-[#111827]">
-                    Citizen Grievance &amp; Complaint Portal
+                <div className="flex flex-wrap items-center gap-2">
+                  <h3 className="font-mono-tech font-bold text-sm text-[#111827] uppercase tracking-wide">
+                    Citizen Grievance &amp; Field Incident Portal
                   </h3>
-                  <span className="text-[10px] font-mono-tech font-bold px-2 py-0.5 rounded-full bg-[#E8F7EE] text-[#144230] border border-[#B7E4C7]">
-                    NEW CIVIC REPORTING
+                  <span className="text-[10px] font-mono-tech font-bold px-1.5 py-0.5 rounded bg-[#F3F4F6] text-[#374151] border border-[#E5E7EB]">
+                    CIVIC TELEMETRY
                   </span>
                 </div>
-                <p className="text-xs text-[#6B7280] mt-0.5 max-w-xl">
-                  Notice a visible pipeline leak, burst main, waterlogging, or damaged infrastructure in Bengaluru? Report it directly to the 24x7 JalDrishti civic inspection team.
+                <p className="text-xs text-[#6B7280] font-mono-tech mt-0.5 max-w-xl">
+                  Log field inspection reports, visible bursts, pipe fractures, or waterlogging directly into the JalDrishti civic operations queue.
                 </p>
               </div>
             </div>
 
             <button
               onClick={onOpenComplaintPortal}
-              className="px-5 py-2.5 rounded-full bg-[#144230] hover:bg-[#1A543E] text-white font-display font-bold text-xs tracking-wide transition-all shadow-sm cursor-pointer flex items-center justify-center gap-2 shrink-0 active:scale-98"
+              className="px-4 py-2 rounded-md bg-[#144230] hover:bg-[#1A543E] text-white font-mono-tech font-bold text-xs tracking-wider transition-colors cursor-pointer flex items-center justify-center gap-2 shrink-0 border border-[#0D2D20]"
             >
-              <span>Open Complaint Portal</span>
+              <span>OPEN COMPLAINT PORTAL</span>
             </button>
           </div>
         </section>

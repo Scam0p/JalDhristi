@@ -45,58 +45,64 @@ export const ProjectAnalyticsChart: React.FC<ProjectAnalyticsChartProps> = ({
   });
 
   return (
-    <div className="donezo-card p-5 flex flex-col justify-between h-full select-none">
+    <div className="donezo-card p-4 flex flex-col justify-between h-full select-none bg-white border border-[#E5E7EB] rounded-md">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between pb-2.5 mb-2 border-b border-[#E5E7EB]">
         <div>
-          <h3 className="font-display font-bold text-base text-[#111827]">
-            DMA Hydraulic Residual Analytics
+          <h3 className="font-mono-tech font-bold text-xs md:text-sm text-[#111827] uppercase tracking-wide">
+            DMA Sector Flow Residuals
           </h3>
-          <p className="text-[11px] text-[#6B7280]">
-            Expected vs Actual flow volume & hydraulic head across sectors
+          <p className="text-[10px] text-[#6B7280] font-mono-tech">
+            Volumetric mass balance &amp; pressure head across sectors
           </p>
         </div>
-        <div className="flex items-center gap-1 text-[11px] font-mono-tech text-[#144230] bg-[#E8F7EE] px-2.5 py-1 rounded-full font-bold">
-          <Droplets className="w-3 h-3 text-[#22C55E]" />
-          <span>SPARSE SENSORS</span>
+        <div className="flex items-center gap-1.5 text-[10px] font-mono-tech text-[#374151] bg-[#F9FAFB] px-2 py-0.5 rounded border border-[#E5E7EB] font-semibold">
+          <Droplets className="w-3 h-3 text-[#144230]" />
+          <span>6 SECTORS</span>
         </div>
       </div>
 
-      {/* Pill Bars Chart Area (Donezo Capsule Aesthetics) */}
-      <div className="relative pt-6 pb-2 flex items-end justify-between gap-2.5 sm:gap-4 h-48 px-2">
+      {/* SCADA Industrial Bar Chart Area */}
+      <div className="relative pt-6 pb-2 flex items-end justify-between gap-2 sm:gap-3 h-48 px-1 border-b border-[#E5E7EB]">
         {segmentBars.map((bar) => (
           <div
             key={bar.segment.id}
             onClick={() => onSelectStation(bar.segment)}
             className="flex-1 flex flex-col items-center justify-end h-full group cursor-pointer relative"
           >
-            {/* Value Tooltip Badge on Highlighted/Anomaly Bar (Matching reference '76%' badge) */}
+            {/* Value Tooltip Badge on Highlighted/Anomaly Bar */}
             {(bar.isCriticalLeak || bar.isPressureDrop || bar.isSelected) && (
-              <div className="absolute -top-1 bg-white border border-[#E5E7EB] shadow-sm rounded-full px-1.5 py-0.5 text-[9px] font-mono-tech font-bold text-[#144230] whitespace-nowrap z-10 transition-transform group-hover:scale-110">
+              <div className="absolute -top-1 bg-white border border-[#D1D5DB] shadow-xs rounded px-1.5 py-0.5 text-[9px] font-mono-tech font-bold text-[#111827] whitespace-nowrap z-10">
                 {bar.segment.flowResidualPct < 0 ? `${bar.segment.flowResidualPct}%` : `+${bar.segment.flowResidualPct}%`}
               </div>
             )}
 
-            {/* Vertical Pill Capsule Bar */}
-            <div className="w-full max-w-[42px] h-full flex items-end">
+            {/* Rectangular Industrial Bar */}
+            <div className="w-full max-w-[38px] h-full flex items-end">
               <div
-                className={`w-full rounded-full transition-all duration-300 relative ${bar.fillClass} ${
-                  bar.isSelected ? 'ring-2 ring-[#144230] ring-offset-2 scale-105' : 'group-hover:opacity-90'
+                className={`w-full rounded-t-xs border border-b-0 transition-all duration-200 relative ${
+                  bar.isCriticalLeak 
+                    ? 'bg-[#144230] border-[#0D2D20]' 
+                    : bar.isPressureDrop 
+                    ? 'bg-[#22C55E] border-[#15803D]' 
+                    : 'bg-[#E5E7EB] border-[#D1D5DB]'
+                } ${
+                  bar.isSelected ? 'ring-2 ring-[#144230] ring-offset-1' : 'group-hover:opacity-90'
                 }`}
                 style={{
                   height: `${bar.heightPct}%`,
-                  minHeight: '44px'
+                  minHeight: '28px'
                 }}
               />
             </div>
 
             {/* Bottom Label (Segment code) */}
-            <div className="mt-3 text-center">
-              <span className="text-xs font-bold text-[#6B7280] group-hover:text-[#111827] block font-display">
+            <div className="mt-2 text-center">
+              <span className="text-[11px] font-mono-tech font-bold text-[#374151] group-hover:text-[#111827] block">
                 {bar.segment.code}
               </span>
-              <span className="text-[9px] text-[#9CA3AF] font-mono-tech hidden sm:block">
-                {bar.segment.actualFlowM3h}m³
+              <span className="text-[9px] text-[#6B7280] font-mono-tech hidden sm:block">
+                {bar.segment.actualFlowM3h} m³
               </span>
             </div>
           </div>
@@ -104,14 +110,18 @@ export const ProjectAnalyticsChart: React.FC<ProjectAnalyticsChartProps> = ({
       </div>
 
       {/* Bottom Chart Legend */}
-      <div className="pt-3 border-t border-[#F0F2F5] flex items-center justify-between text-[11px] font-mono-tech text-[#6B7280]">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[#144230]" />
-          <span>Critical Leak (Residual &gt; 5%)</span>
+      <div className="pt-2.5 flex items-center justify-between text-[10px] font-mono-tech text-[#6B7280]">
+        <div className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2 rounded-xs bg-[#144230] border border-[#0D2D20]" />
+          <span>Critical Leak (&gt; 5%)</span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[#22C55E]" />
-          <span>Pressure Anomaly</span>
+        <div className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2 rounded-xs bg-[#22C55E] border border-[#15803D]" />
+          <span>Pressure Transient</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2 rounded-xs bg-[#E5E7EB] border border-[#D1D5DB]" />
+          <span>Normal Baseline</span>
         </div>
       </div>
     </div>

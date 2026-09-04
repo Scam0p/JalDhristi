@@ -92,12 +92,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <span className="font-display font-black text-lg text-[#111827] tracking-tight">
                   JalDrishti
                 </span>
-                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#E8F7EE] text-[#144230]">
-                  WATER AI
+                <span className="text-[10px] font-mono-tech font-bold px-1.5 py-0.5 rounded bg-[#F3F4F6] text-[#374151] border border-[#E5E7EB]">
+                  SCADA
                 </span>
               </div>
-              <p className="text-[11px] text-[#6B7280] font-medium leading-none mt-0.5">
-                Cauvery Water Network • Bengaluru
+              <p className="text-[11px] text-[#6B7280] font-mono-tech leading-none mt-0.5">
+                Cauvery Pipeline Network • Bengaluru
               </p>
             </div>
           </div>
@@ -106,7 +106,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {onCloseMobile && (
             <button
               onClick={onCloseMobile}
-              className="lg:hidden p-2 rounded-full hover:bg-[#F4F5F7] text-[#6B7280] hover:text-[#111827] cursor-pointer"
+              className="lg:hidden p-1.5 rounded-md hover:bg-[#F4F5F7] text-[#6B7280] hover:text-[#111827] cursor-pointer"
               aria-label="Close menu"
             >
               <X className="w-5 h-5" />
@@ -115,12 +115,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         {/* Navigation Sections */}
-        <div className="space-y-6">
+        <div className="space-y-5">
           <div>
-            <span className="text-[10px] font-mono-tech uppercase tracking-wider text-[#9CA3AF] px-3 font-semibold block mb-2">
+            <span className="text-[10px] font-mono-tech uppercase tracking-wider text-[#6B7280] px-3 font-bold block mb-1.5">
               MONITORING DECK
             </span>
-            <div className="space-y-1">
+            <div className="space-y-0.5">
               {menuItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = activeTab === item.id;
@@ -130,27 +130,27 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <button
                     key={item.id}
                     onClick={() => handleNavClick(item.id)}
-                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-full font-display text-xs font-semibold transition-all cursor-pointer ${
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-md text-xs font-semibold transition-colors cursor-pointer border ${
                       isActive
-                        ? 'bg-[#144230] text-white shadow-sm'
+                        ? 'bg-[#144230] text-white border-[#144230]'
                         : isComplaints
-                        ? 'bg-[#E8F7EE] text-[#144230] border border-[#B7E4C7] font-bold shadow-2xs hover:bg-[#D8F3E5]'
-                        : 'text-[#6B7280] hover:text-[#111827] hover:bg-[#F4F5F7]'
+                        ? 'bg-[#E8F7EE] text-[#144230] border-[#B7E4C7] font-bold hover:bg-[#D8F3E5]'
+                        : 'text-[#4B5563] hover:text-[#111827] hover:bg-[#F9FAFB] border-transparent'
                     }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <Icon className={`w-4 h-4 ${isActive ? 'text-white' : isComplaints ? 'text-[#144230]' : 'text-[#9CA3AF]'}`} />
+                    <div className="flex items-center gap-2.5">
+                      <Icon className={`w-4 h-4 ${isActive ? 'text-white' : isComplaints ? 'text-[#144230]' : 'text-[#6B7280]'}`} />
                       <span>{item.label}</span>
                     </div>
 
                     {item.badge && (
                       <span
-                        className={`text-[9px] font-mono-tech px-2 py-0.5 rounded-full font-bold ${
+                        className={`text-[9px] font-mono-tech px-1.5 py-0.5 rounded font-bold ${
                           isActive
                             ? 'bg-white/20 text-white'
                             : isComplaints
                             ? 'bg-[#144230] text-white'
-                            : 'bg-[#E8F7EE] text-[#144230]'
+                            : 'bg-[#F3F4F6] text-[#374151] border border-[#E5E7EB]'
                         }`}
                       >
                         {item.badge}
@@ -163,19 +163,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
 
           <div>
-            <span className="text-[10px] font-mono-tech uppercase tracking-wider text-[#9CA3AF] px-3 font-semibold block mb-2">
-              SYSTEM
+            <span className="text-[10px] font-mono-tech uppercase tracking-wider text-[#6B7280] px-3 font-bold block mb-1.5">
+              SYSTEM CONTROL
             </span>
-            <div className="space-y-1">
+            <div className="space-y-0.5">
               {generalItems.map((item) => {
                 const Icon = item.icon;
                 return (
                   <button
                     key={item.id}
                     onClick={() => handleNavClick(item.id, item.action)}
-                    className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-full font-display text-xs font-semibold text-[#6B7280] hover:text-[#111827] hover:bg-[#F4F5F7] transition-all cursor-pointer"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-xs font-medium text-[#4B5563] hover:text-[#111827] hover:bg-[#F9FAFB] transition-colors cursor-pointer"
                   >
-                    <Icon className="w-4 h-4 text-[#9CA3AF]" />
+                    <Icon className="w-4 h-4 text-[#6B7280]" />
                     <span>{item.label}</span>
                   </button>
                 );
@@ -185,13 +185,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
       </div>
 
-      {/* Network Health Metric Pill at Bottom */}
-      <div className="p-3.5 rounded-2xl bg-[#E8F7EE] border border-[#B7E4C7] flex items-center justify-between text-xs font-mono-tech">
+      {/* Network Health Metric Box at Bottom */}
+      <div className="p-3 rounded-md bg-[#F9FAFB] border border-[#E5E7EB] flex items-center justify-between text-xs font-mono-tech">
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[#22C55E] animate-pulse" />
-          <span className="text-[#144230] font-bold text-[11px]">HYDRAULIC TWIN</span>
+          <span className="w-2 h-2 rounded-full bg-[#22C55E]" />
+          <span className="text-[#374151] font-bold text-[11px]">SCADA TELEMETRY</span>
         </div>
-        <span className="text-[#144230] font-black text-xs">98.2%</span>
+        <span className="text-[#144230] font-bold text-xs">ONLINE • 98.2%</span>
       </div>
     </div>
   );

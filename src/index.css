@@ -37,27 +37,27 @@
   }
 }
 
-/* Card Styling inspired by Donezo reference */
+/* SCADA Industrial Panel Styling */
 .donezo-card {
   background-color: #FFFFFF;
-  border-radius: 24px;
-  border: 1px solid #ECEEF2;
-  box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.03);
+  border-radius: 8px;
+  border: 1px solid #E5E7EB;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
 }
 
 .donezo-card-sm {
   background-color: #FFFFFF;
-  border-radius: 18px;
-  border: 1px solid #ECEEF2;
-  box-shadow: 0 2px 12px -2px rgba(0, 0, 0, 0.02);
+  border-radius: 6px;
+  border: 1px solid #E5E7EB;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.02);
 }
 
 .donezo-card-dark {
-  background-color: #144230;
-  border-radius: 24px;
-  color: #FFFFFF;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 24px -4px rgba(20, 66, 48, 0.25);
+  background-color: #FFFFFF;
+  border-radius: 8px;
+  color: #111827;
+  border: 1px solid #D1D5DB;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
 }
 
 /* Diagonal Striped Hatching for Reference Chart & Progress Bars */

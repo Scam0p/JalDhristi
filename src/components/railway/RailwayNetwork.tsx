@@ -171,50 +171,50 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
   const isSensor2Selected = activeSelectedKey === 'sensor_2';
 
   return (
-    <div className="donezo-card p-5 md:p-6 space-y-5 select-none">
+    <div className="bg-white border border-[#E5E7EB] rounded-lg p-5 space-y-4 select-none shadow-none">
       {/* 1. Header with Mode Badges & Controls */}
-      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#F0F2F5]">
-        <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-[#E8F7EE] text-[#144230] shadow-2xs">
-            <Droplets className="w-5 h-5" />
+      <div className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-[#E5E7EB]">
+        <div className="flex items-center gap-2.5">
+          <div className="p-1.5 rounded bg-[#F4F5F7] border border-[#E5E7EB] text-[#144230]">
+            <Droplets className="w-4 h-4 text-[#22C55E]" />
           </div>
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <h2 className="font-display font-bold text-base md:text-lg text-[#111827]">
-                Pipeline Telemetry & Acoustic Localisation
+              <h2 className="font-mono-tech font-bold text-xs md:text-sm uppercase tracking-wider text-[#111827]">
+                PIPELINE TELEMETRY &amp; ACOUSTIC LOCALIZATION
               </h2>
-              <span className="text-[10px] font-mono-tech px-2.5 py-0.5 rounded-full bg-[#E8F7EE] text-[#144230] border border-[#B7E4C7] font-bold">
-                PHYSICAL 100 CM PIPELINE • 2X ADXL345
+              <span className="text-[10px] font-mono-tech px-2 py-0.5 rounded bg-[#F4F5F7] text-[#144230] border border-[#E5E7EB] font-bold">
+                PHYSICAL 100 CM RIG • 2X ADXL345
               </span>
             </div>
-            <p className="text-xs text-[#6B7280] mt-0.5">
-              Dual physical accelerometer pipeline test rig (Sensor 1 at 50 cm, T-Valve at 75 cm, Sensor 2 at 90 cm)
+            <p className="text-[11px] font-mono-tech text-[#6B7280] mt-0.5">
+              Dual physical accelerometer test rig (Sensor 1 at 50 cm, T-Valve at 75 cm, Sensor 2 at 90 cm)
             </p>
           </div>
         </div>
 
-        {/* Read-Only Hardware Telemetry Feed Indicator (Zero Mode/Scenario Buttons) */}
+        {/* Read-Only Hardware Telemetry Feed Indicator */}
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#F4F5F7] border border-[#E5E7EB] text-xs font-mono-tech text-[#4B5563]">
-            <span className={`w-2 h-2 rounded-full ${isHardwareLive ? 'bg-[#22C55E] animate-pulse' : 'bg-[#F59E0B]'}`} />
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#F4F5F7] border border-[#E5E7EB] text-xs font-mono-tech text-[#4B5563]">
+            <span className={`w-1.5 h-1.5 rounded-full ${isHardwareLive ? 'bg-[#22C55E]' : 'bg-[#9CA3AF]'}`} />
             <span className="font-semibold text-[11px]">{isHardwareLive ? 'HARDWARE FEED: ONLINE' : 'HARDWARE FEED: STANDBY'}</span>
           </div>
         </div>
       </div>
 
       {/* 2. Central Water Pipeline Simulation Graphic Canvas */}
-      <div className="relative bg-[#F9FAFB] rounded-3xl border border-[#ECEEF2] p-4 md:p-6 overflow-x-auto min-h-[460px] flex flex-col justify-between shadow-inner">
+      <div className="relative bg-[#F9FAFB] rounded-lg border border-[#E5E7EB] p-4 md:p-5 overflow-x-auto min-h-[460px] flex flex-col justify-between shadow-none">
         {/* Top Status & Instructional Pill */}
         <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-mono-tech mb-2">
           <div className="flex items-center gap-2">
-            <span className={`w-2 h-2 rounded-full ${
+            <span className={`w-1.5 h-1.5 rounded-full ${
               isRealMode 
-                ? (isHardwareLive ? 'bg-[#22C55E] animate-pulse' : 'bg-[#F59E0B] animate-ping')
+                ? (isHardwareLive ? 'bg-[#22C55E]' : 'bg-[#F59E0B] animate-ping')
                 : (is75CmLeakActive ? 'bg-[#EF4444] animate-ping' : 'bg-[#22C55E]')
             }`} />
             
             {/* Live Evaluated Event State Banner */}
-            <span className={`font-bold text-[11px] px-2.5 py-1 rounded-full border ${
+            <span className={`font-bold text-[10px] px-2 py-0.5 rounded border uppercase ${
               isRealMode
                 ? (isOverallAlert 
                     ? (overallCondition === 'POTENTIAL LEAK' ? 'bg-[#FEF2F2] text-[#DC2626] border-[#FECACA] animate-pulse' : 'bg-[#FFFBEB] text-[#D97706] border-[#FDE68A]')
@@ -231,9 +231,9 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
             </span>
           </div>
 
-          <div className="text-[10px] text-[#6B7280] bg-white px-2.5 py-1 rounded-full border border-[#E5E7EB] shadow-2xs flex items-center gap-1">
+          <div className="text-[10px] text-[#6B7280] bg-white px-2 py-0.5 rounded border border-[#E5E7EB] flex items-center gap-1 font-mono-tech">
             <Info className="w-3 h-3 text-[#144230]" />
-            <span>Click Sensor 1 (50 cm) or Sensor 2 (90 cm) to view telemetry & acceleration</span>
+            <span>Select Sensor 1 (50 cm) or Sensor 2 (90 cm) to view telemetry &amp; acceleration</span>
           </div>
         </div>
 
@@ -1060,12 +1060,11 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
         </div>
 
         {/* 3. Interactive Selected Sensor Comprehensive Details HUD Bar */}
-        {/* Fulfills requirements: Clean spacing, clear CURRENT STATUS vs EVENT STATUS separation, 4 spacious telemetry cards */}
-        <div className="mt-4 p-5 md:p-6 rounded-3xl bg-white border border-[#ECEEF2] shadow-sm select-none">
+        <div className="mt-4 p-4 md:p-5 rounded-lg bg-white border border-[#E5E7EB] shadow-none select-none">
           {/* Top Row: Sensor Identity + Primary Sensor Selector Toggle */}
-          <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#F0F2F5]">
-            <div className="flex items-center gap-3.5">
-              <div className={`w-11 h-11 rounded-2xl flex items-center justify-center font-display font-extrabold text-sm shadow-2xs text-white ${
+          <div className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-[#E5E7EB]">
+            <div className="flex items-center gap-3">
+              <div className={`w-9 h-9 rounded flex items-center justify-center font-mono-tech font-bold text-xs text-white ${
                 activeSelectedReport?.condition === 'POTENTIAL LEAK' 
                   ? 'bg-[#EF4444]' 
                   : activeSelectedReport?.condition === 'ANOMALY DETECTED' 
@@ -1076,13 +1075,13 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
               </div>
               <div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="font-display font-bold text-base text-[#111827]">
+                  <h3 className="font-mono-tech font-bold text-xs md:text-sm uppercase tracking-wider text-[#111827]">
                     {activeSelectedName}
                   </h3>
-                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono-tech font-bold bg-[#E8F7EE] text-[#144230] border border-[#B7E4C7]">
+                  <span className="px-2 py-0.5 rounded text-[10px] font-mono-tech font-bold bg-[#F4F5F7] text-[#144230] border border-[#E5E7EB]">
                     MOUNT: {activeSelectedPosCm}.0 CM
                   </span>
-                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono-tech font-bold border ${
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-mono-tech font-bold border uppercase ${
                     activeSelectedReport?.condition === 'POTENTIAL LEAK'
                       ? 'bg-[#FEF2F2] text-[#DC2626] border-[#FECACA]'
                       : activeSelectedReport?.condition === 'ANOMALY DETECTED'
@@ -1092,55 +1091,55 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
                     {activeSelectedReport?.condition || 'NORMAL'}
                   </span>
                 </div>
-                <p className="text-xs text-[#6B7280] mt-0.5 font-normal">
-                  Physical ADXL345 3-axis accelerometer sensor on 100 cm pipeline • Calibrated units: m/s²
+                <p className="text-[11px] font-mono-tech text-[#6B7280] mt-0.5">
+                  ADXL345 3-axis accelerometer on physical rig • Units: m/s²
                 </p>
               </div>
             </div>
 
-            {/* Primary Sensor Switcher Buttons (Centralized, Smooth In-Place Update, No Popups) */}
-            <div className="flex items-center gap-1.5 p-1 bg-[#F4F5F7] rounded-full border border-[#E5E7EB] text-xs font-mono-tech">
+            {/* Primary Sensor Switcher Buttons */}
+            <div className="flex items-center gap-1 p-0.5 bg-[#F4F5F7] rounded border border-[#E5E7EB] text-xs font-mono-tech">
               <button
                 onClick={() => handleSensorClick('sensor_1')}
-                className={`px-4 py-1.5 rounded-full font-bold transition-all cursor-pointer flex items-center gap-2 ${
+                className={`px-3 py-1 rounded font-bold transition-colors cursor-pointer flex items-center gap-1.5 ${
                   activeSelectedKey === 'sensor_1'
-                    ? 'bg-[#144230] text-white shadow-xs'
+                    ? 'bg-[#144230] text-white'
                     : 'text-[#6B7280] hover:text-[#111827]'
                 }`}
               >
-                <span className={`w-2 h-2 rounded-full ${s1Condition === 'POTENTIAL LEAK' ? 'bg-[#EF4444]' : s1Condition === 'ANOMALY DETECTED' ? 'bg-[#F59E0B]' : 'bg-[#22C55E]'}`} />
+                <span className={`w-1.5 h-1.5 rounded-full ${s1Condition === 'POTENTIAL LEAK' ? 'bg-[#EF4444]' : s1Condition === 'ANOMALY DETECTED' ? 'bg-[#F59E0B]' : 'bg-[#22C55E]'}`} />
                 <span>Sensor 1 (50 cm)</span>
               </button>
 
               <button
                 onClick={() => handleSensorClick('sensor_2')}
-                className={`px-4 py-1.5 rounded-full font-bold transition-all cursor-pointer flex items-center gap-2 ${
+                className={`px-3 py-1 rounded font-bold transition-colors cursor-pointer flex items-center gap-1.5 ${
                   activeSelectedKey === 'sensor_2'
-                    ? 'bg-[#144230] text-white shadow-xs'
+                    ? 'bg-[#144230] text-white'
                     : 'text-[#6B7280] hover:text-[#111827]'
                 }`}
               >
-                <span className={`w-2 h-2 rounded-full ${s2Condition === 'POTENTIAL LEAK' ? 'bg-[#EF4444]' : s2Condition === 'ANOMALY DETECTED' ? 'bg-[#F59E0B]' : 'bg-[#22C55E]'}`} />
+                <span className={`w-1.5 h-1.5 rounded-full ${s2Condition === 'POTENTIAL LEAK' ? 'bg-[#EF4444]' : s2Condition === 'ANOMALY DETECTED' ? 'bg-[#F59E0B]' : 'bg-[#22C55E]'}`} />
                 <span>Sensor 2 (90 cm)</span>
               </button>
             </div>
           </div>
 
           {/* Middle Row: Two Clearly Separated Status Cards (CURRENT STATUS vs EVENT STATUS) */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 my-3 font-mono-tech">
             {/* CARD A: CURRENT STATUS (Operational Condition) */}
-            <div className={`p-4 rounded-2xl border transition-all ${
+            <div className={`p-3.5 rounded border transition-colors ${
               activeSelectedReport?.condition === 'POTENTIAL LEAK'
                 ? 'bg-[#FEF2F2] border-[#FECACA]'
                 : activeSelectedReport?.condition === 'ANOMALY DETECTED'
                 ? 'bg-[#FFFBEB] border-[#FDE68A]'
-                : 'bg-[#F9FAFB] border-[#ECEEF2]'
+                : 'bg-[#F9FAFB] border-[#E5E7EB]'
             }`}>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] font-mono-tech font-bold tracking-wider text-[#6B7280] uppercase">
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-[10px] font-bold tracking-wider text-[#6B7280] uppercase">
                   CURRENT STATUS
                 </span>
-                <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono-tech font-bold border ${
+                <span className={`px-2 py-0.5 rounded text-[9px] font-bold border uppercase ${
                   activeSelectedReport?.condition === 'POTENTIAL LEAK'
                     ? 'bg-white text-[#DC2626] border-[#FECACA]'
                     : activeSelectedReport?.condition === 'ANOMALY DETECTED'
@@ -1150,7 +1149,7 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
                   OPERATIONAL CONDITION
                 </span>
               </div>
-              <div className={`font-display font-extrabold text-2xl tracking-tight ${
+              <div className={`font-bold text-xl tracking-tight ${
                 activeSelectedReport?.condition === 'POTENTIAL LEAK'
                   ? 'text-[#DC2626]'
                   : activeSelectedReport?.condition === 'ANOMALY DETECTED'
@@ -1159,42 +1158,42 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
               }`}>
                 {activeSelectedReport?.condition || 'NORMAL'}
               </div>
-              <p className="text-xs text-[#6B7280] mt-1.5 leading-relaxed">
+              <p className="text-[11px] text-[#6B7280] mt-1 leading-relaxed">
                 {activeSelectedReport?.condition === 'POTENTIAL LEAK'
-                  ? 'Vibration characteristics match acoustic leak pattern at nearby 75 cm T-branch.'
+                  ? 'Vibration matches acoustic leak pattern at nearby 75 cm T-branch.'
                   : activeSelectedReport?.condition === 'ANOMALY DETECTED'
-                  ? 'Elevated vibration threshold exceeded (> 0.080 m/s²); mechanical disturbance or pressure surge.'
+                  ? 'Elevated vibration threshold exceeded (> 0.080 m/s²); mechanical surge.'
                   : 'Nominal baseline operational limits maintained (< 0.080 m/s²).'}
               </p>
             </div>
 
             {/* CARD B: EVENT STATUS (Descriptive Event Message) */}
-            <div className="p-4 rounded-2xl bg-[#F9FAFB] border border-[#ECEEF2]">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] font-mono-tech font-bold tracking-wider text-[#6B7280] uppercase">
+            <div className="p-3.5 rounded bg-[#F9FAFB] border border-[#E5E7EB]">
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-[10px] font-bold tracking-wider text-[#6B7280] uppercase">
                   EVENT STATUS
                 </span>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono-tech font-bold bg-white text-[#4B5563] border border-[#E5E7EB]">
+                <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-white text-[#4B5563] border border-[#E5E7EB]">
                   ACOUSTIC INTELLIGENCE
                 </span>
               </div>
-              <div className="font-display font-bold text-base text-[#111827] leading-snug">
+              <div className="font-bold text-sm text-[#111827] leading-snug">
                 {activeSelectedReport?.eventStatus || 'Nominal baseline — no abnormal vibration event detected'}
               </div>
-              <p className="text-xs text-[#6B7280] mt-1.5 leading-relaxed">
-                Real-time rule engine &amp; frequency spectrum evaluation from ADXL345 3-axis accelerometer.
+              <p className="text-[11px] text-[#6B7280] mt-1 leading-relaxed">
+                Real-time rule engine &amp; frequency spectrum evaluation from ADXL345 accelerometer.
               </p>
             </div>
           </div>
 
           {/* Bottom Row: 4 Spacious Telemetry Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 text-xs font-mono-tech">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 text-xs font-mono-tech">
             {/* 1. Vibration Magnitude */}
-            <div className="p-3.5 rounded-2xl bg-[#F9FAFB] border border-[#ECEEF2] hover:border-[#D1D5DB] transition-all">
-              <span className="text-[10px] font-bold text-[#6B7280] block mb-1 uppercase tracking-wider">
-                VIBRATION
+            <div className="p-3 rounded border border-[#E5E7EB] bg-[#F9FAFB] hover:border-[#D1D5DB] transition-colors">
+              <span className="text-[9px] font-bold text-[#6B7280] block mb-1 uppercase tracking-wider">
+                VIBRATION RMS
               </span>
-              <div className={`font-display font-black text-2xl ${
+              <div className={`font-bold text-xl ${
                 activeSelectedReport?.condition === 'POTENTIAL LEAK'
                   ? 'text-[#DC2626]'
                   : activeSelectedReport?.condition === 'ANOMALY DETECTED'
@@ -1204,98 +1203,101 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
                 {activeSelectedData.vibration.toFixed(3)}{' '}
                 <span className="text-xs font-normal text-[#6B7280]">m/s²</span>
               </div>
-              <div className="text-[10px] text-[#6B7280] mt-1">
+              <div className="text-[10px] text-[#6B7280] mt-0.5">
                 Dynamic RMS magnitude
               </div>
             </div>
 
             {/* 2. X Acceleration */}
-            <div className="p-3.5 rounded-2xl bg-[#F9FAFB] border border-[#ECEEF2] hover:border-[#D1D5DB] transition-all">
-              <span className="text-[10px] font-bold text-[#6B7280] block mb-1 uppercase tracking-wider">
-                X ACCELERATION
+            <div className="p-3 rounded border border-[#E5E7EB] bg-[#F9FAFB] hover:border-[#D1D5DB] transition-colors">
+              <span className="text-[9px] font-bold text-[#6B7280] block mb-1 uppercase tracking-wider">
+                X AXIS (LATERAL)
               </span>
-              <div className="font-display font-black text-2xl text-[#111827]">
-                {activeSelectedData.x >= 0 ? `+${activeSelectedData.x.toFixed(3)}` : activeSelectedData.x.toFixed(3)}
+              <div className="font-bold text-xl text-[#111827]">
+                {activeSelectedData.x >= 0 ? `+${activeSelectedData.x.toFixed(3)}` : activeSelectedData.x.toFixed(3)}{' '}
+                <span className="text-xs font-normal text-[#6B7280]">m/s²</span>
               </div>
-              <div className="text-[10px] text-[#6B7280] mt-1">Lateral axis (m/s²)</div>
+              <div className="text-[10px] text-[#6B7280] mt-0.5">Lateral pipe vector</div>
             </div>
 
             {/* 3. Y Acceleration */}
-            <div className="p-3.5 rounded-2xl bg-[#F9FAFB] border border-[#ECEEF2] hover:border-[#D1D5DB] transition-all">
-              <span className="text-[10px] font-bold text-[#6B7280] block mb-1 uppercase tracking-wider">
-                Y ACCELERATION
+            <div className="p-3 rounded border border-[#E5E7EB] bg-[#F9FAFB] hover:border-[#D1D5DB] transition-colors">
+              <span className="text-[9px] font-bold text-[#6B7280] block mb-1 uppercase tracking-wider">
+                Y AXIS (AXIAL)
               </span>
-              <div className="font-display font-black text-2xl text-[#111827]">
-                {activeSelectedData.y >= 0 ? `+${activeSelectedData.y.toFixed(3)}` : activeSelectedData.y.toFixed(3)}
+              <div className="font-bold text-xl text-[#111827]">
+                {activeSelectedData.y >= 0 ? `+${activeSelectedData.y.toFixed(3)}` : activeSelectedData.y.toFixed(3)}{' '}
+                <span className="text-xs font-normal text-[#6B7280]">m/s²</span>
               </div>
-              <div className="text-[10px] text-[#6B7280] mt-1">Axial pipe axis (m/s²)</div>
+              <div className="text-[10px] text-[#6B7280] mt-0.5">Axial pipe vector</div>
             </div>
 
             {/* 4. Z Acceleration */}
-            <div className="p-3.5 rounded-2xl bg-[#F9FAFB] border border-[#ECEEF2] hover:border-[#D1D5DB] transition-all">
-              <span className="text-[10px] font-bold text-[#6B7280] block mb-1 uppercase tracking-wider">
-                Z ACCELERATION
+            <div className="p-3 rounded border border-[#E5E7EB] bg-[#F9FAFB] hover:border-[#D1D5DB] transition-colors">
+              <span className="text-[9px] font-bold text-[#6B7280] block mb-1 uppercase tracking-wider">
+                Z AXIS (VERTICAL)
               </span>
-              <div className="font-display font-black text-2xl text-[#111827]">
-                {activeSelectedData.z >= 0 ? `+${activeSelectedData.z.toFixed(3)}` : activeSelectedData.z.toFixed(3)}
+              <div className="font-bold text-xl text-[#111827]">
+                {activeSelectedData.z >= 0 ? `+${activeSelectedData.z.toFixed(3)}` : activeSelectedData.z.toFixed(3)}{' '}
+                <span className="text-xs font-normal text-[#6B7280]">m/s²</span>
               </div>
-              <div className="text-[10px] text-[#6B7280] mt-1">Vertical vector (g ≈ 9.81)</div>
+              <div className="text-[10px] text-[#6B7280] mt-0.5">Vertical vector (g ≈ 9.81)</div>
             </div>
           </div>
         </div>
 
         {/* 4. Bottom Quick Summary Ribbon (Clean Read-Only Telemetry Badges) */}
-        <div className="pt-3 border-t border-[#ECEEF2] flex flex-wrap items-center justify-between gap-3 text-xs font-mono-tech mt-3">
-          <div className="flex flex-wrap items-center gap-3">
-            <div className={`flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border shadow-2xs ${
+        <div className="pt-3 border-t border-[#E5E7EB] flex flex-wrap items-center justify-between gap-3 text-xs font-mono-tech mt-3">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <div className={`flex items-center gap-2 bg-white px-2.5 py-1 rounded border ${
               s1Condition !== 'NORMAL' ? 'border-[#F59E0B] bg-[#FFFBEB]' : 'border-[#E5E7EB]'
             }`}>
-              <span className="text-[#9CA3AF]">SENSOR 1 (50 cm):</span>
+              <span className="text-[#6B7280]">SENSOR 1 (50 cm):</span>
               <span className={`font-bold ${s1Condition === 'POTENTIAL LEAK' ? 'text-[#DC2626]' : s1Condition === 'ANOMALY DETECTED' ? 'text-[#D97706]' : 'text-[#144230]'}`}>
                 {sensor1Data.vibration.toFixed(3)} m/s²
               </span>
               <span className={`w-1.5 h-1.5 rounded-full ${s1Condition !== 'NORMAL' ? 'bg-[#F59E0B] animate-ping' : (isHardwareLive ? 'bg-[#22C55E]' : 'bg-[#9CA3AF]')}`} />
             </div>
 
-            <div className={`flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border shadow-2xs ${
+            <div className={`flex items-center gap-2 bg-white px-2.5 py-1 rounded border ${
               s2Condition !== 'NORMAL' ? 'border-[#F59E0B] bg-[#FFFBEB]' : 'border-[#E5E7EB]'
             }`}>
-              <span className="text-[#9CA3AF]">SENSOR 2 (90 cm):</span>
+              <span className="text-[#6B7280]">SENSOR 2 (90 cm):</span>
               <span className={`font-bold ${s2Condition === 'POTENTIAL LEAK' ? 'text-[#DC2626]' : s2Condition === 'ANOMALY DETECTED' ? 'text-[#D97706]' : 'text-[#144230]'}`}>
                 {sensor2Data.vibration.toFixed(3)} m/s²
               </span>
               <span className={`w-1.5 h-1.5 rounded-full ${s2Condition !== 'NORMAL' ? 'bg-[#F59E0B] animate-ping' : (isHardwareLive ? 'bg-[#22C55E]' : 'bg-[#9CA3AF]')}`} />
             </div>
 
-            <div className={`flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border shadow-2xs ${
+            <div className={`flex items-center gap-2 bg-white px-2.5 py-1 rounded border ${
               is75CmLeakActive ? 'border-[#EF4444] bg-[#FEF2F2]' : 'border-[#E5E7EB]'
             }`}>
-              <span className="text-[#9CA3AF]">T-VALVE (75 cm):</span>
+              <span className="text-[#6B7280]">T-VALVE (75 cm):</span>
               <span className={`font-bold ${is75CmLeakActive ? 'text-[#DC2626]' : 'text-[#144230]'}`}>
-                {is75CmLeakActive ? 'SIMULATED LEAK' : 'Branch Ready'}
+                {is75CmLeakActive ? 'SIMULATED LEAK' : 'Branch Nominal'}
               </span>
             </div>
 
-            <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-[#E5E7EB] shadow-2xs">
-              <span className="text-[#9CA3AF]">RIG SPAN:</span>
-              <span className="text-[#111827] font-bold">100.0 cm Physical Rig</span>
+            <div className="flex items-center gap-2 bg-white px-2.5 py-1 rounded border border-[#E5E7EB]">
+              <span className="text-[#6B7280]">RIG SPAN:</span>
+              <span className="text-[#111827] font-bold">100.0 cm Rig</span>
             </div>
           </div>
 
-          <div className="text-[11px] text-[#6B7280] font-medium">
-            Status: <span className="text-[#144230] font-bold">{isRealMode ? (isHardwareLive ? 'Live MQTT Stream' : 'Awaiting Hardware') : 'Simulation Rig'}</span>
+          <div className="text-[11px] text-[#6B7280]">
+            STATUS: <span className="text-[#144230] font-bold uppercase">{isRealMode ? (isHardwareLive ? 'Live MQTT Stream' : 'Awaiting Hardware') : 'Simulation Rig'}</span>
           </div>
         </div>
       </div>
 
       {/* 5. Complete Water Pipeline Network Corridor Route (Segments S-00 to S-06) */}
-      <div className="p-4 rounded-2xl bg-white border border-[#ECEEF2]">
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-xs font-bold text-[#111827] font-display uppercase tracking-wider">
-            Bengaluru Cauvery Transmission Corridor • 26.8 KM Network Overview
+      <div className="p-4 rounded-lg bg-white border border-[#E5E7EB]">
+        <div className="flex items-center justify-between mb-3 pb-2 border-b border-[#E5E7EB]">
+          <span className="text-xs font-bold text-[#111827] font-mono-tech uppercase tracking-wider">
+            BENGALURU CAUVERY CORRIDOR • 26.8 KM HYDRAULIC NETWORK
           </span>
           <span className="text-[10px] font-mono-tech text-[#6B7280]">
-            CLICK SEGMENT NODE TO INSPECT HYDRAULIC GRADE LINE
+            CLICK SEGMENT TO INSPECT HYDRAULIC GRADE LINE
           </span>
         </div>
 
@@ -1309,9 +1311,9 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
               <div
                 key={segment.id}
                 onClick={() => onSelectStation(segment)}
-                className={`p-2.5 rounded-xl border cursor-pointer transition-all ${
+                className={`p-2.5 rounded border cursor-pointer transition-colors ${
                   isSelected
-                    ? 'bg-[#E8F7EE] border-[#144230] shadow-sm'
+                    ? 'bg-[#E8F7EE] border-[#144230]'
                     : isCrit
                     ? 'bg-[#FEF2F2] border-[#FECACA] hover:border-[#EF4444]'
                     : isWarn
@@ -1323,14 +1325,14 @@ export const RailwayNetwork: React.FC<RailwayNetworkProps> = ({
                   <span className="font-mono-tech font-bold text-xs text-[#111827]">
                     {segment.code}
                   </span>
-                  <span className={`w-2 h-2 rounded-full ${
+                  <span className={`w-1.5 h-1.5 rounded-full ${
                     isCrit ? 'bg-[#EF4444] animate-ping' : isWarn ? 'bg-[#F59E0B]' : 'bg-[#22C55E]'
                   }`} />
                 </div>
                 <div className="text-[10px] text-[#4B5563] truncate font-medium">
                   {segment.name.split(' ')[1] || segment.name}
                 </div>
-                <div className="text-[9px] font-mono-tech text-[#9CA3AF] mt-1">
+                <div className="text-[9px] font-mono-tech text-[#6B7280] mt-1">
                   DN{segment.diameterMm} • {segment.actualFlowM3h} m³/h
                 </div>
               </div>
